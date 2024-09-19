@@ -3,11 +3,7 @@ A mobile app developed with the Expo framework and React Native to track finance
 
 - Use Flask to implement Python backend.
 
-# Expo App Setup
-
-This is an Expo-based project. Follow the steps below to set up the development environment and get started with the app.
-
-## Installation Guide
+## Steps to start Developing
 
 ### 1. Clone the Repository
 First, clone this repository to your local machine:
