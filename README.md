@@ -35,8 +35,3 @@ Follow the on-screen instructions in the terminal to run the app on a simulator,
 - **Start Development Server**: `npm run start`
 - **Build Project**: `npm run build`
 
----
-
-### Issues
-
-If you encounter any issues during setup or development, please open an issue in the repository, and we'll assist you as soon as possible.
