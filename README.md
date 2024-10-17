@@ -33,5 +33,4 @@ Follow the on-screen instructions in the terminal to run the app on a simulator,
 ## Useful Commands
 
 - **Start Development Server**: `npm run start`
-- **Build Project**: `npm run build`
 
