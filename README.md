@@ -21,16 +21,13 @@ cd <repository-directory>
 npm install
 ```
 
-### 4. Start the Development Server
-To start the development server, use the following command:
+### 4. Start the Expo Go Development Server
 ```bash
-npm run start
+npm run start:expo
 ```
 
-### 5. Run the App
-Follow the on-screen instructions in the terminal to run the app on a simulator, emulator, or physical device using the Expo Go app.
-
-## Useful Commands
-
-- **Start Development Server**: `npm run start`
+### 5 (Optional). Start the Backend Python Server
+```bash
+npm run start:flask
+```
 
