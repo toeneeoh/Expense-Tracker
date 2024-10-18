@@ -32,6 +32,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="apiTest"
+        options={{
+          title: 'API Test',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'flask' : 'flask-outline'} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
