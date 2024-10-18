@@ -10,5 +10,15 @@ npm-debug.*
 *.orig.*
 web-build/
 
+# ignores all .env files
+.env*
+
 # macOS
 .DS_Store
+
+
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*.pyo
