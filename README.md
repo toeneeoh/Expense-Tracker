@@ -31,3 +31,11 @@ npm run start:expo
 npm run start:flask
 ```
 
+## Configuring backend server
+Edit app.config.js and replace API_URL with the server location
+```javascript
+API_URL: 'https://7aea-89-187-180-16.ngrok-free.app'
+```
+
+
+
