@@ -21,17 +21,21 @@ cd <repository-directory>
 npm install
 ```
 
-### 4. Start the Development Server
-To start the development server, use the following command:
+### 4. Start the Expo Go Development Server
 ```bash
-npm run start
+npm run start:expo
 ```
 
-### 5. Run the App
-Follow the on-screen instructions in the terminal to run the app on a simulator, emulator, or physical device using the Expo Go app.
+### 5 (Optional). Start the Backend Python Server
+```bash
+npm run start:flask
+```
 
-## Useful Commands
+## Configuring backend server
+Edit app.config.js and replace API_URL with the server location
+```javascript
+API_URL: 'https://7aea-89-187-180-16.ngrok-free.app'
+```
 
-- **Start Development Server**: `npm run start`
-- **Build Project**: `npm run build`
+'localhost:8080' or '127.0.0.1:8080'
 
