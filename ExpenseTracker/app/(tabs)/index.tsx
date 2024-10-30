@@ -2,8 +2,8 @@ import { SectionList, Image, StyleSheet, Platform, View, Text } from 'react-nati
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import ThemedText from '@/components/ThemedText';
+import ThemedView from '@/components/ThemedView';
 import WelcomeScreen from './WelcomeScreen';
 
 const transactions = [
