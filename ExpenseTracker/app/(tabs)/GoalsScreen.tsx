@@ -4,7 +4,7 @@ import IconOption from '@/components/IconOption';
 import { StyleSheet } from 'react-native';
 
 export default function GoalsScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation() as any;
 
   const handleGoalSelect = () => {
     navigation.navigate('ExpensesScreen');

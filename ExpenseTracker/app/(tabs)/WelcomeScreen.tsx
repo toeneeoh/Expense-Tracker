@@ -4,7 +4,7 @@ import { ThemedView, ThemedText } from '@/components/ThemedComponents';
 import { Image, StyleSheet } from 'react-native';
 
 export default function WelcomeScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation() as any;
 
   const handleGetStarted = () => {
     navigation.navigate('GoalsScreen');

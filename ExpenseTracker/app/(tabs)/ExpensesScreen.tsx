@@ -4,7 +4,7 @@ import InputField from '@/components/InputField';
 import { StyleSheet } from 'react-native';
 
 export default function ExpensesScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation() as any;
 
   const handleSubmit = () => {
     navigation.navigate('ProfileScreen');
