@@ -37,5 +37,5 @@ Edit app.config.js and replace API_URL with the server location
 API_URL: 'https://7aea-89-187-180-16.ngrok-free.app'
 ```
 
-'localhost:8080'
+'localhost:8080' or '127.0.0.1:8080'
 
