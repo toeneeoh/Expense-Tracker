@@ -6,33 +6,6 @@ import ThemedText from '@/components/ThemedText';
 import ThemedView from '@/components/ThemedView';
 import WelcomeScreen from './WelcomeScreen';
 
-const transactions = [
-    {
-        id: "1",
-        name: "Walmart",
-        amount: "-12.63",
-        type: "expense",
-    },
-    {
-        id: "2",
-        name: "Seven Eleven",
-        amount: "-5.12",
-        type: "expense",
-    },
-    {
-        id: "3",
-        name: "Amazon",
-        amount: "-24.13",
-        type: "expense",
-    },
-    {
-        id: "4",
-        name: "Job",
-        amount: "112.12",
-        type: "income",
-    }
-];
-
 export default function HomeScreen() {
   return (
     <ParallaxScrollView
@@ -64,17 +37,7 @@ export default function HomeScreen() {
           </ThemedView>
           <View style={{ borderWidth: 0.3, borderStyle: 'dashed', borderRadius: 1, borderColor: 'white' }}></View>
 
-          <View>
-              {transactions.map((transaction) => {
-                  return (
-                      <View>
-                          <ThemedText darkColor="white" style={styles.item}>{transaction.name} ${transaction.amount}</ThemedText>
-                      </View>
-                  );
-              })}
-          </View>
-          
-         
+          <TransactionsList />
       </ParallaxScrollView>
   );
 }
@@ -128,26 +91,29 @@ const styleSheet = StyleSheet.create({
     },
 });
 
-const SectionListBasics = () => {
+const TransactionsList = () => {
     return (
         <View style={styleSheet.container}>
             <SectionList
                 sections={[
-                    { title: 'D', data: ['Devin', 'Dan', 'Dominic'] },
                     {
-                        title: 'J',
+                        title: 'Incomes',
                         data: [
-                            'Jackson',
-                            'James',
-                            'Jillian',
-                            'Jimmy',
-                            'Joel',
-                            'John',
-                            'Julie',
+                            'Salary: $112.24',
+                            'Salary: $168.76',
+                            'Venmo: $15.00',
+                        ]
+                    },
+                    {
+                        title: 'Expenses',
+                        data: [
+                            'Walmart: -$12.63',
+                            'Seven Eleven: -$5.12',
+                            'Amazon: -$12.43'
                         ],
                     },
                 ]}
-                renderItem={({ item }) => <Text style={styleSheet.item}>{item}</Text>}
+                renderItem={({ item }) => <ThemedText darkColor="white" style={styleSheet.item}>{item}</ThemedText>}
                 renderSectionHeader={({ section }) => (
                     <Text style={styleSheet.sectionHeader}>{section.title}</Text>
                 )}
