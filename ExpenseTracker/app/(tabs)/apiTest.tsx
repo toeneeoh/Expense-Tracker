@@ -25,7 +25,7 @@ export default function ApiTestScreen() {
         onChangeText={setInputText}
       />
       <Button title="Send to API" onPress={handleProcessText} />
-      {responseText ? <Text style={styles.result}>Processed: {responseText}</Text> : null}
+      {responseText ? <Text style={styles.result}>Response: {responseText}</Text> : null}
     </View>
   );
 }
