@@ -11,6 +11,9 @@ export default function ProfileScreen() {
   return (
     <ThemedView style={styles.container}>
       <ThemedText type="title">Final Questions</ThemedText>
+	  
+	  <InputField label="First Name" />
+      <InputField label="Last Name" />
 
       <DropdownField label="What city do you live in?" options={cities} />
 	  <DropdownField label="What state do you live in?" options={states} />
