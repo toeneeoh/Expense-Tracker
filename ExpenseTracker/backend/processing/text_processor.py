@@ -1,3 +1,5 @@
+import unittest
+
 from flask import Blueprint, request, jsonify
 
 bp = Blueprint('text', __name__, url_prefix='/text')
