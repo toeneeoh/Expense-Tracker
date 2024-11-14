@@ -20,7 +20,23 @@ def connect_db(retries=5, delay=2):
             retries -= 1
     raise Exception("Failed to connect to the database after several attempts.")
 
+def drop_users_table():
+    conn = connect_db()
+    if conn is not None:
+        try:
+            with conn.cursor() as cur:
+                cur.execute("DROP TABLE IF EXISTS users;")
+                print("Table 'users' dropped successfully.")
+        except Exception as e:
+            print(f"Error dropping table: {e}")
+        finally:
+            conn.close()
+    else:
+        print("Connection to the database failed.")
+
 def init_db():
+    drop_users_table()
+
     """Initialize the database with schema from init_db.sql."""
     script_dir = os.path.dirname(os.path.abspath(__file__))
     init_db_path = os.path.join(script_dir, "init_db.sql")
@@ -42,3 +58,18 @@ def get_item(item, username="test"):
             cur.execute(query, (username,))
             result = cur.fetchone()
             return result[0] if result else None
+
+def push_item(item, value, username="test"):
+    """Inserts or updates a specified column (item) in the users table for the given user."""
+    with connect_db() as conn:
+        with conn.cursor() as cur:
+            query = sql.SQL("""
+                INSERT INTO users (username, {field}) 
+                VALUES (%s, %s)
+                ON CONFLICT (username) 
+                DO UPDATE SET {field} = EXCLUDED.{field}
+            """).format(field=sql.Identifier(item))
+            
+            # Execute the query with the username and value for the specified field
+            cur.execute(query, (username, value))
+            return f"Inserted/Updated {item} for user {username}"
