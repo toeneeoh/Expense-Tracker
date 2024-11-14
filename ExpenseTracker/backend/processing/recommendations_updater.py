@@ -9,9 +9,9 @@ def update_recommendations():
 
     # get userData array from database and store in this dictionary, integer values are in cents thus 100 = 1 dollar
     userData = {
-        "userID": "100", #userID, if needed for user identification
-        "userEmail": "100", #user email, used as username & password
-        "userName": "John Doe", #actual name of user, for display purposes
+        "userEmail": "johndoe@gmail.com", #user email, used as username & password
+        "username": "John Doe", #actual name of user, for display purposes
+        "password": "1234", #username to access specific username
         "jobTitle" : "a",
         "address" : "a",
         "cityName" : "a",

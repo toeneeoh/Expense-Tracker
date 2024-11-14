@@ -36,10 +36,12 @@
 
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, Keyboard } from 'react-native';
+import ApiService from '../../utils/apiService';
 
 export default function NotificationsScreen() {
   const [messages, setMessages] = useState<{ sender: 'user' | 'bot'; text: string }[]>([]);
-  const [inputText, setInputText] = useState('');
+    const [inputText, setInputText] = useState('');
+    const [responseText, setResponseText] = useState(''); //may not be needed
 
   const uniqueResponses = [
     "That's a great question! Here's what I suggest...",
@@ -51,17 +53,31 @@ export default function NotificationsScreen() {
     "Here's some advice that could help you with that."
   ];
 
+    const handleProcessText = async () => {
+        try {
+            const result = await ApiService.processText(inputText);
+            setResponseText(result.processed_text);
+        } catch (error) {
+            console.error('Error processing text:', error);
+        }
+    };
+
   const sendMessage = () => {
-    if (inputText.trim() === '') return;
+      if (inputText.trim() === '') return;
 
     // Add user's message to the chat
     setMessages((prevMessages) => [...prevMessages, { sender: 'user', text: inputText }]);
 
     // Simulate a unique ChatGPT response
-    setTimeout(() => {
-      const botResponse = uniqueResponses[Math.floor(Math.random() * uniqueResponses.length)];
-      setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: botResponse }]);
-    }, 1000);
+    //setTimeout(() => {
+    //    const botResponse = uniqueResponses[Math.floor(Math.random() * uniqueResponses.length)];
+    //  setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: botResponse }]);
+    //}, 1000);
+
+    // Get ChatGPT response for message
+      handleProcessText()
+      setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: responseText }]);
+
 
     // Clear the input field and dismiss the keyboard
     setInputText('');
