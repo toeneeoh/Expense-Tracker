@@ -3,8 +3,8 @@ import DropdownField from '@/components/DropdownField';
 import InputField from '@/components/InputField';
 import { StyleSheet } from 'react-native';
 
-const cities = ['Washington, D.C.', 'Austin', 'Sacramento', 'Denver']; // Get more major cities
-const jobTitles = ['Software Engineer', 'Finance Manager', 'Lawyer', 'Marketing Specialist'];// list other ones as well Nate
+const cities = ['Washington, D.C.', 'Fairfax', 'Arlington', 'Austin', 'Sacramento', 'Denver']; // Get more major cities
+const jobTitles = ['Software Engineer', 'Finance Analyst', 'Lawyer', 'Blue-Collar Worker', 'Customer Service Worker'];// list other ones as well Nate
 
 export default function ProfileScreen() {
   return (

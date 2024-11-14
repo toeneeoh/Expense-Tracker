@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "concurrently \"npm run start:flask\" \"npm run start:expo\"",
-    "start:expo": "expo start --tunnel",
+    "start:expo": "expo start",
     "start:flask": "python ./backend/app.py",
     "android": "expo start --android",
     "ios": "expo start --ios",
