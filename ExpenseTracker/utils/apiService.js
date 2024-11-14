@@ -7,37 +7,13 @@ class ApiService {
         this.baseUrl = apiUrl
     }
 
-    async processText(text) {
-        try {
-            const response = await fetch(`${this.baseUrl}/text/process`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ text })
-            });
-
-        // Log the raw response for debugging
-        const rawResponse = await response.text(); // Use .text() to get the raw response
-        console.log('Raw API Response:', rawResponse); // Log the response
-
-        // Now parse it as JSON
-        const jsonResponse = JSON.parse(rawResponse); // Manually parse it
-
-        return jsonResponse; // Return the parsed JSON
-        } catch (error) {
-            console.error('API Error:', error);
-            throw error;
-        }
-    }
-
     //update recommendations screen whenever needed, i.e. when recommendations screen is refreshed
     async updateRecommendations(recUpdateString) {
         //return a JSON file with top 3 recommendations based on userData
         //sends TO backend updated list of "blacklisted" recommendations refused by user, a string of numbers to be parsed by python at start of function
 
         try {
-            const response = await fetch(`${this.baseUrl}/text/process`, { //change to proper python script file?
+            const response = await fetch(`${this.baseUrl}/recommendations/update`, { //change to proper python script file?
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -82,9 +58,14 @@ class ApiService {
 
     //generate a new message from ChatGPT to send to the user on the messages screen
     //a message should just be a JSON file containing a single string
-    async generateMessage() {
+    async generateMessage(text) {
         try {
             const response = await fetch(`${this.baseUrl}/text/prompt`, { //change to proper python script file?
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text })
             });
             //response should just be the string returned from ChatGPT
 
@@ -118,6 +99,28 @@ class ApiService {
             //query database, returning username if user can be found
         } else {
             return "-1";
+        }
+    }
+    // Get a specific item from the database
+
+    async getFromDatabase(item, username) {
+        try {
+            const response = await fetch(`${this.baseUrl}/database/get`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ item, username })
+            });
+
+            const rawResponse = await response.text();
+            const jsonResponse = JSON.parse(rawResponse);
+
+            return jsonResponse;
+        }
+        catch (error) {
+            console.error('API Error:', error);
+            throw error;
         }
     }
 

@@ -4,11 +4,13 @@ import React from 'react';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { UserProvider } from '@/context/UserContext';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
+    <UserProvider>
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
@@ -51,7 +53,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="apiTest"
+        name="ApiTestScreen"
               options={{
                   //href: null, //uncomment/comment this line to make this tab appear/disappear
           title: 'API Test',
@@ -85,6 +87,7 @@ export default function TabLayout() {
               }}
           />
     </Tabs>
+</UserProvider>
   );
 }
 
