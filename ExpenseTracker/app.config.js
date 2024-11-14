@@ -11,7 +11,7 @@ export default {
       package: "com.kafei.ExpenseTracker", // Package name for deployment
     },
     extra: {
-      API_URL: 'https://cd44-149-88-105-115.ngrok-free.app', // Put backend ip and port for development testing here
+      API_URL: 'https://open-openly-longhorn.ngrok-free.app', // Put backend ip and port for development testing here
       eas: {
         projectId: "804e51c0-4ef2-4b9c-92e1-b049aca8ab21"
       }
