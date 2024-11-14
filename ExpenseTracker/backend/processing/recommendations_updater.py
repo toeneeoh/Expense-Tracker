@@ -9,7 +9,7 @@ def update_recommendations():
 
     # get userData array from database and store in this dictionary, integer values are in cents thus 100 = 1 dollar
     userData = {
-        "userEmail": "johndoe@gmail.com", #user email, used as username & password
+        "userEmail": "johndoe@gmail.com", #user email, if needed
         "username": "John Doe", #actual name of user, for display purposes
         "password": "1234", #username to access specific username
         "jobTitle" : "a",
@@ -22,8 +22,9 @@ def update_recommendations():
         "expenses" : [["a", 44444], ["b", 77777], ["c", 99999]], #all reported expenses
         "monthlyTotalIncomes" : [["a", 10000], ["b", 15000], ["c", 30000]], #all reported aggregate incomes by month
         "monthlyTotalExpenses" : [["Aug2024", 1500.19], ["Sep2024", 1324.19], ["Oct2024", 1631.19]], #all reported aggregate expenses by month
-        "debts" : [["Credit Card A", 150.23, 9.20], ["Credit Card B", 45.82, 6.50], ["Student Loans", 15412.36, 3.50]], #debt name, debt amount, annual interest rate
+        "debts" : [["Credit Card A", 150.23, 9.20, 20.15], ["Credit Card B", 45.82, 6.50, 0], ["Student Loans", 15412.36, 3.50, 120.12]], #debt name, debt amount, annual interest rate, amount paid down on debt last month
         "roommatesNum" : 1, #refers to number of rent-splitting roommates, inlcuding user
+        "dependentsNum" : 1, #refers to number of children/dependents that are having their bills paid for by the user
         "bedroomsNeeded" : 1, #refers to total number of bedrooms needed, for user, roommates, children/dependents, etc
         "savings" : 100,
         "expenseOther" : 100,
@@ -31,7 +32,7 @@ def update_recommendations():
         "expenseDining" : 100,
         "expenseRent" : 100,
         "expenseSubscriptions" : 100,
-        "expenseEntertainment" : 100,
+        "expenseEntertainment" : 100, #includes movie tickets, fun purchases, anything not needed for survival. doesn't include dining or subscriptions.
         "expenseUtilities" : 100,
         "expenseCar" : 100,
         "incomeOther" : 100, #allowance, parental assistance, investments, etc.
@@ -45,13 +46,17 @@ def update_recommendations():
     uRecommendationsList = {"moveInCity": 100, 
     "moveOutCity" : 100, 
     "getBetterJob" : 100, 
-    "payOffHighInterest" : 100, 
-    "payOffSmallDebts" : 100, 
+    "payOffHighInterest" : 0, 
+    "payOffSmallDebts" : 0, 
     "lessTakeout" : 100, 
     "cheaperGroceries" : 100, 
-    "lessEntertainment" : 100, 
+    "lessEntertainment" : 100, #user should abide by the 50/30/20 rule, spending 30% or less of their income on entertainment
+    "workMoreGigs" : 2, #user should work more hours by doordashing or instacarting
     "debtSettlement" : 2, 
     "bankruptcy" : 1}
+
+    expenseTotal = userData["expenseOther"] + userData["expenseGroceries"] + userData["expenseDining"]  + userData["expenseRent"]  + userData["expenseSubscriptions"]  + userData["expenseEntertainment"] + userData["expenseUtilities"]  + userData["expenseCar"]
+    incomeTotal = userData["incomeJob"] + userData["incomeOther"]
 
     cityAverage = 0
     # if (userData["cityName"] == "Washington, D.C."):
@@ -155,6 +160,17 @@ def update_recommendations():
     uRecommendationsList["moveOutCity"] = (userData["expenseRent"]+userData["expenseUtilities"]-1663)
     uRecommendationsList["getBetterJob"] = ((userData["salaryHourly"]-jobAverage)*userData["weeklyHours"])
     #uRecommendationsList["changeJob"] = ((userData["salaryHourly"]-jobAverage)*userData["weeklyHours"])
+    uRecommendationsList["lessTakeout"] = (userData["expenseTakeout"])
+    uRecommendationsList["cheaperGroceries"] = ((userData["expenseGroceries"]-(250*userData["dependentsNum"]))*userData["dependentsNum"])
+    uRecommendationsList["lessEntertainment"] = ((userData["expenseEntertainment"]+userData["expenseDining"]+userData["expenseSubscriptions"])-(incomeTotal*0.3))
+    uRecommendationsList["workMoreGigs"] = ((35 - userData["weeklyHours"])*12)
+
+    for debt in userData["debts"]:
+        if (debt[1] < incomeTotal*0.1):
+            uRecommendationsList["payOffSmallDebts"] = incomeTotal*0.1
+
+    uRecommendationsList["payOffHighInterest"] = () #if user is spending lots on low interest debts and not high interest ones
+
     
 
 
