@@ -11,9 +11,11 @@ def update_recommendations():
     userData = {
         "userID": "100", #userID, if needed for user identification
         "userEmail": "100", #user email, used as username & password
+        "userName": "John Doe", #actual name of user, for display purposes
         "jobTitle" : "a",
+        "address" : "a",
         "cityName" : "a",
-        "stateName" : "a",
+        "stateName" : "a", #just two letter, i.e. VA for Virginia
         "userGoal" : "debt", #either "debt", "savings", or "retirement"
         "skills" : ["a", "b", "c"],
         "incomes" : [["a", 10000], ["b", 15000], ["c", 30000]], #all reported incomes

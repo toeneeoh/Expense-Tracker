@@ -33,7 +33,7 @@ class ApiService {
 
     //update recommendations screen whenever needed, i.e. when recommendations screen is refreshed
     async updateRecommendations(recUpdateString) {
-        //return a JSON file with top 3 recommendations
+        //return a JSON file with top 3 recommendations based on userData
         //sends TO backend updated list of "blacklisted" recommendations refused by user, a string of numbers to be parsed by python at start of function
 
         try {

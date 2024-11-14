@@ -4,8 +4,9 @@ import FeatherIcon from '@expo/vector-icons/Feather'; {/* Might not be correct f
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import  ThemedText  from '@/components/ThemedText';
+import ThemedView from '@/components/ThemedView';
+import { useNavigation } from 'expo-router';
 
 import React, { useState } from 'react';
 import {
@@ -19,7 +20,17 @@ import {
     Image,
 } from 'react-native';
 
+const userData = JSON.parse('{"userName":"John Doe","address":"123 Somewhere Street", "cityName":"Fairfax", "stateName":"VA"}')
+
+const locationData = "" + userData["address"] + " - " + userData["cityName"] + "," + userData["stateName"]
+
 export default function TabTwoScreen() {
+    const navigation = useNavigation() as any;
+
+    //const updateUserdata = () => {
+    //    navigation.navigate('GoalsScreen');
+    //};
+
     const [form, setForm] = useState({
         darkMode: false,
         emailNotifications: true,
@@ -36,10 +47,10 @@ export default function TabTwoScreen() {
               </TouchableOpacity>
 
               <View>
-                  <Text style={styles.profileName}>John Doe</Text>
+                  <Text style={styles.profileName}>{userData["userName"]}</Text>
 
                   <Text style={styles.profileAddress}>
-                      123 Somewhere Street. Fairfax, VA 22032
+                      {locationData}
                   </Text>
               </View>
           </View>
@@ -47,10 +58,9 @@ export default function TabTwoScreen() {
           <ScrollView>
               <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Preferences</Text>
-
                   <TouchableOpacity
                       onPress={() => {
-                          // handle onPress
+                            navigation.navigate('GoalsScreen');
                       }}
                       style={styles.row}>
                       <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>

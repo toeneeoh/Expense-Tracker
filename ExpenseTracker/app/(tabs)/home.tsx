@@ -4,7 +4,6 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import ThemedText from '@/components/ThemedText';
 import ThemedView from '@/components/ThemedView';
-import WelcomeScreen from './WelcomeScreen';
 
 //javascript constant storing userData JSON object
 //userData can be updated with ApiService getUserData function
@@ -104,25 +103,37 @@ const styleSheet = StyleSheet.create({
 });
 
 const TransactionsList = () => {
+
+    //create data object for each section
+    var incomeData = new Array<string>();
+
+    userData["incomes"].forEach(income => {
+        var incomeString = income[0] + ": $" + income[1];
+        incomeData.push(incomeString);
+    })
+
+    var expenseData = new Array<string>();
+    userData["expenses"].forEach(expense => {
+        var expenseString = expense[0] + ": $" + expense[1];
+        expenseData.push(expenseString);
+    })
+
     return (
         <View style={styleSheet.container}>
             <SectionList
                 sections={[
                     {
                         title: 'Incomes',
-                        data: [
-                            'Salary: $112.24',
-                            'Salary: $168.76',
-                            'Venmo: $15.00',
-                        ]
+                        data: 
+                            incomeData
+                            //'Salary: $112.24',
+                            //'Salary: $168.76',
+                            //'Venmo: $15.00',
+
                     },
                     {
                         title: 'Expenses',
-                        data: [
-                            'Walmart: -$12.63',
-                            'Seven Eleven: -$5.12',
-                            'Amazon: -$12.43'
-                        ],
+                        data: expenseData,
                     },
                 ]}
                 renderItem={({ item }) => <ThemedText darkColor="white" style={styleSheet.item}>{item}</ThemedText>}
