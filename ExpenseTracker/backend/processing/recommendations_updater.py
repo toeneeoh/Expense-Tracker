@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify
 
-bp = Blueprint('text', __name__, url_prefix='/text')
+bp = Blueprint('recommendations', __name__, url_prefix='/text')
 
-@bp.route('/process', methods=['POST', 'OPTIONS'])
+@bp.route('/update', methods=['POST', 'OPTIONS'])
 def update_recommendations():
     if request.method == 'OPTIONS':
             return '', 200  # Respond to preflight request
