@@ -15,7 +15,7 @@ export default function TabLayout() {
         headerShown: false,
       }}>
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: 'Finances',
           tabBarIcon: ({ color, focused }) => (
@@ -52,13 +52,38 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="apiTest"
-        options={{
+              options={{
+                  //href: null, //uncomment/comment this line to make this tab appear/disappear
           title: 'API Test',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'flask' : 'flask-outline'} color={color} />
           ),
         }}
-      />
+       />
+       <Tabs.Screen
+            name="index"
+            options={{
+            href: null,
+        }}
+          />
+          <Tabs.Screen
+              name="GoalsScreen"
+              options={{
+                  href: null,
+              }}
+          />
+          <Tabs.Screen
+              name="ExpensesScreen"
+              options={{
+                  href: null,
+              }}
+          />
+          <Tabs.Screen
+              name="ProfileScreen"
+              options={{
+                  href: null,
+              }}
+          />
     </Tabs>
   );
 }
