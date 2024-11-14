@@ -25,5 +25,10 @@ class RoutesTestCase(unittest.TestCase):
         # Add assertions based on the expected response
         # self.assertIn(b'Expected Response', response.data)
 
+# Define the home route
+@app.route('/')
+def home():
+    return "Hello, World!"
+
 if __name__ == '__main__':
     unittest.main()

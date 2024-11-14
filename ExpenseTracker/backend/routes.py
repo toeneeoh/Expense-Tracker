@@ -2,7 +2,7 @@ import unittest
 import sys
 import os.path
 import unittest
-from flask import Flask
+from flask import Flask, Blueprint
 from processing import text_processor  # Assuming 'processing.py' has your text_processor blueprint
 
 class FlaskBlueprintTestCase(unittest.TestCase):
@@ -36,3 +36,18 @@ class FlaskBlueprintTestCase(unittest.TestCase):
 # Run the tests
 if __name__ == '__main__':
     unittest.main()
+
+
+
+# Define the main blueprint
+main_bp = Blueprint('main', __name__)
+
+# Define a home route within the blueprint
+@main_bp.route('/')
+def home():
+    return "Hello, World!"
+
+# Define the process-text route within the blueprint
+@main_bp.route('/process-text')
+def process_text():
+    return "Expected content"
