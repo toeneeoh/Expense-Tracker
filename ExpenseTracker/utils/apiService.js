@@ -84,7 +84,7 @@ class ApiService {
     //a message should just be a JSON file containing a single string
     async generateMessage() {
         try {
-            const response = await fetch(`${this.baseUrl}/text/process`, { //change to proper python script file?
+            const response = await fetch(`${this.baseUrl}/text/prompt`, { //change to proper python script file?
             });
             //response should just be the string returned from ChatGPT
 
