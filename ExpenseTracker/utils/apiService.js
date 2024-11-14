@@ -36,26 +36,6 @@ class ApiService {
         }
     }
 
-    //push new data from settings screen to backend API, doesn't return anything
-    //takes a JSON "dataUpdates" with any keys that should be updated, ignores any keys not included
-    async pushUserData(dataUpdates) {
-        try {
-            const response = await fetch(`${this.baseUrl}/text/process`, { //change to proper python script file, wherever new data has to be pushed to
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: dataUpdates //body/dataUpdates is just a JSON object
-            });
-
-            //if anything needs to be logged or parsed, do it here
-        }
-        catch (error) {
-            console.error('API Error:', error);
-            throw error;
-        }
-    }
-
     //generate a new message from ChatGPT to send to the user on the messages screen
     //a message should just be a JSON file containing a single string
     async generateMessage(text) {
@@ -101,8 +81,30 @@ class ApiService {
             return "-1";
         }
     }
-    // Get a specific item from the database
 
+    // Push item with value to the database
+    async pushToDatabase(item, value, username) {
+        try {
+            const response = await fetch(`${this.baseUrl}/database/push`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ item, value, username })
+            });
+
+            const rawResponse = await response.text();
+            const jsonResponse = JSON.parse(rawResponse);
+
+            return jsonResponse;
+        }
+        catch (error) {
+            console.error('API Error:', error);
+            throw error;
+        }
+    }
+
+    // Get a specific item from the database
     async getFromDatabase(item, username) {
         try {
             const response = await fetch(`${this.baseUrl}/database/get`, {
@@ -111,6 +113,28 @@ class ApiService {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ item, username })
+            });
+
+            const rawResponse = await response.text();
+            const jsonResponse = JSON.parse(rawResponse);
+
+            return jsonResponse;
+        }
+        catch (error) {
+            console.error('API Error:', error);
+            throw error;
+        }
+    }
+
+    // Test a username and password in the DB
+    async checkUserCredentials(username, password) {
+        try {
+            const response = await fetch(`${this.baseUrl}/database/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password })
             });
 
             const rawResponse = await response.text();
