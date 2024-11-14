@@ -55,7 +55,7 @@ export default function NotificationsScreen() {
 
     const handleProcessText = async () => {
         try {
-            const result = await ApiService.processText(inputText);
+            const result = await ApiService.generateMessage(inputText);
             setResponseText(result.processed_text);
         } catch (error) {
             console.error('Error processing text:', error);

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 
-bp = Blueprint('recommendations', __name__, url_prefix='/text')
+bp = Blueprint('recommendations', __name__, url_prefix='/recommendations')
 
 @bp.route('/update', methods=['POST', 'OPTIONS'])
 def update_recommendations():
