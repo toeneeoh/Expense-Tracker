@@ -11,6 +11,7 @@ def get_from_database():
     data = request.get_json()
     item = data.get('item')
     username = data.get('username')
+    table = data.get('table')
 
     if not item:
         return jsonify({"error": "No item found"}), 400
@@ -19,12 +20,12 @@ def get_from_database():
         if item == "all":
             item_value = get_user_data(username) # Returns a dict
         else:
-            item_value = get_item(item, username) # Returns a string (?)
+            item_value = get_item(item, username, table) # Returns a string (?)
 
         if item_value is not None:
             return jsonify({item: item_value})
         else:
-            return jsonify({"error": f"No data found for item '{item}' and username '{username}'"}), 404
+            return jsonify({"error": f"No data found for item '{item}' and username '{username}' from table '{table}'"}), 404
     except Exception as error:
         return jsonify({"error": str(error)}), 500
 
@@ -37,9 +38,10 @@ def push_to_database():
     item = data.get('item')
     value = data.get('value')
     username = data.get('username')
+    table = data.get('table')
 
     try:
-        item_value = push_item(item, value, username)
+        item_value = push_item(item, value, username, table)
         return jsonify({"message": item_value}), 200
     except Exception as error:
         return jsonify({"error": str(error)}), 500

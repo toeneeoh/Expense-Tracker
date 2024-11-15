@@ -83,14 +83,14 @@ class ApiService {
     }
 
     // Push item with value to the database
-    async pushToDatabase(item, value, username) {
+    async pushToDatabase(item, value, username, table) {
         try {
             const response = await fetch(`${this.baseUrl}/database/push`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ item, value, username })
+                body: JSON.stringify({ item, value, username, table })
             });
 
             const rawResponse = await response.text();
@@ -105,14 +105,14 @@ class ApiService {
     }
 
     // Get a specific item from the database
-    async getFromDatabase(item, username) {
+    async getFromDatabase(item, username, table) {
         try {
             const response = await fetch(`${this.baseUrl}/database/get`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ item, username })
+                body: JSON.stringify({ item, username, table })
             });
 
             const rawResponse = await response.text();

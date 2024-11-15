@@ -56,8 +56,9 @@ def get_user_data(username) -> dict:
 
     try:
         with conn.cursor() as cur:
-            # Prepare and execute a query to select all columns for a specific user
             query = sql.SQL("SELECT * FROM users WHERE username = %s;")
+
+            # Execute query
             cur.execute(query, (username,))
 
             user_data = cur.fetchone()
@@ -75,28 +76,34 @@ def get_user_data(username) -> dict:
     finally:
         conn.close()
 
-def get_item(item, username="test"):
-    """Fetches a specified column (item) from the users table for the given user."""
+def get_item(item, username="test", table="users"):
+    """Fetches a specified column (item) from the specified table for the given user."""
     with connect_db() as conn:
         with conn.cursor() as cur:
-            query = sql.SQL("SELECT {field} FROM users WHERE username = %s").format(
-                field=sql.Identifier(item)
+            query = sql.SQL("SELECT {field} FROM {table} WHERE username = %s").format(
+                field=sql.Identifier(item),
+                table=sql.Identifier(table)
             )
+
+            # Execute query
             cur.execute(query, (username,))
             result = cur.fetchone()
             return result[0] if result else None
 
-def push_item(item, value, username="test"):
-    """Inserts or updates a specified column (item) in the users table for the given user."""
+def push_item(item, value, username="test", table="users"):
+    """Inserts or updates a specified column (item) in the specified table for the given user."""
     with connect_db() as conn:
         with conn.cursor() as cur:
             query = sql.SQL("""
-                INSERT INTO users (username, {field}) 
+                INSERT INTO {table} (username, {field}) 
                 VALUES (%s, %s)
                 ON CONFLICT (username) 
                 DO UPDATE SET {field} = EXCLUDED.{field}
-            """).format(field=sql.Identifier(item))
+            """).format(
+                field=sql.Identifier(item),
+                table=sql.Identifier(table)
+            )
             
-            # Execute the query with the username and value for the specified field
+            # Execute query
             cur.execute(query, (username, value))
-            return f"Inserted/Updated {item} for user {username}"
+            return f"Inserted/Updated {item} in table {table} for user {username}"
