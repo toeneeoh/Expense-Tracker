@@ -3,11 +3,11 @@ from flask_cors import CORS
 import routes
 from database.postgres import init_db
 
+# Initialize the Flask application
 app = Flask(__name__)
 CORS(app)
-
-# Register routes
 app.register_blueprint(routes.main_bp)
+app.config['TESTING'] = True  # Enable testing mode
 
 if __name__ == '__main__':
     # initialize PostgreSQL database

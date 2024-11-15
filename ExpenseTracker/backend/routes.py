@@ -1,6 +1,7 @@
-from flask import Blueprint
 from processing import message_generator, database_api, recommendations_updater
+from flask import Blueprint
 
+# Define the main blueprint
 main_bp = Blueprint('main', __name__)
 
 # Register all route handlers
