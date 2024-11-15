@@ -201,6 +201,9 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, Keyboard } from 'react-native';
 import ApiService from '../../utils/apiService';
 
+const top3Recommendations = JSON.parse('{"rec1title":"lessTakeout","rec2title":"endSubscriptions","rec3title":"payOffHighInterest"}')
+
+
 export default function NotificationsScreen() {
   const [messages, setMessages] = useState<{ sender: 'user' | 'bot'; text: string }[]>([]);
   const [inputText, setInputText] = useState('');
@@ -236,7 +239,81 @@ export default function NotificationsScreen() {
     <View style={[styles.messageContainer, item.sender === 'user' ? styles.userMessage : styles.botMessage]}>
       <Text style={styles.messageText}>{item.text}</Text>
     </View>
-  );
+    );
+
+    function generateQuery(): string {
+        var query = "Can I get a quick random finance tip about ";
+        var focusedRecommendation
+        var randomNum = Math.floor(Math.random() * 6)
+
+        if (randomNum == 0) {
+            focusedRecommendation = top3Recommendations["rec3title"]
+        } else if (randomNum == 1) {
+            focusedRecommendation = top3Recommendations["rec2title"]
+        } else if (randomNum == 2) {
+            focusedRecommendation = top3Recommendations["rec1title"]
+        } else if (randomNum == 3) {
+            focusedRecommendation = "generic"
+        } else if (randomNum == 4) {
+            focusedRecommendation = "genericGoal"
+        } else {
+            focusedRecommendation = "encouragement"
+        }
+
+        switch (focusedRecommendation) {
+            case "lessTakeout":
+                query = query + "decreasing takeout expenses"
+                break;
+            case "endSubscriptions":
+                query = query + "decreasing how much I spend on subscriptions"
+                break;
+            case "payOffHighInterest":
+                var newRandomNum = Math.floor(Math.random() * 2)
+                if (newRandomNum == 0) {
+                    query = query + "using the debt avalanche method"
+                } else {
+                    query = "briefly tell me about the debt avalanche method"
+                }
+                break;
+            case "generic":
+                query = "give me a quick random personal finance tip"
+                break;
+            case "genericGoal":
+                query = "give me a quick random personal finance tip about getting out of debt"
+                break;
+            case "encouragement":
+                query = "give me some brief encouragement about getting out of debt"
+                break;
+        }
+        return query
+    }
+
+    const fetchAdvice = async () => {
+        // Clear the input field and dismiss the keyboard
+        const userMessage = generateQuery(); // Generate helpful ChatGPT query
+
+        //DEBUG: Add fake message to the chat
+        //setMessages((prevMessages) => [...prevMessages, { sender: 'user', text: userMessage }]);
+
+
+        setInputText('');
+        Keyboard.dismiss();
+
+        try {
+            // Fetch response from ChatGPT
+            const result = await ApiService.generateMessage(userMessage);
+            const botResponse = result.processed_text || "I'm here to help!"; // Use default text if response is empty
+
+            // Update the messages with the bot's response after receiving it
+            setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: botResponse }]);
+        } catch (error) {
+            console.error('Error processing text:', error);
+            setMessages((prevMessages) => [
+                ...prevMessages,
+                { sender: 'bot', text: "Sorry, I couldn't fetch a response. Please try again." },
+            ]);
+        }
+    };
 
   return (
     <View style={styles.container}>
@@ -262,8 +339,13 @@ export default function NotificationsScreen() {
         />
         <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
           <Text style={styles.sendButtonText}>Send</Text>
-        </TouchableOpacity>
-      </View>
+              </TouchableOpacity>
+              {//auto generate chatGPT advice to represent a day passing 
+              }
+              <TouchableOpacity style={styles.sendButton} onPress={fetchAdvice}>
+                  <Text style={styles.sendButtonText}>Demo</Text>
+              </TouchableOpacity>
+          </View>
     </View>
   );
 }

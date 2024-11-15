@@ -17,6 +17,39 @@ const userData = {
 
 const locationData = `${userData.address} - ${userData.cityName}, ${userData.stateName}`;
 
+const generatePdf = async () => {
+    try {
+        const htmlContent = `
+            <html>
+                <body>
+                    <h1 style="text-align: center;">Financial Report</h1>
+                    <h2>User Information</h2>
+                    <p>Name: ${userData.userName}</p>
+                    <p>Location: ${locationData}</p>
+                    <h2>Financial Details</h2>
+                    <p>Rent: ${userData.rent}</p>
+                    <p>Expenses: ${userData.expenses}</p>
+                    <p>Debt: ${userData.debt}</p>
+                    <p>Loans: ${userData.loans}</p>
+                </body>
+            </html>
+        `;
+
+        const pdfOptions = {
+            html: htmlContent,
+            fileName: 'Financial_Report',
+            directory: 'Documents',
+        };
+
+        const file = await RNHTMLtoPDF.convert(pdfOptions);
+
+        Alert.alert('PDF Generated', `Your PDF has been saved to: ${file.filePath}`);
+    } catch (error) {
+        console.error('PDF generation error:', error);
+        Alert.alert('Error', 'Failed to generate PDF. Please try again.');
+    }
+};
+
 export default function SettingsScreen() {
     const navigation = useNavigation() as any;
 
@@ -26,126 +59,139 @@ export default function SettingsScreen() {
         pushNotifications: false,
     });
 
-    const generatePdf = async () => {
-        try {
-            const htmlContent = `
-                <html>
-                    <body>
-                        <h1 style="text-align: center;">Financial Report</h1>
-                        <h2>User Information</h2>
-                        <p>Name: ${userData.userName}</p>
-                        <p>Location: ${locationData}</p>
-                        <h2>Financial Details</h2>
-                        <p>Rent: ${userData.rent}</p>
-                        <p>Expenses: ${userData.expenses}</p>
-                        <p>Debt: ${userData.debt}</p>
-                        <p>Loans: ${userData.loans}</p>
-                    </body>
-                </html>
-            `;
-
-            const pdfOptions = {
-                html: htmlContent,
-                fileName: 'Financial_Report',
-                directory: 'Documents',
-            };
-
-            const file = await RNHTMLtoPDF.convert(pdfOptions);
-
-            Alert.alert('PDF Generated', `Your PDF has been saved to: ${file.filePath}`);
-        } catch (error) {
-            console.error('PDF generation error:', error);
-            Alert.alert('Error', 'Failed to generate PDF. Please try again.');
-        }
-    };
-
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }}>
-            <View style={styles.profile}>
-                <View>
-                    <Text style={styles.profileName}>{userData.userName}</Text>
-                    <Text style={styles.profileAddress}>{locationData}</Text>
-                </View>
-            </View>
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }}>
+          <View style={styles.profile}>
+              <TouchableOpacity
+                  onPress={() => {
+                      // handle onPress
+                  }}>
+              </TouchableOpacity>
 
-            <ScrollView>
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Preferences</Text>
+              <View>
+                  <Text style={styles.profileName}>{userData["userName"]}</Text>
+
+                  <Text style={styles.profileAddress}>
+                      {locationData}
+                  </Text>
+              </View>
+          </View>
+
+          <ScrollView>
+              <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>Preferences</Text>
+                  <TouchableOpacity
+                      onPress={() => {
+                            navigation.navigate('ExpensesScreen');
+                      }}
+                      style={styles.row}>
+                      <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
+                          <FeatherIcon color="#fff" name="globe" size={20} />
+                      </View>
+
+                        <Text style={styles.rowLabel}>Update Financial Data</Text> {/* Go through onboarding process again */ }
+
+                      <View style={styles.rowSpacer} />
+
+                      <FeatherIcon
+                          color="#C6C6C6"
+                          name="chevron-right"
+                          size={20} />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                      onPress={() => {
+                            navigation.navigate('ProfileScreen');
+                      }}
+                      style={styles.row}>
+                        <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
+                          <FeatherIcon
+                              color="#fff"
+                              name="navigation"
+                              size={20} />
+                      </View>
+
+                      <Text style={styles.rowLabel}>Update Location</Text>
+
+                      <View style={styles.rowSpacer} />
+
+                      <FeatherIcon
+                          color="#C6C6C6"
+                          name="chevron-right"
+                          size={20} />
+                    </TouchableOpacity>
 
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('GoalsScreen')}
+                        onPress={() => {
+                            navigation.navigate('GoalsScreen');
+                        }}
                         style={styles.row}>
-                        <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
-                            <FeatherIcon color="#fff" name="globe" size={20} />
-                        </View>
-                        <Text style={styles.rowLabel}>Update User Data</Text>
-                        <View style={styles.rowSpacer} />
-                        <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
-                    </TouchableOpacity>
-
-                    <View style={styles.row}>
-                        <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
-                            <FeatherIcon color="#fff" name="moon" size={20} />
-                        </View>
-                        <Text style={styles.rowLabel}>Dark Mode</Text>
-                        <View style={styles.rowSpacer} />
-                        <Switch
-                            onValueChange={darkMode => setForm({ ...form, darkMode })}
-                            value={form.darkMode}
-                        />
-                    </View>
-
-                    <TouchableOpacity style={styles.row}>
                         <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
-                            <FeatherIcon color="#fff" name="navigation" size={20} />
+                            <FeatherIcon
+                                color="#fff"
+                                name="dollar-sign"
+                                size={20} />
                         </View>
-                        <Text style={styles.rowLabel}>Location</Text>
+
+                        <Text style={styles.rowLabel}>Change Financial Goal</Text>
+
                         <View style={styles.rowSpacer} />
-                        <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
+
+                        <FeatherIcon
+                            color="#C6C6C6"
+                            name="chevron-right"
+                            size={20} />
                     </TouchableOpacity>
 
-                    <View style={styles.row}>
-                        <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
-                            <FeatherIcon color="#fff" name="bell" size={20} />
-                        </View>
-                        <Text style={styles.rowLabel}>Push Notifications</Text>
-                        <View style={styles.rowSpacer} />
-                        <Switch
-                            onValueChange={pushNotifications =>
-                                setForm({ ...form, pushNotifications })
-                            }
-                            value={form.pushNotifications}
-                        />
-                    </View>
+                  <View style={styles.row}>
+                      <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
+                          <FeatherIcon color="#fff" name="bell" size={20} />
+                      </View>
 
-                    {/* New Option for "Create a PDF for Your Finances" */}
-                    <TouchableOpacity onPress={generatePdf} style={styles.row}>
-                        <View style={[styles.rowIcon, { backgroundColor: '#9b59b6' }]}>
-                            <FeatherIcon color="#fff" name="file-text" size={20} />
-                        </View>
-                        <Text style={styles.rowLabel}>Create a PDF for your finances</Text>
-                        <View style={styles.rowSpacer} />
-                        <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
-                    </TouchableOpacity>
-                </View>
+                      <Text style={styles.rowLabel}>Push Notifications</Text>
 
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Resources</Text>
+                      <View style={styles.rowSpacer} />
 
-                    <TouchableOpacity style={styles.row}>
-                        <View style={[styles.rowIcon, { backgroundColor: '#8e8d91' }]}>
-                            <FeatherIcon color="#fff" name="flag" size={20} />
-                        </View>
-                        <Text style={styles.rowLabel}>Report Bug</Text>
-                        <View style={styles.rowSpacer} />
-                        <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
-                    </TouchableOpacity>
+                      <Switch
+                          onValueChange={pushNotifications =>
+                              setForm({ ...form, pushNotifications })
+                          }
+                          value={form.pushNotifications} />
+                  </View>
+              </View>
 
-                    <TouchableOpacity style={styles.row}>
-                        <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
-                            <FeatherIcon color="#fff" name="mail" size={20} />
-                        </View>
-                        <Text style={styles.rowLabel}>Contact Us</Text>
+              <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>Resources</Text>
+
+                  <TouchableOpacity
+                      onPress={() => {
+                          // handle onPress
+                      }}
+                      style={styles.row}>
+                      <View style={[styles.rowIcon, { backgroundColor: '#8e8d91' }]}>
+                          <FeatherIcon color="#fff" name="flag" size={20} />
+                      </View>
+
+                      <Text style={styles.rowLabel}>Report Bug</Text>
+
+                      <View style={styles.rowSpacer} />
+
+                      <FeatherIcon
+                          color="#C6C6C6"
+                          name="chevron-right"
+                          size={20} />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                      onPress={() => {
+                          // handle onPress
+                      }}
+                      style={styles.row}>
+                      <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
+                          <FeatherIcon color="#fff" name="mail" size={20} />
+                      </View>
+
+                      <Text style={styles.rowLabel}>Contact Us</Text>
                         <View style={styles.rowSpacer} />
                         <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
                     </TouchableOpacity>
@@ -220,5 +266,3 @@ const styles = StyleSheet.create({
         flexGrow: 1,
     },
 });
-
-

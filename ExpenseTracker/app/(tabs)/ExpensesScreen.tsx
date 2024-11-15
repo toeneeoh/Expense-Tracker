@@ -2,6 +2,9 @@ import { useNavigation } from 'expo-router';
 import { ThemedView, ThemedText } from '@/components/ThemedComponents';
 import InputField from '@/components/InputField';
 import { StyleSheet } from 'react-native';
+import DropdownField from '@/components/DropdownField';
+
+const jobTitles = ['Software Engineer', 'Finance Analyst', 'Lawyer', 'Blue-Collar Worker', 'Customer Service Worker', 'Unemployed'];// list other ones as well Nate
 
 export default function ExpensesScreen() {
   const navigation = useNavigation() as any;
@@ -12,13 +15,23 @@ export default function ExpensesScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText type="title">Give us some information to work with</ThemedText>
+      <ThemedText type="title">Give us some information to work with! We'll check back again in one month :)</ThemedText>
 
-      <InputField label="Monthly Salary" />
-      <InputField label="Monthly Rent" />
-      <InputField label="Car Expenses" />
-      <InputField label="Utility Payments" />
-      <InputField label="Other Expenses" />
+      <DropdownField label="Which of these options best describes your current job?" options={jobTitles} />
+
+      <InputField label="Hourly Salary" />
+      <InputField label="How many hours per week do you usually work?" />
+      <InputField label="Last Month's Total Salary" />
+      <InputField label="Last Month's Total Non-Salary Income" />
+      <InputField label="Last Month's total rent expenses" />
+      {/*<InputField label="Last Month's total car expenses" />*/}
+      <InputField label="Last Month's total grocery expenses" />
+      <InputField label="Last Month's total takeout expenses" />
+      <InputField label="Last Month's total dining out expenses" />
+      <InputField label="Last Month's total subscription expenses" />
+      <InputField label="Any other essential (i.e. needed for survival) expenses from last month not already reported" />
+      <InputField label="Any other non-essential expenses from last month not already reported" />
+
 
       <ThemedText onPress={handleSubmit} style={styles.linkText}>
         Next
