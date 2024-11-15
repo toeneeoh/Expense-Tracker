@@ -60,14 +60,14 @@ export default function TabTwoScreen() {
                   <Text style={styles.sectionTitle}>Preferences</Text>
                   <TouchableOpacity
                       onPress={() => {
-                            navigation.navigate('GoalsScreen');
+                            navigation.navigate('ExpensesScreen');
                       }}
                       style={styles.row}>
                       <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
                           <FeatherIcon color="#fff" name="globe" size={20} />
                       </View>
 
-                        <Text style={styles.rowLabel}>Update User Data</Text> {/* Go through onboarding process again */ }
+                        <Text style={styles.rowLabel}>Update Financial Data</Text> {/* Go through onboarding process again */ }
 
                       <View style={styles.rowSpacer} />
 
@@ -77,33 +77,19 @@ export default function TabTwoScreen() {
                           size={20} />
                   </TouchableOpacity>
 
-                  <View style={styles.row}>
-                      <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
-                          <FeatherIcon color="#fff" name="moon" size={20} />
-                      </View>
-
-                      <Text style={styles.rowLabel}>Dark Mode</Text>
-
-                      <View style={styles.rowSpacer} />
-
-                      <Switch
-                          onValueChange={darkMode => setForm({ ...form, darkMode })}
-                          value={form.darkMode} />
-                  </View>
-
                   <TouchableOpacity
                       onPress={() => {
-                          // handle onPress
+                            navigation.navigate('ProfileScreen');
                       }}
                       style={styles.row}>
-                      <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
+                        <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
                           <FeatherIcon
                               color="#fff"
                               name="navigation"
                               size={20} />
                       </View>
 
-                      <Text style={styles.rowLabel}>Location</Text>
+                      <Text style={styles.rowLabel}>Update Location</Text>
 
                       <View style={styles.rowSpacer} />
 
@@ -111,7 +97,29 @@ export default function TabTwoScreen() {
                           color="#C6C6C6"
                           name="chevron-right"
                           size={20} />
-                  </TouchableOpacity>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.navigate('GoalsScreen');
+                        }}
+                        style={styles.row}>
+                        <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
+                            <FeatherIcon
+                                color="#fff"
+                                name="dollar-sign"
+                                size={20} />
+                        </View>
+
+                        <Text style={styles.rowLabel}>Change Financial Goal</Text>
+
+                        <View style={styles.rowSpacer} />
+
+                        <FeatherIcon
+                            color="#C6C6C6"
+                            name="chevron-right"
+                            size={20} />
+                    </TouchableOpacity>
 
                   <View style={styles.row}>
                       <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
