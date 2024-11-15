@@ -1,16 +1,36 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
 import ApiService from '../../utils/apiService';
+import { useUserName } from '../../utils/getUserData';
 import { useUser } from '../../context/UserContext';
 
 export default function ApiTestScreen() {
-  const { userData, updateUserData } = useUser(); // Access userData and updateUserData directly from UserContext
+  const [username, setUsername] = useState('');  // Username input
+  const [password, setPassword] = useState('');  // Password input
+  const { updateUserData } = useUser(); // Access updateUserData from UserContext
+  const [loginMessage, setLoginMessage] = useState('');  // Login feedback message
   const [inputText, setInputText] = useState('');
   const [responseText, setResponseText] = useState('');
   const [item, setItem] = useState('');  // For fetching an item
   const [itemResponse, setItemResponse] = useState('');  // Response for fetched item
   const [updateItem, setUpdateItem] = useState('');  // For item to update
   const [updateValue, setUpdateValue] = useState('');  // New value for updating item
+
+  const userName = useUserName();
+
+  // Login function to check if the user exists in the database
+  const login = async () => {
+    try {
+      const result = await ApiService.checkUserCredentials(username, password);
+      if (result.authenticated) {
+        // Update user data in UserContext
+        updateUserData({ username: username });
+      }
+      setLoginMessage(result.message);
+    } catch (error) {
+      setLoginMessage("Error logging in: " + error);
+    }
+  };
 
   // Generate message test
   const promptTest = async () => {
@@ -24,9 +44,9 @@ export default function ApiTestScreen() {
 
   // Fetch from database test
   const fetchData = async () => {
-    if (userData && item) {
+    if (item) {
       try {
-        const result = await ApiService.getFromDatabase(item);
+        const result = await ApiService.getFromDatabase(item, userName, "users");
         setItemResponse(JSON.stringify(result));
       } catch (error) {
         console.error('Error fetching item:', error)
@@ -36,19 +56,36 @@ export default function ApiTestScreen() {
     }
   };
 
-  // Function to update a specific item in userData
-  const handleUpdateUserData = () => {
-    if (updateItem && updateValue) {
-      updateUserData({ ...userData, [updateItem]: updateValue });
-      alert(`Updated ${updateItem} to "${updateValue}"`);
-    } else {
-      alert('Please specify both the item and value to update.');
-    }
+  // Push to database test
+  const pushData = async () => {
+      try {
+        const result = await ApiService.pushToDatabase(updateItem, updateValue, userName, "users");
+        alert(JSON.stringify(result))
+      } catch (error) {
+        console.error('Error fetching item:', error)
+      }
   };
 
-  return (
+return (
     <View style={styles.container}>
-      <Text style={styles.title}>API Test</Text>
+      <Text style={styles.title}>Login Test</Text>
+
+      {/* Username and Password Inputs */}
+      <TextInput
+        style={styles.input}
+        placeholder="Enter username"
+        value={username}
+        onChangeText={setUsername}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Enter password"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
+      <Button title="Login" onPress={login} />
+      {loginMessage ? <Text style={styles.result}>{loginMessage}</Text> : null}
 
       <TextInput
         style={styles.input}
@@ -59,7 +96,7 @@ export default function ApiTestScreen() {
       <Button title="Send to API" onPress={promptTest} />
       {responseText ? <Text style={styles.result}>Response: {responseText}</Text> : null}
 
-      <Text style={styles.title}>Fetch Item from User Data</Text>
+      <Text style={styles.title}>Fetch Data</Text>
 
       <TextInput
         style={styles.input}
@@ -70,7 +107,7 @@ export default function ApiTestScreen() {
       <Button title="Fetch Data" onPress={fetchData} />
       {itemResponse ? <Text style={styles.result}>Fetched Item: {itemResponse}</Text> : null}
 
-      <Text style={styles.title}>Update User Data</Text>
+      <Text style={styles.title}>Push Data</Text>
 
       <TextInput
         style={styles.input}
@@ -84,7 +121,7 @@ export default function ApiTestScreen() {
         value={updateValue}
         onChangeText={setUpdateValue}
       />
-      <Button title="Update Data" onPress={handleUpdateUserData} />
+      <Button title="Push Data" onPress={pushData} />
     </View>
   );
 }

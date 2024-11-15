@@ -24,6 +24,8 @@ npm install
 ### 4. Start the Expo Go Development Server
 ```bash
 npm run start:expo
+or
+npx expo start -c
 ```
 
 ### 5 (Optional). Start the Backend Python Server
