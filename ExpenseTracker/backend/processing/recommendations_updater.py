@@ -17,7 +17,7 @@ def update_recommendations():
         "cityName" : "a",
         "stateName" : "a", #just two letter, i.e. VA for Virginia
         "userGoal" : "debt", #either "debt", "savings", or "retirement"
-        "skills" : ["a", "b", "c"],
+        #"skills" : ["a", "b", "c"],
         "incomes" : [["a", 10000], ["b", 15000], ["c", 30000]], #all reported incomes
         "expenses" : [["a", 44444], ["b", 77777], ["c", 99999]], #all reported expenses
         "monthlyTotalIncomes" : [["a", 10000], ["b", 15000], ["c", 30000]], #all reported aggregate incomes by month
@@ -164,6 +164,11 @@ def update_recommendations():
     uRecommendationsList["cheaperGroceries"] = ((userData["expenseGroceries"]-(250*userData["dependentsNum"]))*userData["dependentsNum"])
     uRecommendationsList["lessEntertainment"] = ((userData["expenseEntertainment"]+userData["expenseDining"]+userData["expenseSubscriptions"])-(incomeTotal*0.3))
     uRecommendationsList["workMoreGigs"] = ((35 - userData["weeklyHours"])*12)
+
+
+    
+
+    totalDebtPayments = 0
 
     for debt in userData["debts"]:
         if (debt[1] < incomeTotal*0.1):
