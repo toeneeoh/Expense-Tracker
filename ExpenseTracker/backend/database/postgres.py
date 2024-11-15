@@ -48,6 +48,33 @@ def init_db():
             cur.execute(init_script)
             print("Database initialized successfully.")
 
+def get_user_data(username) -> dict:
+    conn = connect_db()
+    if conn is None:
+        print("Failed to connect to the database.")
+        return None
+
+    try:
+        with conn.cursor() as cur:
+            # Prepare and execute a query to select all columns for a specific user
+            query = sql.SQL("SELECT * FROM users WHERE username = %s;")
+            cur.execute(query, (username,))
+
+            user_data = cur.fetchone()
+            colnames = [desc[0] for desc in cur.description]
+
+            if user_data:
+                # Return a dictionary with column names as keys and user data as values
+                return dict(zip(colnames, user_data))
+            else:
+                print("No user found with the specified username.")
+                return None
+    except Exception as e:
+        print(f"Error retrieving user data: {e}")
+        return None
+    finally:
+        conn.close()
+
 def get_item(item, username="test"):
     """Fetches a specified column (item) from the users table for the given user."""
     with connect_db() as conn:
