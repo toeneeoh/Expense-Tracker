@@ -63,25 +63,6 @@ class ApiService {
         }
     }
 
-    //attempts to check username to see if it matches any data in database
-    //testUser always works for testing purposes, even if database can't be accessed
-    //TODO: check password as well
-    //TODO: can also use email in place of username?
-    //returns username if successful, "-1" if not
-    //test user - userName : Johndoe, password : 1234
-    async loginAttempt(username, password) {
-        if (username == "Johndoe") {
-            //test user
-            return "Johndoe";
-        }
-        else if (false) {
-            //real user
-            //query database, returning username if user can be found
-        } else {
-            return "-1";
-        }
-    }
-
     // Push item with value to the database
     async pushToDatabase(item, value, username, table) {
         try {

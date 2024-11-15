@@ -40,3 +40,25 @@ CREATE TABLE IF NOT EXISTS debts (
 INSERT INTO users (username, user_email, job_title, password)
 VALUES ('test', 'johndoe@gmail.com', 'developer', '1234')
 ON CONFLICT (username) DO NOTHING;
+
+-- Insert test expenses
+INSERT INTO expenses (username, expense_name, expense_frequency, expense_amount)
+VALUES 
+    ('test', 'Dining', 'Monthly', 100.00),
+    ('test', 'Rent', 'Monthly', 100.00),
+    ('test', 'Utilities', 'Monthly', 100.00),
+    ('test', 'Subscriptions', 'Monthly', 100.00),
+    ('test', 'Entertainment', 'Monthly', 100.00);
+
+-- Insert test incomes
+INSERT INTO incomes (username, income_name, income_frequency, income_amount)
+VALUES 
+    ('test', 'Job', 'Monthly', 100.00),
+    ('test', 'Other', 'Monthly', 100.00);
+
+-- Insert test debts
+INSERT INTO debts (username, debt_name, debt_frequency, debt_amount)
+VALUES 
+    ('test', 'Credit Card A', 'Monthly', 150.23),
+    ('test', 'Credit Card B', 'Monthly', 45.82),
+    ('test', 'Student Loans', 'Monthly', 15412.36);
