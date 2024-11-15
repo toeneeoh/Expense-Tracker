@@ -1,35 +1,24 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
-import FeatherIcon from '@expo/vector-icons/Feather'; {/* Might not be correct file path, check again if error thrown */ }
-
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import  ThemedText  from '@/components/ThemedText';
-import ThemedView from '@/components/ThemedView';
+import React, { useState } from 'react';
+import { StyleSheet, SafeAreaView, ScrollView, View, Text, TouchableOpacity, Switch, Alert } from 'react-native';
+import FeatherIcon from '@expo/vector-icons/Feather';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import { useNavigation } from 'expo-router';
 
-import React, { useState } from 'react';
-import {
-    StyleSheet,
-    SafeAreaView,
-    ScrollView,
-    View,
-    Text,
-    TouchableOpacity,
-    Switch,
-    Image,
-} from 'react-native';
+const userData = {
+    userName: "John Doe",
+    address: "123 Somewhere Street",
+    cityName: "Fairfax",
+    stateName: "VA",
+    rent: "$1200",
+    expenses: "$300",
+    debt: "$5000",
+    loans: "$15000",
+};
 
-const userData = JSON.parse('{"userName":"John Doe","address":"123 Somewhere Street", "cityName":"Fairfax", "stateName":"VA"}')
+const locationData = `${userData.address} - ${userData.cityName}, ${userData.stateName}`;
 
-const locationData = "" + userData["address"] + " - " + userData["cityName"] + "," + userData["stateName"]
-
-export default function TabTwoScreen() {
+export default function SettingsScreen() {
     const navigation = useNavigation() as any;
-
-    //const updateUserdata = () => {
-    //    navigation.navigate('GoalsScreen');
-    //};
 
     const [form, setForm] = useState({
         darkMode: false,
@@ -37,245 +26,199 @@ export default function TabTwoScreen() {
         pushNotifications: false,
     });
 
+    const generatePdf = async () => {
+        try {
+            const htmlContent = `
+                <html>
+                    <body>
+                        <h1 style="text-align: center;">Financial Report</h1>
+                        <h2>User Information</h2>
+                        <p>Name: ${userData.userName}</p>
+                        <p>Location: ${locationData}</p>
+                        <h2>Financial Details</h2>
+                        <p>Rent: ${userData.rent}</p>
+                        <p>Expenses: ${userData.expenses}</p>
+                        <p>Debt: ${userData.debt}</p>
+                        <p>Loans: ${userData.loans}</p>
+                    </body>
+                </html>
+            `;
+
+            const pdfOptions = {
+                html: htmlContent,
+                fileName: 'Financial_Report',
+                directory: 'Documents',
+            };
+
+            const file = await RNHTMLtoPDF.convert(pdfOptions);
+
+            Alert.alert('PDF Generated', `Your PDF has been saved to: ${file.filePath}`);
+        } catch (error) {
+            console.error('PDF generation error:', error);
+            Alert.alert('Error', 'Failed to generate PDF. Please try again.');
+        }
+    };
+
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }}>
-          <View style={styles.profile}>
-              <TouchableOpacity
-                  onPress={() => {
-                      // handle onPress
-                  }}>
-              </TouchableOpacity>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }}>
+            <View style={styles.profile}>
+                <View>
+                    <Text style={styles.profileName}>{userData.userName}</Text>
+                    <Text style={styles.profileAddress}>{locationData}</Text>
+                </View>
+            </View>
 
-              <View>
-                  <Text style={styles.profileName}>{userData["userName"]}</Text>
+            <ScrollView>
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Preferences</Text>
 
-                  <Text style={styles.profileAddress}>
-                      {locationData}
-                  </Text>
-              </View>
-          </View>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('GoalsScreen')}
+                        style={styles.row}>
+                        <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
+                            <FeatherIcon color="#fff" name="globe" size={20} />
+                        </View>
+                        <Text style={styles.rowLabel}>Update User Data</Text>
+                        <View style={styles.rowSpacer} />
+                        <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
+                    </TouchableOpacity>
 
-          <ScrollView>
-              <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>Preferences</Text>
-                  <TouchableOpacity
-                      onPress={() => {
-                            navigation.navigate('GoalsScreen');
-                      }}
-                      style={styles.row}>
-                      <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
-                          <FeatherIcon color="#fff" name="globe" size={20} />
-                      </View>
+                    <View style={styles.row}>
+                        <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
+                            <FeatherIcon color="#fff" name="moon" size={20} />
+                        </View>
+                        <Text style={styles.rowLabel}>Dark Mode</Text>
+                        <View style={styles.rowSpacer} />
+                        <Switch
+                            onValueChange={darkMode => setForm({ ...form, darkMode })}
+                            value={form.darkMode}
+                        />
+                    </View>
 
-                        <Text style={styles.rowLabel}>Update User Data</Text> {/* Go through onboarding process again */ }
+                    <TouchableOpacity style={styles.row}>
+                        <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
+                            <FeatherIcon color="#fff" name="navigation" size={20} />
+                        </View>
+                        <Text style={styles.rowLabel}>Location</Text>
+                        <View style={styles.rowSpacer} />
+                        <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
+                    </TouchableOpacity>
 
-                      <View style={styles.rowSpacer} />
+                    <View style={styles.row}>
+                        <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
+                            <FeatherIcon color="#fff" name="bell" size={20} />
+                        </View>
+                        <Text style={styles.rowLabel}>Push Notifications</Text>
+                        <View style={styles.rowSpacer} />
+                        <Switch
+                            onValueChange={pushNotifications =>
+                                setForm({ ...form, pushNotifications })
+                            }
+                            value={form.pushNotifications}
+                        />
+                    </View>
 
-                      <FeatherIcon
-                          color="#C6C6C6"
-                          name="chevron-right"
-                          size={20} />
-                  </TouchableOpacity>
+                    {/* New Option for "Create a PDF for Your Finances" */}
+                    <TouchableOpacity onPress={generatePdf} style={styles.row}>
+                        <View style={[styles.rowIcon, { backgroundColor: '#9b59b6' }]}>
+                            <FeatherIcon color="#fff" name="file-text" size={20} />
+                        </View>
+                        <Text style={styles.rowLabel}>Create a PDF for your finances</Text>
+                        <View style={styles.rowSpacer} />
+                        <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
+                    </TouchableOpacity>
+                </View>
 
-                  <View style={styles.row}>
-                      <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
-                          <FeatherIcon color="#fff" name="moon" size={20} />
-                      </View>
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Resources</Text>
 
-                      <Text style={styles.rowLabel}>Dark Mode</Text>
+                    <TouchableOpacity style={styles.row}>
+                        <View style={[styles.rowIcon, { backgroundColor: '#8e8d91' }]}>
+                            <FeatherIcon color="#fff" name="flag" size={20} />
+                        </View>
+                        <Text style={styles.rowLabel}>Report Bug</Text>
+                        <View style={styles.rowSpacer} />
+                        <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
+                    </TouchableOpacity>
 
-                      <View style={styles.rowSpacer} />
+                    <TouchableOpacity style={styles.row}>
+                        <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
+                            <FeatherIcon color="#fff" name="mail" size={20} />
+                        </View>
+                        <Text style={styles.rowLabel}>Contact Us</Text>
+                        <View style={styles.rowSpacer} />
+                        <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
+                    </TouchableOpacity>
 
-                      <Switch
-                          onValueChange={darkMode => setForm({ ...form, darkMode })}
-                          value={form.darkMode} />
-                  </View>
-
-                  <TouchableOpacity
-                      onPress={() => {
-                          // handle onPress
-                      }}
-                      style={styles.row}>
-                      <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
-                          <FeatherIcon
-                              color="#fff"
-                              name="navigation"
-                              size={20} />
-                      </View>
-
-                      <Text style={styles.rowLabel}>Location</Text>
-
-                      <View style={styles.rowSpacer} />
-
-                      <FeatherIcon
-                          color="#C6C6C6"
-                          name="chevron-right"
-                          size={20} />
-                  </TouchableOpacity>
-
-                  <View style={styles.row}>
-                      <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
-                          <FeatherIcon color="#fff" name="bell" size={20} />
-                      </View>
-
-                      <Text style={styles.rowLabel}>Push Notifications</Text>
-
-                      <View style={styles.rowSpacer} />
-
-                      <Switch
-                          onValueChange={pushNotifications =>
-                              setForm({ ...form, pushNotifications })
-                          }
-                          value={form.pushNotifications} />
-                  </View>
-              </View>
-
-              <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>Resources</Text>
-
-                  <TouchableOpacity
-                      onPress={() => {
-                          // handle onPress
-                      }}
-                      style={styles.row}>
-                      <View style={[styles.rowIcon, { backgroundColor: '#8e8d91' }]}>
-                          <FeatherIcon color="#fff" name="flag" size={20} />
-                      </View>
-
-                      <Text style={styles.rowLabel}>Report Bug</Text>
-
-                      <View style={styles.rowSpacer} />
-
-                      <FeatherIcon
-                          color="#C6C6C6"
-                          name="chevron-right"
-                          size={20} />
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                      onPress={() => {
-                          // handle onPress
-                      }}
-                      style={styles.row}>
-                      <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
-                          <FeatherIcon color="#fff" name="mail" size={20} />
-                      </View>
-
-                      <Text style={styles.rowLabel}>Contact Us</Text>
-
-                      <View style={styles.rowSpacer} />
-
-                      <FeatherIcon
-                          color="#C6C6C6"
-                          name="chevron-right"
-                          size={20} />
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                      onPress={() => {
-                          // handle onPress
-                      }}
-                      style={styles.row}>
-                      <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
-                          <FeatherIcon color="#fff" name="star" size={20} />
-                      </View>
-
-                      <Text style={styles.rowLabel}>Rate in App Store</Text>
-
-                      <View style={styles.rowSpacer} />
-
-                      <FeatherIcon
-                          color="#C6C6C6"
-                          name="chevron-right"
-                          size={20} />
-                  </TouchableOpacity>
-              </View>
-          </ScrollView>
-      </SafeAreaView>
-  );
+                    <TouchableOpacity style={styles.row}>
+                        <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
+                            <FeatherIcon color="#fff" name="star" size={20} />
+                        </View>
+                        <Text style={styles.rowLabel}>Rate in App Store</Text>
+                        <View style={styles.rowSpacer} />
+                        <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
+    );
 }
 
-    const styles = StyleSheet.create({
-        /** Profile */
-        profile: {
-            padding: 24,
-            backgroundColor: '#121212',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-        },
-        profileAvatarWrapper: {
-            position: 'relative',
-        },
-        profileAvatar: {
-            width: 72,
-            height: 72,
-            borderRadius: 9999,
-        },
-        profileAction: {
-            position: 'absolute',
-            right: -4,
-            bottom: -10,
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 28,
-            height: 28,
-            borderRadius: 9999,
-            backgroundColor: '#007bff',
-        },
-        profileName: {
-            marginTop: 20,
-            fontSize: 19,
-            fontWeight: '600',
-            color: '#fff',
-            textAlign: 'center',
-        },
-        profileAddress: {
-            marginTop: 5,
-            fontSize: 16,
-            color: '#989898',
-            textAlign: 'center',
-        },
-        /** Section */
-        section: {
-            paddingHorizontal: 24,
-        },
-        sectionTitle: {
-            paddingVertical: 12,
-            fontSize: 12,
-            fontWeight: '600',
-            color: '#9e9e9e',
-            textTransform: 'uppercase',
-            letterSpacing: 1.1,
-        },
-        /** Row */
-        row: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'flex-start',
-            height: 50,
-            backgroundColor: '#404040',
-            borderRadius: 8,
-            marginBottom: 12,
-            paddingHorizontal: 12,
-        },
-        rowIcon: {
-            width: 32,
-            height: 32,
-            borderRadius: 9999,
-            marginRight: 12,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-        },
-        rowLabel: {
-            fontSize: 17,
-            fontWeight: '400',
-            color: '#fff',
-        },
-        rowSpacer: {
-            flexGrow: 1,
-            flexShrink: 1,
-            flexBasis: 0,
-        }
-    });
+const styles = StyleSheet.create({
+    profile: {
+        padding: 24,
+        backgroundColor: '#121212',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    profileName: {
+        marginTop: 20,
+        fontSize: 19,
+        fontWeight: '600',
+        color: '#fff',
+        textAlign: 'center',
+    },
+    profileAddress: {
+        marginTop: 5,
+        fontSize: 16,
+        color: '#989898',
+        textAlign: 'center',
+    },
+    section: {
+        paddingHorizontal: 24,
+    },
+    sectionTitle: {
+        paddingVertical: 12,
+        fontSize: 12,
+        fontWeight: '600',
+        color: '#9e9e9e',
+        textTransform: 'uppercase',
+    },
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 50,
+        backgroundColor: '#404040',
+        borderRadius: 8,
+        marginBottom: 12,
+        paddingHorizontal: 12,
+    },
+    rowIcon: {
+        width: 32,
+        height: 32,
+        borderRadius: 9999,
+        marginRight: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    rowLabel: {
+        fontSize: 17,
+        fontWeight: '400',
+        color: '#fff',
+    },
+    rowSpacer: {
+        flexGrow: 1,
+    },
+});
+
+
