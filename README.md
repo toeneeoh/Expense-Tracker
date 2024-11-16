@@ -48,9 +48,9 @@ npm install --global eas-cli
 eas init --id ce723064-1f58-4682-8e0a-4eb0a7dbd18c
 ```
 
-### 3. Build the app using the development profile
+### 3. Build the app using the production profile
 ```bash
-eas build -p android --profile development
+eas build -p android --profile production
 ```
 
 ### 4. Scan the provided QR code to download the app
