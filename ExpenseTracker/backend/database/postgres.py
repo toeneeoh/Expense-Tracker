@@ -25,8 +25,11 @@ def drop_users_table():
     if conn is not None:
         try:
             with conn.cursor() as cur:
-                cur.execute("DROP TABLE IF EXISTS users;")
-                print("Table 'users' dropped successfully.")
+                cur.execute("DROP TABLE IF EXISTS users CASCADE;")
+                cur.execute("DROP TABLE IF EXISTS expenses CASCADE;")
+                cur.execute("DROP TABLE IF EXISTS incomes CASCADE;")
+                cur.execute("DROP TABLE IF EXISTS debts CASCADE;")
+                print("All tables dropped successfully.")
         except Exception as e:
             print(f"Error dropping table: {e}")
         finally:
