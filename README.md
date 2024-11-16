@@ -52,3 +52,5 @@ eas init --id ce723064-1f58-4682-8e0a-4eb0a7dbd18c
 ```bash
 eas build -p android --profile development
 ```
+
+### 4. Scan the provided QR code to download the app
