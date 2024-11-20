@@ -143,7 +143,9 @@ export default function SettingsScreen() {
                         size={20} />
                     </TouchableOpacity>
                     {/* New Option for "Create a PDF for Your Finances" */}
-                    <TouchableOpacity onPress={/*generatePdf*/} style={styles.row}>
+                    <TouchableOpacity onPress={() => {
+                            /*generatePdf*/
+                      }} style={styles.row}>
                         <View style={[styles.rowIcon, { backgroundColor: '#9b59b6' }]}>
                             <FeatherIcon color="#fff" name="file-text" size={20} />
                         </View>
