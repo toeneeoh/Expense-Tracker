@@ -83,29 +83,37 @@ import React, { useState } from 'react';
 
 import { ThemedView, ThemedText } from '@/components/ThemedComponents';
 import { TextInput, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useUser } from '../../context/UserContext';
 
 import ApiService from '../../utils/apiService';
 
 export default function WelcomeScreen() {
     const [inputText, setInputText] = useState('');
     const navigation = useNavigation() as any;
+    const { updateUserData } = useUser(); // Access updateUserData from UserContext
 
     const handleGetStarted = () => {
         navigation.navigate('GoalsScreen');
     };
 
-    const handleLogin = () => {
-        console.log("Attempting to login as:" + inputText);
+    const handleLogin = async () => {
+        const password = "1234"; // TODO: Add a password input
 
-        ApiService.loginAttempt(inputText).then(x => {
-            console.log("ApiService response:" + x);
-            if (x === "-1") {
-                // TODO: return error, user not found
+        console.log("Attempting to login as: " + inputText);
+
+        try {
+            const result = await ApiService.checkUserCredentials(inputText, password);
+
+            if (result.authenticated) {
+                // Update user data in UserContext
+                updateUserData({ username: inputText });
                 navigation.navigate('settings');
             } else {
                 navigation.navigate('home');
             }
-        });
+        } catch (error) {
+            console.log("Login error: " + error);
+        }
     };
 
     return (

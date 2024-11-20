@@ -33,11 +33,24 @@ npx expo start -c
 npm run start:flask
 ```
 
-## Configuring backend server
-Edit app.config.js and replace API_URL with the server location
-```javascript
-API_URL: 'https://7aea-89-187-180-16.ngrok-free.app'
+==================================================
+
+## Steps to generate an .apk
+
+### 1. Create an account on Expo Go (I need to invite you to the project)
+```bash
+https://expo.dev/
 ```
 
-'localhost:5000' or '127.0.0.1:5000'
+### 2. Install eas-cli and initialize the project
+```bash
+npm install --global eas-cli
+eas init --id ce723064-1f58-4682-8e0a-4eb0a7dbd18c
+```
 
+### 3. Build the app using the production profile
+```bash
+eas build -p android --profile production
+```
+
+### 4. Scan the provided QR code to download the app

@@ -180,7 +180,6 @@ def update_recommendations():
         totalDebtPayments = totalDebtPayments + debt[3]
         if (debt[1] < incomeTotal*0.1):
             uRecommendationsList["payOffSmallDebts"] = incomeTotal*0.1
-
     uRecommendationsList["payOffHighInterest"] = () #if user is spending lots on low interest debts and not high interest ones
 
     if (totalDebtPayments > 0 and userData["savings"] < expenseTotal):

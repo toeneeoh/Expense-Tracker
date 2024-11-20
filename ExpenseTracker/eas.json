@@ -9,14 +9,14 @@
         "buildType": "apk"
       },
       "env": {
-        "API_URL": "http://127.0.0.1:5000"
+        "API_URL": "https://open-openly-longhorn.ngrok-free.app"
       }
     },
     "development": {
       "developmentClient": true,
       "distribution": "internal",
       "env": {
-        "API_URL": "http://127.0.0.1:5000"
+        "API_URL": "https://open-openly-longhorn.ngrok-free.app"
       }
     }
   }

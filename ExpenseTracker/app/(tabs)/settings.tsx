@@ -17,6 +17,39 @@ const userData = {
 
 const locationData = `${userData.address} - ${userData.cityName}, ${userData.stateName}`;
 
+const generatePdf = async () => {
+    try {
+        const htmlContent = `
+            <html>
+                <body>
+                    <h1 style="text-align: center;">Financial Report</h1>
+                    <h2>User Information</h2>
+                    <p>Name: ${userData.userName}</p>
+                    <p>Location: ${locationData}</p>
+                    <h2>Financial Details</h2>
+                    <p>Rent: ${userData.rent}</p>
+                    <p>Expenses: ${userData.expenses}</p>
+                    <p>Debt: ${userData.debt}</p>
+                    <p>Loans: ${userData.loans}</p>
+                </body>
+            </html>
+        `;
+
+        const pdfOptions = {
+            html: htmlContent,
+            fileName: 'Financial_Report',
+            directory: 'Documents',
+        };
+
+        //const file = await RNHTMLtoPDF.convert(pdfOptions);
+
+        //Alert.alert('PDF Generated', `Your PDF has been saved to: ${file.filePath}`);
+    } catch (error) {
+        console.error('PDF generation error:', error);
+        Alert.alert('Error', 'Failed to generate PDF. Please try again.');
+    }
+};
+
 export default function SettingsScreen() {
     const navigation = useNavigation() as any;
 
@@ -26,42 +59,47 @@ export default function SettingsScreen() {
         pushNotifications: false,
     });
 
-    const generatePdf = async () => {
-        try {
-            const htmlContent = `
-                <html>
-                    <body>
-                        <h1 style="text-align: center;">Financial Report</h1>
-                        <h2>User Information</h2>
-                        <p>Name: ${userData.userName}</p>
-                        <p>Location: ${locationData}</p>
-                        <h2>Financial Details</h2>
-                        <p>Rent: ${userData.rent}</p>
-                        <p>Expenses: ${userData.expenses}</p>
-                        <p>Debt: ${userData.debt}</p>
-                        <p>Loans: ${userData.loans}</p>
-                    </body>
-                </html>
-            `;
+    // const generatePdf = async () => {
+    //     try {
+    //         const htmlContent = `
+    //             <html>
+    //                 <body>
+    //                     <h1 style="text-align: center;">Financial Report</h1>
+    //                     <h2>User Information</h2>
+    //                     <p>Name: ${userData.userName}</p>
+    //                     <p>Location: ${locationData}</p>
+    //                     <h2>Financial Details</h2>
+    //                     <p>Rent: ${userData.rent}</p>
+    //                     <p>Expenses: ${userData.expenses}</p>
+    //                     <p>Debt: ${userData.debt}</p>
+    //                     <p>Loans: ${userData.loans}</p>
+    //                 </body>
+    //             </html>
+    //         `;
 
-            const pdfOptions = {
-                html: htmlContent,
-                fileName: 'Financial_Report',
-                directory: 'Documents',
-            };
+    //         const pdfOptions = {
+    //             html: htmlContent,
+    //             fileName: 'Financial_Report',
+    //             directory: 'Documents',
+    //         };
 
-            //const file = await RNHTMLtoPDF.convert(pdfOptions);
+    //         //const file = await RNHTMLtoPDF.convert(pdfOptions);
 
-            Alert.alert('PDF Generated', `Your PDF has been saved to: ${file.filePath}`);
-        } catch (error) {
-            console.error('PDF generation error:', error);
-            Alert.alert('Error', 'Failed to generate PDF. Please try again.');
-        }
-    };
+    //         Alert.alert('PDF Generated', `Your PDF has been saved to: ${file.filePath}`);
+    //     } catch (error) {
+    //         console.error('PDF generation error:', error);
+    //         Alert.alert('Error', 'Failed to generate PDF. Please try again.');
+    //     }
+    //};
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }}>
             <View style={styles.profile}>
+            <TouchableOpacity
+                  onPress={() => {
+                      // handle onPress
+                  }}>
+              </TouchableOpacity>
                 <View>
                     <Text style={styles.profileName}>{userData.userName}</Text>
                     <Text style={styles.profileAddress}>{locationData}</Text>
@@ -82,6 +120,8 @@ export default function SettingsScreen() {
                         <View style={styles.rowSpacer} />
                         <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
                     </TouchableOpacity>
+                </View>
+            </ScrollView>
 
           <ScrollView>
               <View style={styles.section}>
@@ -93,26 +133,17 @@ export default function SettingsScreen() {
                       style={styles.row}>
                       <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
                           <FeatherIcon color="#fff" name="globe" size={20} />
-                      </View>
+                          </View>
 
-                        <Text style={styles.rowLabel}>Update Financial Data</Text> {/* Go through onboarding process again */ }
-
-                    <View style={styles.row}>
-                        <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
-                            <FeatherIcon color="#fff" name="bell" size={20} />
-                        </View>
-                        <Text style={styles.rowLabel}>Push Notifications</Text>
-                        <View style={styles.rowSpacer} />
-                        <Switch
-                            onValueChange={pushNotifications =>
-                                setForm({ ...form, pushNotifications })
-                            }
-                            value={form.pushNotifications}
-                        />
-                    </View>
-
+                    <Text style={styles.rowLabel}>Update Financial Data</Text> {/* Go through onboarding process again */ }
+                    <View style={styles.rowSpacer} />
+                <FeatherIcon
+                        color="#C6C6C6"
+                        name="chevron-right"
+                        size={20} />
+                    </TouchableOpacity>
                     {/* New Option for "Create a PDF for Your Finances" */}
-                    <TouchableOpacity onPress={generatePdf} style={styles.row}>
+                    <TouchableOpacity onPress={/*generatePdf*/} style={styles.row}>
                         <View style={[styles.rowIcon, { backgroundColor: '#9b59b6' }]}>
                             <FeatherIcon color="#fff" name="file-text" size={20} />
                         </View>
@@ -120,7 +151,6 @@ export default function SettingsScreen() {
                         <View style={styles.rowSpacer} />
                         <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
                     </TouchableOpacity>
-                </View>
 
                   <TouchableOpacity
                       onPress={() => {
@@ -166,7 +196,7 @@ export default function SettingsScreen() {
                             size={20} />
                     </TouchableOpacity>
 
-                  <View style={styles.row}>
+                  {/* <View style={styles.row}>
                       <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
                           <FeatherIcon color="#fff" name="bell" size={20} />
                       </View>
@@ -180,9 +210,8 @@ export default function SettingsScreen() {
                               setForm({ ...form, pushNotifications })
                           }
                           value={form.pushNotifications} />
-                  </View>
-              </View>
-
+                  </View>*/}
+              </View> 
               <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Resources</Text>
 
@@ -215,14 +244,10 @@ export default function SettingsScreen() {
                       </View>
 
                       <Text style={styles.rowLabel}>Contact Us</Text>
-
                       <View style={styles.rowSpacer} />
+                        <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
+                    </TouchableOpacity>
 
-                      <FeatherIcon
-                          color="#C6C6C6"
-                          name="chevron-right"
-                          size={20} />
-                  </TouchableOpacity>
 
                   <TouchableOpacity
                       onPress={() => {
@@ -304,5 +329,3 @@ const styles = StyleSheet.create({
         flexGrow: 1,
     },
 });
-
-

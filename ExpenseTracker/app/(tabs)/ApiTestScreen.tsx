@@ -46,7 +46,7 @@ export default function ApiTestScreen() {
   const fetchData = async () => {
     if (item) {
       try {
-        const result = await ApiService.getFromDatabase(item, userName);
+        const result = await ApiService.getFromDatabase(item, userName, "users");
         setItemResponse(JSON.stringify(result));
       } catch (error) {
         console.error('Error fetching item:', error)
@@ -59,7 +59,7 @@ export default function ApiTestScreen() {
   // Push to database test
   const pushData = async () => {
       try {
-        const result = await ApiService.pushToDatabase(updateItem, updateValue, userName);
+        const result = await ApiService.pushToDatabase(updateItem, updateValue, userName, "users");
         alert(JSON.stringify(result))
       } catch (error) {
         console.error('Error fetching item:', error)
