@@ -1,4 +1,4 @@
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { Pressable, Text, StyleSheet } from 'react-native';
 
 interface IconOptionProps {
   label: string;
@@ -7,9 +7,9 @@ interface IconOptionProps {
 
 export default function IconOption({ label, onClick }: IconOptionProps) {
   return (
-    <TouchableOpacity onPress={onClick} style={styles.container}>
+    <Pressable onPress={onClick} style={styles.container}>
       <Text style={styles.text}>{label}</Text>
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 
