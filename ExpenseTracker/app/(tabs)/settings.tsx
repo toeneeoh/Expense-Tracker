@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, SafeAreaView, ScrollView, View, Text, TouchableOpacity, Switch, Alert } from 'react-native';
+import { StyleSheet, SafeAreaView, ScrollView, View, Text, Pressable, Switch, Alert } from 'react-native';
 import FeatherIcon from '@expo/vector-icons/Feather';
 //import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import { useNavigation } from 'expo-router';
@@ -95,11 +95,11 @@ export default function SettingsScreen() {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }}>
             <View style={styles.profile}>
-            <TouchableOpacity
+            <Pressable
                   onPress={() => {
                       // handle onPress
                   }}>
-              </TouchableOpacity>
+              </Pressable>
                 <View>
                     <Text style={styles.profileName}>{userData.userName}</Text>
                     <Text style={styles.profileAddress}>{locationData}</Text>
@@ -110,7 +110,7 @@ export default function SettingsScreen() {
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Preferences</Text>
 
-                    <TouchableOpacity
+                    <Pressable
                         onPress={() => navigation.navigate('GoalsScreen')}
                         style={styles.row}>
                         <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
@@ -119,20 +119,21 @@ export default function SettingsScreen() {
                         <Text style={styles.rowLabel}>Update User Data</Text>
                         <View style={styles.rowSpacer} />
                         <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
-                    </TouchableOpacity>
+                    </Pressable>
                 </View>
             </ScrollView>
 
           <ScrollView>
               <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Preferences</Text>
-                  <TouchableOpacity
+                  <Pressable
                       onPress={() => {
                             navigation.navigate('ExpensesScreen');
                       }}
                       style={styles.row}>
                       <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
                           <FeatherIcon color="#fff" name="globe" size={20} />
+
                           </View>
 
                     <Text style={styles.rowLabel}>Update Financial Data</Text> {/* Go through onboarding process again */ }
@@ -141,9 +142,9 @@ export default function SettingsScreen() {
                         color="#C6C6C6"
                         name="chevron-right"
                         size={20} />
-                    </TouchableOpacity>
+                    </Pressable>
                     {/* New Option for "Create a PDF for Your Finances" */}
-                    <TouchableOpacity onPress={() => {
+                    <Pressable onPress={() => {
                             /*generatePdf*/
                       }} style={styles.row}>
                         <View style={[styles.rowIcon, { backgroundColor: '#9b59b6' }]}>
@@ -152,9 +153,9 @@ export default function SettingsScreen() {
                         <Text style={styles.rowLabel}>Create a PDF for your finances</Text>
                         <View style={styles.rowSpacer} />
                         <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
-                    </TouchableOpacity>
+                    </Pressable>
 
-                  <TouchableOpacity
+                  <Pressable
                       onPress={() => {
                             navigation.navigate('ProfileScreen');
                       }}
@@ -164,7 +165,7 @@ export default function SettingsScreen() {
                               color="#fff"
                               name="navigation"
                               size={20} />
-                      </View>
+                        </View>
 
                       <Text style={styles.rowLabel}>Update Location</Text>
 
@@ -174,9 +175,9 @@ export default function SettingsScreen() {
                           color="#C6C6C6"
                           name="chevron-right"
                           size={20} />
-                    </TouchableOpacity>
+                    </Pressable>
 
-                    <TouchableOpacity
+                    <Pressable
                         onPress={() => {
                             navigation.navigate('GoalsScreen');
                         }}
@@ -196,7 +197,7 @@ export default function SettingsScreen() {
                             color="#C6C6C6"
                             name="chevron-right"
                             size={20} />
-                    </TouchableOpacity>
+                    </Pressable>
 
                   {/* <View style={styles.row}>
                       <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
@@ -217,7 +218,7 @@ export default function SettingsScreen() {
               <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Resources</Text>
 
-                  <TouchableOpacity
+                  <Pressable
                       onPress={() => {
                           // handle onPress
                       }}
@@ -234,9 +235,9 @@ export default function SettingsScreen() {
                           color="#C6C6C6"
                           name="chevron-right"
                           size={20} />
-                  </TouchableOpacity>
+                  </Pressable>
 
-                  <TouchableOpacity
+                  <Pressable
                       onPress={() => {
                           // handle onPress
                       }}
@@ -248,10 +249,9 @@ export default function SettingsScreen() {
                       <Text style={styles.rowLabel}>Contact Us</Text>
                       <View style={styles.rowSpacer} />
                         <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
-                    </TouchableOpacity>
+                    </Pressable>
 
-
-                  <TouchableOpacity
+                  <Pressable
                       onPress={() => {
                           // handle onPress
                       }}
@@ -268,7 +268,7 @@ export default function SettingsScreen() {
                           color="#C6C6C6"
                           name="chevron-right"
                           size={20} />
-                  </TouchableOpacity>
+                  </Pressable>
               </View>
           </ScrollView>
       </SafeAreaView>
