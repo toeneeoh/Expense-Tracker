@@ -1,7 +1,7 @@
 import { useNavigation } from 'expo-router';
 import { ThemedView, ThemedText } from '@/components/ThemedComponents';
 import InputField from '@/components/InputField';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import DropdownField from '@/components/DropdownField';
 
 const jobTitles = ['Software Engineer', 'Finance Analyst', 'Lawyer', 'Blue-Collar Worker', 'Customer Service Worker', 'Unemployed'];// list other ones as well Nate
@@ -14,8 +14,8 @@ export default function ExpensesScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <ThemedText type="title" style={styles.title}>Give us some information to work with! We'll check back again in one month :)</ThemedText>
+    <ThemedView style={styles.container}>
+      <ThemedText type="title">Give us some information to work with! We'll check back again in one month :)</ThemedText>
 
       <DropdownField label="Which of these options best describes your current job?" options={jobTitles} />
 
@@ -36,17 +36,13 @@ export default function ExpensesScreen() {
       <ThemedText onPress={handleSubmit} style={styles.linkText}>
         Next
       </ThemedText>
-    </View>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     margin: 16,
-    color: '#ffffff'
-  },
-  title: {
-    color: '#000000',
   },
   linkText: {
     color: '#007AFF',

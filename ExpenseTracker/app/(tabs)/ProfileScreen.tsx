@@ -3,14 +3,13 @@ import DropdownField from '@/components/DropdownField';
 import InputField from '@/components/InputField';
 import { StyleSheet, View } from 'react-native';
 
-
 const cities = ['Washington, D.C.', 'Fairfax', 'Arlington', 'Austin', 'Sacramento', 'Denver']; // Get more major cities
 
 export default function ProfileScreen() {
   return (
-    <View style={styles.container}>
+    <ThemedView style={styles.container}>
 
-      <ThemedText type="title" style={styles.title}>Location Data</ThemedText>
+      <ThemedText type="title">Location Data</ThemedText>
 
           <DropdownField label="What city do you live in?" options={cities} />
           <DropdownField label="What state do you live in?" options={cities} />
@@ -20,15 +19,12 @@ export default function ProfileScreen() {
           <InputField label="How many bedrooms do you need in your home?" />
       {/*<InputField label="Any certifications / professional skills" />*/}
 
-    </View>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     margin: 16,
-  },
-  title: {
-    color: '#000000',
   },
 });
