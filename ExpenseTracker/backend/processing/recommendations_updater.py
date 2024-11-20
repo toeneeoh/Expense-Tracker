@@ -17,7 +17,6 @@ def update_recommendations():
         "cityName" : "a",
         "stateName" : "a", #just two letter, i.e. VA for Virginia
         "userGoal" : "debt", #either "debt", "savings", or "retirement"
-        "skills" : ["a", "b", "c"],
         #"skills" : ["a", "b", "c"],
         "incomes" : [["a", 10000], ["b", 15000], ["c", 30000]], #all reported incomes
         "expenses" : [["a", 44444], ["b", 77777], ["c", 99999]], #all reported expenses
@@ -39,9 +38,10 @@ def update_recommendations():
         "expenseEntertainment" : 100, #includes movie tickets, fun purchases, anything not needed for survival. doesn't include dining or subscriptions.
         #"expenseUtilities" : 100,
         #"expenseCar" : 100,
-        "expenseUtilities" : 100,
-        "expenseCar" : 100,
-
+        "incomeOther" : 100, #allowance, parental assistance, investments, etc.
+        "incomeJob" : 100,
+        "salaryHourly" : 100,
+        "weeklyHours" : 40,
     }
 
     #recommendationsList is a dictionary containing recommendations and "scores", scores are generated and then the list is sorted by score value
@@ -173,14 +173,13 @@ def update_recommendations():
     uRecommendationsList["lessEntertainment"] = ((userData["expenseEntertainment"]+userData["expenseDining"]+userData["expenseSubscriptions"])-(incomeTotal*0.3))
     uRecommendationsList["workMoreGigs"] = ((35 - userData["weeklyHours"])*12)
 
+
     totalDebtPayments = 0
 
     for debt in userData["debts"]:
         totalDebtPayments = totalDebtPayments + debt[3]
-    
         if (debt[1] < incomeTotal*0.1):
             uRecommendationsList["payOffSmallDebts"] = incomeTotal*0.1
-
     uRecommendationsList["payOffHighInterest"] = () #if user is spending lots on low interest debts and not high interest ones
 
     if (totalDebtPayments > 0 and userData["savings"] < expenseTotal):
@@ -189,6 +188,10 @@ def update_recommendations():
     if (userData["userGoal"] != "debt"):
         uRecommendationsList["saveMoreMoney"] = ((incomeTotal*0.2)-userData["savingsIncrease"])*5
         uRecommendationsList["investSavings"] = (userData["savings"] - expenseTotal)/10
+
+
+    
+
 
     rList = list(uRecommendationsList.keys())
     rList.sort()

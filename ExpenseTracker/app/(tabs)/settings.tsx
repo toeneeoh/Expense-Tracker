@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, SafeAreaView, ScrollView, View, Text, Pressable, Switch, Alert } from 'react-native';
 import FeatherIcon from '@expo/vector-icons/Feather';
-import RNHTMLtoPDF from 'react-native-html-to-pdf';
+//import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import { useNavigation } from 'expo-router';
 
 const userData = {
@@ -41,9 +41,9 @@ const generatePdf = async () => {
             directory: 'Documents',
         };
 
-        const file = await RNHTMLtoPDF.convert(pdfOptions);
+        //const file = await RNHTMLtoPDF.convert(pdfOptions);
 
-        Alert.alert('PDF Generated', `Your PDF has been saved to: ${file.filePath}`);
+        //Alert.alert('PDF Generated', `Your PDF has been saved to: ${file.filePath}`);
     } catch (error) {
         console.error('PDF generation error:', error);
         Alert.alert('Error', 'Failed to generate PDF. Please try again.');
@@ -59,20 +59,69 @@ export default function SettingsScreen() {
         pushNotifications: false,
     });
 
+    // const generatePdf = async () => {
+    //     try {
+    //         const htmlContent = `
+    //             <html>
+    //                 <body>
+    //                     <h1 style="text-align: center;">Financial Report</h1>
+    //                     <h2>User Information</h2>
+    //                     <p>Name: ${userData.userName}</p>
+    //                     <p>Location: ${locationData}</p>
+    //                     <h2>Financial Details</h2>
+    //                     <p>Rent: ${userData.rent}</p>
+    //                     <p>Expenses: ${userData.expenses}</p>
+    //                     <p>Debt: ${userData.debt}</p>
+    //                     <p>Loans: ${userData.loans}</p>
+    //                 </body>
+    //             </html>
+    //         `;
+
+    //         const pdfOptions = {
+    //             html: htmlContent,
+    //             fileName: 'Financial_Report',
+    //             directory: 'Documents',
+    //         };
+
+    //         //const file = await RNHTMLtoPDF.convert(pdfOptions);
+
+    //         Alert.alert('PDF Generated', `Your PDF has been saved to: ${file.filePath}`);
+    //     } catch (error) {
+    //         console.error('PDF generation error:', error);
+    //         Alert.alert('Error', 'Failed to generate PDF. Please try again.');
+    //     }
+    //};
+
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }}>
-          <View style={styles.profile}>
-              <Pressable
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }}>
+            <View style={styles.profile}>
+            <Pressable
                   onPress={() => {
                       // handle onPress
                   }}>
               </Pressable>
+                <View>
+                    <Text style={styles.profileName}>{userData.userName}</Text>
+                    <Text style={styles.profileAddress}>{locationData}</Text>
+                </View>
+            </View>
 
-              <View>
-                  <Text style={styles.profileName}>{userData["userName"]}</Text>
-                  <Text style={styles.profileAddress}>{locationData}</Text>
-              </View>
-          </View>
+            <ScrollView>
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Preferences</Text>
+
+                    <Pressable
+                        onPress={() => navigation.navigate('GoalsScreen')}
+                        style={styles.row}>
+                        <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
+                            <FeatherIcon color="#fff" name="globe" size={20} />
+                        </View>
+                        <Text style={styles.rowLabel}>Update User Data</Text>
+                        <View style={styles.rowSpacer} />
+                        <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
+                    </Pressable>
+                </View>
+            </ScrollView>
 
           <ScrollView>
               <View style={styles.section}>
@@ -84,17 +133,27 @@ export default function SettingsScreen() {
                       style={styles.row}>
                       <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
                           <FeatherIcon color="#fff" name="globe" size={20} />
-                      </View>
 
-                        <Text style={styles.rowLabel}>Update Financial Data</Text>
+                          </View>
 
-                      <View style={styles.rowSpacer} />
-
-                      <FeatherIcon
-                          color="#C6C6C6"
-                          name="chevron-right"
-                          size={20} />
-                  </Pressable>
+                    <Text style={styles.rowLabel}>Update Financial Data</Text> {/* Go through onboarding process again */ }
+                    <View style={styles.rowSpacer} />
+                <FeatherIcon
+                        color="#C6C6C6"
+                        name="chevron-right"
+                        size={20} />
+                    </Pressable>
+                    {/* New Option for "Create a PDF for Your Finances" */}
+                    <Pressable onPress={() => {
+                            /*generatePdf*/
+                      }} style={styles.row}>
+                        <View style={[styles.rowIcon, { backgroundColor: '#9b59b6' }]}>
+                            <FeatherIcon color="#fff" name="file-text" size={20} />
+                        </View>
+                        <Text style={styles.rowLabel}>Create a PDF for your finances</Text>
+                        <View style={styles.rowSpacer} />
+                        <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
+                    </Pressable>
 
                   <Pressable
                       onPress={() => {
@@ -140,7 +199,7 @@ export default function SettingsScreen() {
                             size={20} />
                     </Pressable>
 
-                  <View style={styles.row}>
+                  {/* <View style={styles.row}>
                       <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
                           <FeatherIcon color="#fff" name="bell" size={20} />
                       </View>
@@ -154,9 +213,8 @@ export default function SettingsScreen() {
                               setForm({ ...form, pushNotifications })
                           }
                           value={form.pushNotifications} />
-                  </View>
-              </View>
-
+                  </View>*/}
+              </View> 
               <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Resources</Text>
 
@@ -189,22 +247,32 @@ export default function SettingsScreen() {
                       </View>
 
                       <Text style={styles.rowLabel}>Contact Us</Text>
-                        <View style={styles.rowSpacer} />
+                      <View style={styles.rowSpacer} />
                         <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
                     </Pressable>
 
-                    <Pressable style={styles.row}>
-                        <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
-                            <FeatherIcon color="#fff" name="star" size={20} />
-                        </View>
-                        <Text style={styles.rowLabel}>Rate in App Store</Text>
-                        <View style={styles.rowSpacer} />
-                        <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
-                    </Pressable>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
-    );
+                  <Pressable
+                      onPress={() => {
+                          // handle onPress
+                      }}
+                      style={styles.row}>
+                      <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
+                          <FeatherIcon color="#fff" name="star" size={20} />
+                      </View>
+
+                      <Text style={styles.rowLabel}>Rate in App Store</Text>
+
+                      <View style={styles.rowSpacer} />
+
+                      <FeatherIcon
+                          color="#C6C6C6"
+                          name="chevron-right"
+                          size={20} />
+                  </Pressable>
+              </View>
+          </ScrollView>
+      </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
