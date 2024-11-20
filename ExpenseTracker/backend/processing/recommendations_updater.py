@@ -27,14 +27,17 @@ def update_recommendations():
         "dependentsNum" : 1, #refers to number of children/dependents that are having their bills paid for by the user
         "bedroomsNeeded" : 1, #refers to total number of bedrooms needed, for user, roommates, children/dependents, etc
         "savings" : 100,
+        "savingsIncrease" : 100, #amount savings increased by last month
+        "investmentsTotal" : 100, #value of stocks, real estate, owned businesses, etc.
         "expenseOther" : 100,
         "expenseGroceries" : 100,
+        "expenseTakeout" : 100,
         "expenseDining" : 100,
         "expenseRent" : 100,
         "expenseSubscriptions" : 100,
         "expenseEntertainment" : 100, #includes movie tickets, fun purchases, anything not needed for survival. doesn't include dining or subscriptions.
-        "expenseUtilities" : 100,
-        "expenseCar" : 100,
+        #"expenseUtilities" : 100,
+        #"expenseCar" : 100,
         "incomeOther" : 100, #allowance, parental assistance, investments, etc.
         "incomeJob" : 100,
         "salaryHourly" : 100,
@@ -49,11 +52,16 @@ def update_recommendations():
     "payOffHighInterest" : 0, 
     "payOffSmallDebts" : 0, 
     "lessTakeout" : 100, 
-    "cheaperGroceries" : 100, 
+    "cheaperGroceries" : 100,
     "lessEntertainment" : 100, #user should abide by the 50/30/20 rule, spending 30% or less of their income on entertainment
     "workMoreGigs" : 2, #user should work more hours by doordashing or instacarting
+    "endSubscriptions" : 10, #todo
     "debtSettlement" : 2, 
-    "bankruptcy" : 1}
+    "bankruptcy" : 1,
+    "buildSavings" : -100, #user should at least have 1 month of expenses in an emergency savings before paying down any debt at all, to avoid going into greater debt
+    "saveMoreMoney" : -100, #user should save 20% or more of their income
+    "investSavings" : -100, #user has a large amount of uninvested savings, more than one month's total expenses
+    }
 
     expenseTotal = userData["expenseOther"] + userData["expenseGroceries"] + userData["expenseDining"]  + userData["expenseRent"]  + userData["expenseSubscriptions"]  + userData["expenseEntertainment"] + userData["expenseUtilities"]  + userData["expenseCar"]
     incomeTotal = userData["incomeJob"] + userData["incomeOther"]
@@ -166,15 +174,22 @@ def update_recommendations():
     uRecommendationsList["workMoreGigs"] = ((35 - userData["weeklyHours"])*12)
 
 
-    
-
     totalDebtPayments = 0
 
     for debt in userData["debts"]:
+        totalDebtPayments = totalDebtPayments + debt[3]
         if (debt[1] < incomeTotal*0.1):
             uRecommendationsList["payOffSmallDebts"] = incomeTotal*0.1
 
     uRecommendationsList["payOffHighInterest"] = () #if user is spending lots on low interest debts and not high interest ones
+
+    if (totalDebtPayments > 0 and userData["savings"] < expenseTotal):
+        uRecommendationsList["buildSavings"] = (1000000)
+
+    if (userData["userGoal"] != "debt"):
+        uRecommendationsList["saveMoreMoney"] = ((incomeTotal*0.2)-userData["savingsIncrease"])*5
+        uRecommendationsList["investSavings"] = (userData["savings"] - expenseTotal)/10
+
 
     
 

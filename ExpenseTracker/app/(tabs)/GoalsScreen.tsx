@@ -16,7 +16,7 @@ export default function GoalsScreen() {
 
       <IconOption label="I want to get out of debt" onClick={handleGoalSelect} />
       <IconOption label="I want to build a savings" onClick={handleGoalSelect} />
-      <IconOption label="I want to prepare for retirement" onClick={handleGoalSelect} />
+      <IconOption label="I want to be prepared for retirement" onClick={handleGoalSelect} />
     </ThemedView>
   );
 }

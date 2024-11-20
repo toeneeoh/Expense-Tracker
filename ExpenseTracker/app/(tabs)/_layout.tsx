@@ -37,7 +37,7 @@ export default function TabLayout() {
     <Tabs.Screen
         name="notifications"
         options={{
-          title: 'Notifications',
+          title: 'Assistant',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'chatbox-ellipses' : 'chatbox-ellipses-outline'} color={color} />
           ),
@@ -46,7 +46,7 @@ export default function TabLayout() {
     <Tabs.Screen
         name="settings"
         options={{
-          title: 'Settings',
+          title: 'User',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'settings' : 'settings-outline'} color={color} />
           ),
