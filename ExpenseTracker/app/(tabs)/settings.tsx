@@ -1,56 +1,74 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, SafeAreaView, ScrollView, View, Text, TouchableOpacity, Switch, Alert } from 'react-native';
 import FeatherIcon from '@expo/vector-icons/Feather';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import { useNavigation } from 'expo-router';
+import ApiService from '../../utils/apiService';
 
-const userData = {
-    userName: "John Doe",
-    address: "123 Somewhere Street",
-    cityName: "Fairfax",
-    stateName: "VA",
-    rent: "$1200",
-    expenses: "$300",
-    debt: "$5000",
-    loans: "$15000",
-};
+//const userData = {
+//    userName: "John Doe",
+//    address: "123 Somewhere Street",
+//    cityName: "Fairfax",
+//    stateName: "VA",
+//    rent: "$1200",
+//    expenses: "$300",
+//    debt: "$5000",
+//    loans: "$15000",
+//};
 
-const locationData = `${userData.address} - ${userData.cityName}, ${userData.stateName}`;
+//const generatePdf = async () => {
+//    try {
+//        const htmlContent = `
+//            <html>
+//                <body>
+//                    <h1 style="text-align: center;">Financial Report</h1>
+//                    <h2>User Information</h2>
+//                    <p>Name: ${userData.userName}</p>
+//                    <p>Location: ${locationData}</p>
+//                    <h2>Financial Details</h2>
+//                    <p>Rent: ${userData.rent}</p>
+//                    <p>Expenses: ${userData.expenses}</p>
+//                    <p>Debt: ${userData.debt}</p>
+//                    <p>Loans: ${userData.loans}</p>
+//                </body>
+//            </html>
+//        `;
 
-const generatePdf = async () => {
-    try {
-        const htmlContent = `
-            <html>
-                <body>
-                    <h1 style="text-align: center;">Financial Report</h1>
-                    <h2>User Information</h2>
-                    <p>Name: ${userData.userName}</p>
-                    <p>Location: ${locationData}</p>
-                    <h2>Financial Details</h2>
-                    <p>Rent: ${userData.rent}</p>
-                    <p>Expenses: ${userData.expenses}</p>
-                    <p>Debt: ${userData.debt}</p>
-                    <p>Loans: ${userData.loans}</p>
-                </body>
-            </html>
-        `;
+//        const pdfOptions = {
+//            html: htmlContent,
+//            fileName: 'Financial_Report',
+//            directory: 'Documents',
+//        };
 
-        const pdfOptions = {
-            html: htmlContent,
-            fileName: 'Financial_Report',
-            directory: 'Documents',
-        };
+//        const file = await RNHTMLtoPDF.convert(pdfOptions);
 
-        const file = await RNHTMLtoPDF.convert(pdfOptions);
+//        Alert.alert('PDF Generated', `Your PDF has been saved to: ${file.filePath}`);
+//    } catch (error) {
+//        console.error('PDF generation error:', error);
+//        Alert.alert('Error', 'Failed to generate PDF. Please try again.');
+//    }
+//};
 
-        Alert.alert('PDF Generated', `Your PDF has been saved to: ${file.filePath}`);
-    } catch (error) {
-        console.error('PDF generation error:', error);
-        Alert.alert('Error', 'Failed to generate PDF. Please try again.');
-    }
-};
+
 
 export default function SettingsScreen() {
+    const [userData, setUserData] = useState(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+
+    const [dataFetched, setDataFetch] = useState(false)
+
+    useEffect(() => { fetchData() }, [dataFetched])
+
+    const fetchData = async () => {
+        console.log("start fetch here")
+        try {
+            var incomingData = await ApiService.getFromDatabase("all", "test", "users");
+            console.log(incomingData["all"])
+            setUserData(incomingData["all"]);
+            setDataFetch(true)
+        } catch (error) {
+            console.error('Error fetching item:', error)
+        }
+    };
     const navigation = useNavigation() as any;
 
     const [form, setForm] = useState({
@@ -58,6 +76,15 @@ export default function SettingsScreen() {
         emailNotifications: true,
         pushNotifications: false,
     });
+
+    if (!dataFetched) return (
+        <Text style={styles.headerText}>Loading...</Text>
+    )
+
+
+    console.log(userData[0]["address"])
+    const locationData = `${userData[0]["address"]} - ${userData[0]["city_name"]}, ${userData[0]["state_name"]}`;
+
 
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }}>
@@ -69,7 +96,7 @@ export default function SettingsScreen() {
               </TouchableOpacity>
 
               <View>
-                  <Text style={styles.profileName}>{userData["userName"]}</Text>
+                    <Text style={styles.profileName}>{userData[0]["username"]}</Text>
 
                   <Text style={styles.profileAddress}>
                       {locationData}
@@ -211,6 +238,12 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
+    headerText: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        color: '#333333',
+    },
     profile: {
         padding: 24,
         backgroundColor: '#121212',

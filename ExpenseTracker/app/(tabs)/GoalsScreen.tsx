@@ -11,18 +11,18 @@ export default function GoalsScreen() {
   };
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title">Tell us about your financial goals</ThemedText>
+    <ThemedView darkColor = "#FFFF" style={styles.container}>
+      <ThemedText type="title" darkColor="black">Tell us about your financial goals</ThemedText>
 
-      <IconOption label="I want to get out of debt" onClick={handleGoalSelect} />
-      <IconOption label="I want to build a savings" onClick={handleGoalSelect} />
-      <IconOption label="I want to be prepared for retirement" onClick={handleGoalSelect} />
+      <IconOption label="I want to get out of debt!" onClick={handleGoalSelect} />
+      <IconOption label="I want to build a savings!" onClick={handleGoalSelect} />
+      <IconOption label="I want to be prepared for retirement!" onClick={handleGoalSelect} />
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    margin: 16,
+        margin: 16,
   },
 });
