@@ -17,6 +17,9 @@ export default function ApiTestScreen() {
   const [updateItem, setUpdateItem] = useState(''); // For item to update
   const [updateValue, setUpdateValue] = useState(''); // New value for updating item
   const [tableName, setTableName] = useState(''); // Table name for fetching data
+  const [insertTableName, setInsertTableName] = useState(''); // For the insert_row table name
+  const [rowData, setRowData] = useState(''); // For the row data to insert
+  const [insertResponse, setInsertResponse] = useState(''); // Response for insert_row
 
   const userName = useUserName();
 
@@ -65,6 +68,21 @@ export default function ApiTestScreen() {
       alert(JSON.stringify(result));
     } catch (error) {
       console.error('Error pushing item:', error);
+    }
+  };
+
+  const insertRow = async () => {
+    if (insertTableName && rowData) {
+      try {
+        const parsedRowData = JSON.parse(rowData); // Parse the JSON string to an object
+        const result = await ApiService.insertRow(parsedRowData, insertTableName);
+        setInsertResponse(JSON.stringify(result));
+      } catch (error) {
+        console.error('Error inserting row:', error);
+        setInsertResponse('Error inserting row: ' + error);
+      }
+    } else {
+      setInsertResponse('Table name or row data is not specified.');
     }
   };
 
@@ -137,6 +155,23 @@ export default function ApiTestScreen() {
         onChangeText={setUpdateValue}
       />
       <Button title="Push Data" onPress={pushData} />
+
+      <Text style={styles.title}>Insert Row</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter table name for insert_row"
+          value={insertTableName}
+          onChangeText={setInsertTableName}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder='Enter row data as JSON (e.g., {"key": "value"})'
+          value={rowData}
+          onChangeText={setRowData}
+        />
+        <Button title="Insert Row" onPress={insertRow} />
+        {insertResponse ? <Text style={styles.result}>Insert Response: {insertResponse}</Text> : null}
+
     </View>
   
       
