@@ -97,8 +97,20 @@ export default function RecommendationsScreen() {
 
     const [dataFetched, setDataFetch] = useState(false)
 
+    var rec1title;
+    var rec1desc;
+    var rec1score = -99;
+    var rec2title;
+    var rec2desc;
+    var rec2score = -99;
+    var rec3title;
+    var rec3desc;
+    var rec3score = -99;
+
     useEffect(() => { fetchData() }, [dataFetched])
     console.log(dataFetched)
+    console.log("User Data:")
+    console.log(userData)
 
     //hardcode to always do test user for now
     const fetchData = async () => {
@@ -187,14 +199,14 @@ export default function RecommendationsScreen() {
         var uRecommendationsList = {
             "moveOutCity": 100,
             "getBetterJob": 100,
-            "payOffHighInterest": 0,
+            //"payOffHighInterest": 0,
             "payOffSmallDebts": 0,
             "lessTakeout": 100,
             "cheaperGroceries": 100,
             "lessEntertainment": 100, //user should abide by the 50/30/20 rule, spending 30% or less of their income on entertainment
             "workMoreGigs": 2, //user should work more hours by doordashing or instacarting
             "endSubscriptions": 10,
-            "getRoommates" : 10, //user should get roommates to split rent
+            "getRoommates": 10, //user should get roommates to split rent
             "debtSettlement": 2,
             "bankruptcy": 1,
             "buildSavings": -100, //user should at least have 1 month of expenses in an emergency savings before paying down any debt at all, to avoid going into greater debt
@@ -302,10 +314,161 @@ export default function RecommendationsScreen() {
             uRecommendationsList["investSavings"] = (userData[0]["savings"] - expenseTotal) / 10
         }
 
-        //rList is the sorted recommendation list to be returned
-        rList = uRecommendationsList.sort()
+        for (let i = 0; i < 14; i++) {
+            if (uRecommendationsList[i][1] > rec1score) {
+                rec3title = rec2title;
+                rec3score = rec2score;
+                rec2title = rec1title;
+                rec2score = rec1score;
+                rec1title = uRecommendationsList[i][0];
+                rec1score = uRecommendationsList[i][1]
+            } else if (uRecommendationsList[i][1] > rec2score) {
+                rec3title = rec2title;
+                rec3score = rec2score;
+                rec2title = uRecommendationsList[i][0];
+                rec2score = uRecommendationsList[i][1];
+            } else if (uRecommendationsList[i][1] > rec3score) {
+                rec3title = uRecommendationsList[i][0];
+                rec3score = uRecommendationsList[i][1];
+            }
+        }
 
+            //assign descriptions to each
+            switch (rec1title) {
+                case "moveOutCity":
+                    rec1desc = "We've detected that your rent, while reasonable for your area, is higher than the national average. If you're able to, moving to cheaper cities while keeping your same job is a strong long-term decision that will improve your financial health over time drastically."
+                    break;
+                case "getBetterJob":
+                    rec1desc = "We've detected that you seem to be making less per hour than most peers in your chosen career do. We recommend working on your professional skills, applying to other positions within your job field, and focusing on networking to find new opportunities for employment."
+                    break;
+                case "payOffSmallDebts":
+                    rec1desc = "We've detected that you seem to have one or more small debts that you could easily pay off with only a small fraction of your income. Set some money aside and pay them off - even if they aren't significant, taking debts off your balance sheet will make you feel more financially secure!"
+                    break;
+                case "lessTakeout":
+                    rec1desc = "We've detected that you're spending lots of money on takeout for your meals, rather than cooking for yourself. Cooking can be intimidating, but it is always cheaper, healthier, and often more delicious than takeout food. Ask our chatbot about ways to reduce your takeout expenses!"
+                    break;
+                case "cheaperGroceries":
+                    rec1desc = "We've detected that you're spending a larger amount of money on groceries every week than the norm. Make sure to plan out meals to make sure you use ingredients before they spoil, and consider store brand items to decrease costs."
+                    break;
+                case "lessEntertainment":
+                    rec1desc = "We work to live, not the other way around, but sometimes getting out of debt requires sacrifices. A good budgeting rule is the 50/30/20 rule, where 30% or less of your income goes to unnecessary but fun things you want!"
+                    break;
+                case "workMoreGigs":
+                    rec1desc = "To get out of debt, there are plenty of gig-based work opportunities such as doordash, instacart, or uber to consider. Consider using some of your time to work side gigs to help supplement your income and make progress toward your financial goals!"
+                    break;
+                case "endSubscriptions":
+                    rec1desc = "We've detected that you're spending a large amount of money on various subscription services. Consider reviewing them for any that you don't use often, focusing on using it for anything you need immediately before canceling it until you need it again."
+                    break;
+                case "getRoommates":
+                    rec1desc = "Rent prices are one of the largest expenses for modern workers, but getting one or more roommates to help split the monthly rent bills is by far the easiest way to help mitigate high rent expenditures."
+                    break;
+                case "debtSettlement":
+                    rec1desc = "There are many services online that will allow you to settle and consilidate your debts into one much more manageble debt to pay back as you're able. Ask our chatbot about debt settlement opportunities!"
+                    break;
+                case "bankruptcy":
+                    rec1desc = "If there are truly no better options, one always has the option of declaring bankruptcy. Think carefully and ask our chatbot questions about this: bankruptcy wipes away most debts, but it will heavily impact your credit score and make future credit very hard to obtain."
+                    break;
+                case "buildSavings":
+                    rec1desc = "While trapped in a spiral of debt, it's easy to feel like every spare penny you own should go toward paying off that debt. In truth, doing this will just put you right back in debt the second another large unexpected expense occurs. Try instead to have three months' expenses saved in an emergency fund, just in case, before paying off debts beyond minimum payments!"
+                    break;
+                case "saveMoreMoney":
+                    rec1desc = "We've detected that you're saving less than 20% of your income - according to the 50/30/20 rule, 20% of your income should go straight to a savings account, either for short-term emergency coverage or toward a long-term retirement account!"
+                    break;
+                case "investSavings":
+                    rec1desc = "We've detected that you have far more money in your savings account that you need to cover a few months' emergencies. Instead of letting it sit around and collect dust, you should invest it instead, so that it can appreciate in value over time!"
+                    break;
+            }
 
+            switch (rec2title) {
+                case "moveOutCity":
+                    rec2desc = "We've detected that your rent, while reasonable for your area, is higher than the national average. If you're able to, moving to cheaper cities while keeping your same job is a strong long-term decision that will improve your financial health over time drastically."
+                    break;
+                case "getBetterJob":
+                    rec2desc = "We've detected that you seem to be making less per hour than most peers in your chosen career do. We recommend working on your professional skills, applying to other positions within your job field, and focusing on networking to find new opportunities for employment."
+                    break;
+                case "payOffSmallDebts":
+                    rec2desc = "We've detected that you seem to have one or more small debts that you could easily pay off with only a small fraction of your income. Set some money aside and pay them off - even if they aren't significant, taking debts off your balance sheet will make you feel more financially secure!"
+                    break;
+                case "lessTakeout":
+                    rec2desc = "We've detected that you're spending lots of money on takeout for your meals, rather than cooking for yourself. Cooking can be intimidating, but it is always cheaper, healthier, and often more delicious than takeout food. Ask our chatbot about ways to reduce your takeout expenses!"
+                    break;
+                case "cheaperGroceries":
+                    rec2desc = "We've detected that you're spending a larger amount of money on groceries every week than the norm. Make sure to plan out meals to make sure you use ingredients before they spoil, and consider store brand items to decrease costs."
+                    break;
+                case "lessEntertainment":
+                    rec2desc = "We work to live, not the other way around, but sometimes getting out of debt requires sacrifices. A good budgeting rule is the 50/30/20 rule, where 30% or less of your income goes to unnecessary but fun things you want!"
+                    break;
+                case "workMoreGigs":
+                    rec2desc = "To get out of debt, there are plenty of gig-based work opportunities such as doordash, instacart, or uber to consider. Consider using some of your time to work side gigs to help supplement your income and make progress toward your financial goals!"
+                    break;
+                case "endSubscriptions":
+                    rec2desc = "We've detected that you're spending a large amount of money on various subscription services. Consider reviewing them for any that you don't use often, focusing on using it for anything you need immediately before canceling it until you need it again."
+                    break;
+                case "getRoommates":
+                    rec2desc = "Rent prices are one of the largest expenses for modern workers, but getting one or more roommates to help split the monthly rent bills is by far the easiest way to help mitigate high rent expenditures."
+                    break;
+                case "debtSettlement":
+                    rec2desc = "There are many services online that will allow you to settle and consilidate your debts into one much more manageble debt to pay back as you're able. Ask our chatbot about debt settlement opportunities!"
+                    break;
+                case "bankruptcy":
+                    rec2desc = "If there are truly no better options, one always has the option of declaring bankruptcy. Think carefully and ask our chatbot questions about this: bankruptcy wipes away most debts, but it will heavily impact your credit score and make future credit very hard to obtain."
+                    break;
+                case "buildSavings":
+                    rec2desc = "While trapped in a spiral of debt, it's easy to feel like every spare penny you own should go toward paying off that debt. In truth, doing this will just put you right back in debt the second another large unexpected expense occurs. Try instead to have three months' expenses saved in an emergency fund, just in case, before paying off debts beyond minimum payments!"
+                    break;
+                case "saveMoreMoney":
+                    rec2desc = "We've detected that you're saving less than 20% of your income - according to the 50/30/20 rule, 20% of your income should go straight to a savings account, either for short-term emergency coverage or toward a long-term retirement account!"
+                    break;
+                case "investSavings":
+                    rec2desc = "We've detected that you have far more money in your savings account that you need to cover a few months' emergencies. Instead of letting it sit around and collect dust, you should invest it instead, so that it can appreciate in value over time!"
+                    break;
+            }
+
+            switch (rec3title) {
+                case "moveOutCity":
+                    rec3desc = "We've detected that your rent, while reasonable for your area, is higher than the national average. If you're able to, moving to cheaper cities while keeping your same job is a strong long-term decision that will improve your financial health over time drastically."
+                    break;
+                case "getBetterJob":
+                    rec3desc = "We've detected that you seem to be making less per hour than most peers in your chosen career do. We recommend working on your professional skills, applying to other positions within your job field, and focusing on networking to find new opportunities for employment."
+                    break;
+                case "payOffSmallDebts":
+                    rec3desc = "We've detected that you seem to have one or more small debts that you could easily pay off with only a small fraction of your income. Set some money aside and pay them off - even if they aren't significant, taking debts off your balance sheet will make you feel more financially secure!"
+                    break;
+                case "lessTakeout":
+                    rec3desc = "We've detected that you're spending lots of money on takeout for your meals, rather than cooking for yourself. Cooking can be intimidating, but it is always cheaper, healthier, and often more delicious than takeout food. Ask our chatbot about ways to reduce your takeout expenses!"
+                    break;
+                case "cheaperGroceries":
+                    rec3desc = "We've detected that you're spending a larger amount of money on groceries every week than the norm. Make sure to plan out meals to make sure you use ingredients before they spoil, and consider store brand items to decrease costs."
+                    break;
+                case "lessEntertainment":
+                    rec3desc = "We work to live, not the other way around, but sometimes getting out of debt requires sacrifices. A good budgeting rule is the 50/30/20 rule, where 30% or less of your income goes to unnecessary but fun things you want!"
+                    break;
+                case "workMoreGigs":
+                    rec3desc = "To get out of debt, there are plenty of gig-based work opportunities such as doordash, instacart, or uber to consider. Consider using some of your time to work side gigs to help supplement your income and make progress toward your financial goals!"
+                    break;
+                case "endSubscriptions":
+                    rec3desc = "We've detected that you're spending a large amount of money on various subscription services. Consider reviewing them for any that you don't use often, focusing on using it for anything you need immediately before canceling it until you need it again."
+                    break;
+                case "getRoommates":
+                    rec3desc = "Rent prices are one of the largest expenses for modern workers, but getting one or more roommates to help split the monthly rent bills is by far the easiest way to help mitigate high rent expenditures."
+                    break;
+                case "debtSettlement":
+                    rec3desc = "There are many services online that will allow you to settle and consilidate your debts into one much more manageble debt to pay back as you're able. Ask our chatbot about debt settlement opportunities!"
+                    break;
+                case "bankruptcy":
+                    rec3desc = "If there are truly no better options, one always has the option of declaring bankruptcy. Think carefully and ask our chatbot questions about this: bankruptcy wipes away most debts, but it will heavily impact your credit score and make future credit very hard to obtain."
+                    break;
+                case "buildSavings":
+                    rec3desc = "While trapped in a spiral of debt, it's easy to feel like every spare penny you own should go toward paying off that debt. In truth, doing this will just put you right back in debt the second another large unexpected expense occurs. Try instead to have three months' expenses saved in an emergency fund, just in case, before paying off debts beyond minimum payments!"
+                    break;
+                case "saveMoreMoney":
+                    rec3desc = "We've detected that you're saving less than 20% of your income - according to the 50/30/20 rule, 20% of your income should go straight to a savings account, either for short-term emergency coverage or toward a long-term retirement account!"
+                    break;
+                case "investSavings":
+                    rec3desc = "We've detected that you have far more money in your savings account that you need to cover a few months' emergencies. Instead of letting it sit around and collect dust, you should invest it instead, so that it can appreciate in value over time!"
+                    break;
+            }
+            recommendationData = JSON.parse('{"rec3title":,"rec2title":"Pay off credit card debts before student loans","rec2desc":"Consider shifting extra payments to credit cards for maximum interest savings!","rec1title":"Cut down on takeout spending", "rec1desc":"Save money by meal prepping at home instead of frequent takeout orders."}');
         return recommendationData;
     }
 
