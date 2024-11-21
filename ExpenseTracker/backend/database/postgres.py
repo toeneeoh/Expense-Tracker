@@ -29,6 +29,8 @@ def drop_users_table():
                 cur.execute("DROP TABLE IF EXISTS expenses CASCADE;")
                 cur.execute("DROP TABLE IF EXISTS incomes CASCADE;")
                 cur.execute("DROP TABLE IF EXISTS debts CASCADE;")
+                cur.execute("DROP TABLE IF EXISTS monthly_total_incomes CASCADE;")
+                cur.execute("DROP TABLE IF EXISTS monthly_total_expenses CASCADE;")
                 print("All tables dropped successfully.")
         except Exception as e:
             print(f"Error dropping table: {e}")
@@ -52,7 +54,9 @@ def init_db():
             print("Database initialized successfully.")
 
 def get_item(item="all", username="test", table="users"):
-    """Fetches specified column(s) or all columns (if item is 'all') from the specified table for the given user."""
+    """
+    Fetches specified column(s) or all columns (if item is 'all') from the specified table for the given user.
+    """
     with connect_db() as conn:
         with conn.cursor() as cur:
             if item.lower() == "all":
@@ -61,9 +65,9 @@ def get_item(item="all", username="test", table="users"):
                     table=sql.Identifier(table)
                 )
                 cur.execute(query, (username,))
-                result = cur.fetchone()
+                result = cur.fetchall()  # Fetch all rows
                 colnames = [desc[0] for desc in cur.description]  # Get column names
-                return dict(zip(colnames, result)) if result else None
+                return [dict(zip(colnames, row)) for row in result] if result else None
             else:
                 # Query to fetch a specific column
                 query = sql.SQL("SELECT {field} FROM {table} WHERE username = %s").format(
@@ -71,7 +75,7 @@ def get_item(item="all", username="test", table="users"):
                     table=sql.Identifier(table)
                 )
                 cur.execute(query, (username,))
-                result = cur.fetchone()
+                result = cur.fetchone()  # Fetch one row for a specific column
                 return result[0] if result else None
 
 
@@ -92,3 +96,25 @@ def push_item(item, value, username="test", table="users"):
             # Execute query
             cur.execute(query, (username, value))
             return f"Inserted/Updated {item} in table {table} for user {username}"
+
+def insert_row(data: dict, table: str):
+    """Inserts a new row into the specified table."""
+    with connect_db() as conn:
+        with conn.cursor() as cur:
+            # Dynamically construct the query
+            columns = sql.SQL(', ').join(map(sql.Identifier, data.keys()))
+            placeholders = sql.SQL(', ').join(sql.Placeholder() * len(data))
+            query = sql.SQL("""
+                INSERT INTO {table} ({columns})
+                VALUES ({values})
+                RETURNING id
+            """).format(
+                table=sql.Identifier(table),
+                columns=columns,
+                values=placeholders
+            )
+
+            # Execute the query with the provided data
+            cur.execute(query, tuple(data.values()))
+            new_id = cur.fetchone()[0]  # Fetch the newly inserted row's ID
+            return f"Inserted new row into {table} with ID: {new_id}"
