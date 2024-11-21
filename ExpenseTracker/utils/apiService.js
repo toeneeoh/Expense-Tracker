@@ -107,27 +107,6 @@ class ApiService {
         }
     }
 
-    // Insert a row into the database
-    async insertRow(data, table) {
-        try {
-            const response = await fetch(`${this.baseUrl}/database/insert_row`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ table, data })
-            });
-
-            const rawResponse = await response.text();
-            const jsonResponse = JSON.parse(rawResponse);
-
-            return jsonResponse;
-        } catch (error) {
-            console.error('API Error:', error);
-            throw error;
-        }
-    }
-
     // Test a username and password in the DB
     async checkUserCredentials(username, password) {
         try {

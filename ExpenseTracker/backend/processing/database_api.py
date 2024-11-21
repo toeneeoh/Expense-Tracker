@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from database.postgres import get_item, push_item, insert_row
+from database.postgres import get_item, push_item
 
 bp = Blueprint('database', __name__, url_prefix='/database')
 
@@ -42,29 +42,6 @@ def push_to_database():
         return jsonify({"message": item_value}), 200
     except Exception as error:
         return jsonify({"error": str(error)}), 500
-
-@bp.route('/insert_row', methods=['POST', 'OPTIONS'])
-def insert_row_db():
-    if request.method == 'OPTIONS':
-        return '', 200
-
-    try:
-        data = request.get_json()
-        table = data.get('table')
-        row_data = data.get('data')  # `data` contains column-value pairs for the new row
-
-        if not table or not row_data:
-            return jsonify({"error": "Missing required fields 'table' or 'data'"}), 400
-
-        new_id = insert_row(row_data, table)  # This should insert the row and return the new ID
-
-        if new_id is not None:
-            return jsonify({"message": f"Row inserted into {table} with ID: {new_id}", "id": new_id}), 201
-        else:
-            return jsonify({"error": "Failed to insert the row."}), 500
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
 
 @bp.route('/login', methods=['POST', 'OPTIONS'])
 def login():
