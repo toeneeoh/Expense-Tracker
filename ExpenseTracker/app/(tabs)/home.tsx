@@ -357,6 +357,7 @@
 // };
 
 import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView, StyleSheet, View, Text, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -372,6 +373,45 @@ const totalExpenses = userData.expenses.reduce((acc, expense) => acc + expense[1
 const totalDebt = userData["debts"].reduce((acc, debt) => acc + debt[1], 0).toFixed(2);
 
 export default function HomeScreen() {
+
+  const [userData, setUserData] = useState(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+  const [incomeData, setIncomeData] = useState(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+  const [expenseData, setExpenseData] = useState(JSON.parse('{"expenses":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+
+  useEffect(() => { fetchData() }, [])
+
+  //hardcode to always do test user for now
+  const fetchData = async () => {
+      try {
+          //var incomingData = await ApiService.getFromDatabase("all", "test", "users");
+          //console.log(incomingData)
+          //setUserData(incomingData);
+          //incomingData = await ApiService.getFromDatabase("all", "test", "incomes");
+          //console.log(incomingData)
+          //setIncomeData(JSON.stringify(incomingData));
+          //incomingData = await ApiService.getFromDatabase("all", "test", "expenses");
+          //console.log(incomingData)
+          //setExpenseData(incomingData);
+          //setUserData(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+          setIncomeData(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+          setExpenseData(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+      } catch (error) {
+          console.error('Error fetching item:', error)
+      }
+  };
+  //setUserData(JSON.parse('{"monthlyTotalIncomes":[["Oct2024", 1350.42], ["Sep2024", 1324.19]],"monthlyTotalExpenses":[["Oct2024", 1500.19], ["Sep2024", 1324.19], ["Aug2024", 1631.19]],"savings": 76.45,"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]],"expenses":[["Rent",1200],["Groceries",400],["Subscriptions",200],["Dining",150]],"debts":[["Credit Card A",150.23,9.20],["Credit Card B",45.82,6.50],["Student Loans",15412.36,3.50]]}'));
+
+  const totalIncome = incomeData.incomes.reduce((acc, income) => acc + income[1], 0);
+  //const totalExpenses = userData.expenses.reduce((acc, expense) => acc + expense[1], 0);
+  //const totalDebt = userData["debts"].reduce((acc, debt) => acc + debt[1], 0).toFixed(2);
+  const totalExpenses = 0;
+  const totalDebt = 0;
+
+  if (!userData["expenses"]) return (
+      <Text style={styles.headerText}>Loading...</Text>
+  )
+
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#FFFFFF', dark: '#1B1B1B' }}
