@@ -25,14 +25,36 @@ export default function ApiTestScreen() {
     }
   };
 
-  const pushExpense = async () => {
+    const pushExpense = async () => {
     try {
       const result = await ApiService.pushToDatabase(expenseName, expenseAmount, userName, "expenses");
       alert(JSON.stringify(result));
     } catch (error) {
       console.error('Error pushing item:', error);
     }
-  };
+    };
+
+    const insertIncome = async () => {
+    try {
+        //const parsedRowData = JSON.parse(rowData); // Parse the JSON string to an object
+        const result = await ApiService.insertRow({ "username": "test", "income_name": incomeName, "income_frequency": "monthly", "income_amount": incomeAmount }, "incomes");
+        alert(JSON.stringify(result));
+     } catch (error) {
+                console.error('Error inserting row:', error);
+      }
+};
+
+const insertExpense = async () => {
+    try {
+        //const parsedRowData = JSON.parse(rowData); // Parse the JSON string to an object
+        const result = await ApiService.insertRow({ "username": "test", "expense_name": expenseName, "expense_frequency": "monthly", "expense_amount": expenseAmount }, "expenses");
+        alert(JSON.stringify(result));
+    } catch (error) {
+        console.error('Error inserting row:', error);
+    }
+};
+
+
 
   return (
     <ScrollView style={styles.scollStyle}>
@@ -52,7 +74,7 @@ export default function ApiTestScreen() {
         value={incomeAmount}
         onChangeText={setIncomeAmount}
       />
-      <Button title="Add Income" onPress={pushIncome} />
+      <Button title="Add Income" onPress={insertIncome} />
       {itemResponse ? <Text style={styles.result}>Fetched Item: {itemResponse}</Text> : null}
 
       <Text style={styles.title}>New Expense for This Month</Text>
@@ -69,7 +91,7 @@ export default function ApiTestScreen() {
         value={expenseAmount}
         onChangeText={setExpenseAmount}
       />
-      <Button title="Add Expense" onPress={pushExpense} />
+      <Button title="Add Expense" onPress={insertExpense} />
     </View>
     </ScrollView>
     );
