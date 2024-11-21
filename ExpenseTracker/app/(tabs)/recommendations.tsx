@@ -72,18 +72,243 @@
 // });
 
 
-import React, { useState } from 'react';
-import { StyleSheet, View, Image, TouchableOpacity, Animated, Easing } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, Button, StyleSheet, View, Image, TouchableOpacity, Animated, Easing } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ExternalLink } from '@/components/ExternalLink';
 import ThemedText from '@/components/ThemedText';
 import ThemedView from '@/components/ThemedView';
+import ApiService from '../../utils/apiService';
 
 // Dummy recommendation data
-const recommendationData = JSON.parse('{"rec3title":"End subscriptions you no longer use","rec2title":"Pay off credit card debts before student loans","rec2desc":"Consider shifting extra payments to credit cards for maximum interest savings!","rec1title":"Cut down on takeout spending", "rec1desc":"Save money by meal prepping at home instead of frequent takeout orders."}');
+var recommendationData = JSON.parse('{"rec3title":"End subscriptions you no longer use","rec2title":"Pay off credit card debts before student loans","rec2desc":"Consider shifting extra payments to credit cards for maximum interest savings!","rec1title":"Cut down on takeout spending", "rec1desc":"Save money by meal prepping at home instead of frequent takeout orders."}');
+//var recommendationData = ApiService.updateRecommendations()
+console.log(recommendationData)
 
 export default function RecommendationsScreen() {
+
+    const [userData, setUserData] = useState(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+    const [incomeData, setIncomeData] = useState(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+    const [expenseData, setExpenseData] = useState(JSON.parse('{"expenses":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+    const [debtData, setDebtData] = useState(JSON.parse('{"expenses":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+    const [monthlyIncomeData, setMonthlyIncomeData] = useState(JSON.parse('{"expenses":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+    const [monthlyExpenseData, setMonthlyExpenseData] = useState(JSON.parse('{"expenses":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+
+    const [dataFetched, setDataFetch] = useState(false)
+
+    useEffect(() => { fetchData() }, [dataFetched])
+    console.log(dataFetched)
+
+    //hardcode to always do test user for now
+    const fetchData = async () => {
+        console.log("start fetch here")
+        try {
+            var incomingData = await ApiService.getFromDatabase("all", "test", "users");
+            console.log(incomingData["all"])
+            setUserData(incomingData["all"]);
+            incomingData = await ApiService.getFromDatabase("all", "test", "incomes");
+            console.log(incomingData["all"])
+            setIncomeData(incomingData["all"]);
+            incomingData = await ApiService.getFromDatabase("all", "test", "expenses");
+            console.log(incomingData["all"])
+            setExpenseData(incomingData["all"]);
+            incomingData = await ApiService.getFromDatabase("all", "test", "debts");
+            console.log(incomingData["all"])
+            setDebtData(incomingData["all"]);
+
+            incomingData = await ApiService.getFromDatabase("all", "test", "monthly_total_incomes");
+            console.log(incomingData["all"])
+            setMonthlyIncomeData(incomingData["all"]);
+            incomingData = await ApiService.getFromDatabase("all", "test", "monthly_total_expenses");
+            console.log(incomingData["all"])
+            setMonthlyExpenseData(incomingData["all"]);
+
+            //setUserData(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+            //setIncomeData(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+            //setExpenseData(JSON.parse('{"expenses":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+            setDataFetch(true)
+            //console.log(dataFetched)
+        } catch (error) {
+            console.error('Error fetching item:', error)
+        }
+    };
+    //setUserData(JSON.parse('{"monthlyTotalIncomes":[["Oct2024", 1350.42], ["Sep2024", 1324.19]],"monthlyTotalExpenses":[["Oct2024", 1500.19], ["Sep2024", 1324.19], ["Aug2024", 1631.19]],"savings": 76.45,"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]],"expenses":[["Rent",1200],["Groceries",400],["Subscriptions",200],["Dining",150]],"debts":[["Credit Card A",150.23,9.20],["Credit Card B",45.82,6.50],["Student Loans",15412.36,3.50]]}'));
+
+    //  console.log(incomeData)
+    //  console.log(incomeData["incomes"])
+    //  console.log(incomeData["incomes"][0])
+    //  console.log(incomeData["incomes"][0][1])
+    // console.log(incomeData[0])
+    // console.log(incomeData[0][1])
+    //console.log(incomeData["incomes"][0][1])
+    //console.log(incomeData[0][1])
+    // console.log("length");
+    // console.log(incomeData["incomes"].length);
+
+    //return loading screen before ANY processing if data not ready!!
+    //console.log(userData[0]["job_title"])
+    if (!dataFetched) return (
+        <Text style={styles.headerText}>Loading...</Text>
+    )
+
+
+    //convert raw IncomeData and ExpenseData into JSON objects
+    var parsedIncomeData = "[";
+    for (let i = 0; i < incomeData.length; i++) {
+        //console.log("loop");
+        //console.log(incomeData["incomes"][i][1]);
+        //data={[["Job",3000],["Freelance",1500],["Dividends",500]]}
+        parsedIncomeData += "[\"" + incomeData[i]["income_name"] + "\"," + incomeData[i]["income_amount"] + "]"
+        if (i < incomeData.length - 1) {
+            parsedIncomeData += ","
+        }
+    }
+    parsedIncomeData += "]"
+    parsedIncomeData = JSON.parse(parsedIncomeData)
+
+    var parsedExpenseData = "[";
+    for (let i = 0; i < expenseData.length; i++) {
+        //console.log("loop");
+        //console.log(incomeData["incomes"][i][1]);
+        //data={[["Job",3000],["Freelance",1500],["Dividends",500]]}
+        parsedExpenseData += "[\"" + expenseData[i]["expense_name"] + "\"," + expenseData[i]["expense_amount"] + "]"
+        if (i < expenseData.length - 1) {
+            parsedExpenseData += ","
+        }
+    }
+    parsedExpenseData += "]"
+    parsedExpenseData = JSON.parse(parsedExpenseData)
+
+    function generateRecommendations() {
+        //javascript version of python script
+
+        //unsorted recommendationsList, as JSON
+        var uRecommendationsList = {
+            "moveOutCity": 100,
+            "getBetterJob": 100,
+            "payOffHighInterest": 0,
+            "payOffSmallDebts": 0,
+            "lessTakeout": 100,
+            "cheaperGroceries": 100,
+            "lessEntertainment": 100, //user should abide by the 50/30/20 rule, spending 30% or less of their income on entertainment
+            "workMoreGigs": 2, //user should work more hours by doordashing or instacarting
+            "endSubscriptions": 10,
+            "getRoommates" : 10, //user should get roommates to split rent
+            "debtSettlement": 2,
+            "bankruptcy": 1,
+            "buildSavings": -100, //user should at least have 1 month of expenses in an emergency savings before paying down any debt at all, to avoid going into greater debt
+            "saveMoreMoney": -100, //user should save 20% or more of their income
+            "investSavings": -100, //user has a large amount of uninvested savings, more than one month's total expenses
+        }
+
+        var expenseTotal = parseFloat(userData[0]["expenseOther"]) + parseFloat(userData[0]["expenseGroceries"]) + parseFloat(userData[0]["expenseDining"]) + parseFloat(userData[0]["expenseRent"]) + parseFloat(userData[0]["expenseSubscriptions"]) + parseFloat(userData[0]["expenseEntertainment"])
+        var incomeTotal = parseFloat(userData[0]["incomeJob"]) + parseFloat(userData[0]["incomeOther"])
+
+        console.log(expenseTotal)
+        console.log(incomeTotal)
+
+        var cityAverage = 0
+
+        if (userData[0]["city_name"] == "Washington, D.C.") {
+            if (userData[0]["bedrooms_needed"] == 1) {
+                cityAverage = 1855.00
+            } else if (userData[0]["bedrooms_needed"] == 2) {
+                cityAverage = 3084.00
+            } else if (userData[0]["bedrooms_needed"] == 3) {
+                cityAverage = 3937.00
+            } else if (userData[0]["bedrooms_needed"] == 4) {
+                cityAverage = 5366.00
+            } else {
+                cityAverage = 2286.00
+            }
+        } else if (userData[0]["city_name"] == "Fairfax") {
+            if (userData[0]["bedrooms_needed"] == 1) {
+                cityAverage = 1858.00
+            } else if (userData[0]["bedrooms_needed"] == 2) {
+                cityAverage = 2514.00
+            } else if (userData[0]["bedrooms_needed"] == 3) {
+                cityAverage = 2872.00
+            } else if (userData[0]["bedrooms_needed"] == 4) {
+                cityAverage = 3474.00
+            } else {
+                cityAverage = 2081.00
+            }
+        } else if (userData[0]["city_name"] == "Arlington") {
+            if (userData[0]["bedrooms_needed"] == 1) {
+                cityAverage = 2047.00
+            } else if (userData[0]["bedrooms_needed"] == 2) {
+                cityAverage = 3089.00
+            } else if (userData[0]["bedrooms_needed"] == 3) {
+                cityAverage = 4082.00
+            } else if (userData[0]["bedrooms_needed"] == 4) {
+                cityAverage = 6037.00
+            } else {
+                cityAverage = 2341.00
+            }
+        } else {
+            //default value if city not found for some reason, average nationwide rent price
+            cityAverage = 1558.00
+        }
+
+        var jobAverage = 0 //hourly rate
+
+        switch (userData[0]["job_title"]) {
+            case "Software Engineer":
+                jobAverage = 45.13;
+                break;
+            case "Finance Analyst":
+                jobAverage = 39.48;
+                break;
+            case "Lawyer":
+                jobAverage = 40.52;
+                break;
+            case "Blue-Collar Worker": //plumbers, mechanics, electricians, etc.
+                jobAverage = 25.69;
+                break;
+            case "Customer Service Worker": //unskilled entry - level customer service: cashier, waiter, etc
+                jobAverage = 14.72;
+                break;
+        }
+
+        uRecommendationsList["moveInCity"] = (userData[0]["expense_rent"] - (cityAverage / userData[0]["roommatesNum"]))
+        uRecommendationsList["moveOutCity"] = (userData[0]["expense_rent"] - 1558.00)
+        uRecommendationsList["getBetterJob"] = ((userData[0]["hourly_rate"] - jobAverage) * userData[0]["weekly_hours"])
+        uRecommendationsList["lessTakeout"] = (userData[0]["expense_takeout"])
+        uRecommendationsList["cheaperGroceries"] = ((userData[0]["expense_groceries"] - (250.00 * userData[0]["dependents_num"])) * userData["dependents_num"])
+        uRecommendationsList["lessEntertainment"] = ((userData[0]["expense_entertainment"] + userData[0]["expense_dining"] + userData["expense_subscriptions"]) - (incomeTotal * 0.3))
+        uRecommendationsList["workMoreGigs"] = ((35 - userData[0]["weekly_hours"]) * 12)
+
+        var totalDebtPayments = 0
+
+        for (let i = 0; i < debtData.length; i++) {
+            totalDebtPayments = totalDebtPayments + debtData[i]["debt_amount"]
+
+            if (debtData[i]["debt_amount"] < incomeTotal * 0.1) {
+                uRecommendationsList["payOffSmallDebts"] = incomeTotal * 0.1;
+            }
+        }
+
+        if (userData[0]["roommates_num"] < 1 && userData[0]["expense_rent"] > cityAverage) {
+            uRecommendationsList["getRoommates"] = (100.00)
+        }
+
+        if (totalDebtPayments > 0 && userData["savings"] < expenseTotal) {
+            uRecommendationsList["buildSavings"] = (75.00)
+        }
+
+        if (userData["user_goal"] != "debt") {
+            uRecommendationsList["saveMoreMoney"] = ((incomeTotal * 0.2) - userData[0]["savings_increase"]) * 5
+            uRecommendationsList["investSavings"] = (userData[0]["savings"] - expenseTotal) / 10
+        }
+
+        //rList is the sorted recommendation list to be returned
+        rList = uRecommendationsList.sort()
+
+
+        return recommendationData;
+    }
+
   return (
     <ParallaxScrollView headerBackgroundColor={{ light: '#FFFFFF', dark: '#00000' }}>
       {/* Circular Image Above Title */}
@@ -98,7 +323,10 @@ export default function RecommendationsScreen() {
       </View>
 
       {/* Recommendations Section */}
-      <ThemedView style={styles.recommendationsContainer}>
+          <ThemedView style={styles.recommendationsContainer}>
+              <Button title="Refresh Recommendations" onPress={generateRecommendations} />
+              &nbsp;
+
         <RecommendationCard
           title={recommendationData["rec1title"]}
           description={recommendationData["rec1desc"]}

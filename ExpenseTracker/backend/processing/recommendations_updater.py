@@ -56,14 +56,13 @@ def update_recommendations():
     "lessEntertainment" : 100, #user should abide by the 50/30/20 rule, spending 30% or less of their income on entertainment
     "workMoreGigs" : 2, #user should work more hours by doordashing or instacarting
     "endSubscriptions" : 10, #todo
+    "getRoommates" : 10, #user should get roommates to split rent
     "debtSettlement" : 2, 
     "bankruptcy" : 1,
     "buildSavings" : -100, #user should at least have 1 month of expenses in an emergency savings before paying down any debt at all, to avoid going into greater debt
     "saveMoreMoney" : -100, #user should save 20% or more of their income
     "investSavings" : -100, #user has a large amount of uninvested savings, more than one month's total expenses
     }
-TODO: get roommates
-
     expenseTotal = userData["expenseOther"] + userData["expenseGroceries"] + userData["expenseDining"]  + userData["expenseRent"]  + userData["expenseSubscriptions"]  + userData["expenseEntertainment"] + userData["expenseUtilities"]  + userData["expenseCar"]
     incomeTotal = userData["incomeJob"] + userData["incomeOther"]
 
@@ -184,8 +183,11 @@ TODO: get roommates
 
     uRecommendationsList["payOffHighInterest"] = () #if user is spending lots on low interest debts and not high interest ones
 
+    if (userData["roommates"] < 1 and userData["expenseRent"] > cityAverage):
+        uRecommendationsList["getRoommates"] = (100.00)
+
     if (totalDebtPayments > 0 and userData["savings"] < expenseTotal):
-        uRecommendationsList["buildSavings"] = (1000000)
+        uRecommendationsList["buildSavings"] = (10000.00)
 
     if (userData["userGoal"] != "debt"):
         uRecommendationsList["saveMoreMoney"] = ((incomeTotal*0.2)-userData["savingsIncrease"])*5

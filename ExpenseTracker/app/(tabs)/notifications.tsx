@@ -202,6 +202,7 @@ import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, Keyboard
 import ApiService from '../../utils/apiService';
 
 const top3Recommendations = JSON.parse('{"rec1title":"lessTakeout","rec2title":"endSubscriptions","rec3title":"payOffHighInterest"}')
+//var top3Recommendations = ApiService.updateRecommendations()
 
 
 export default function NotificationsScreen() {

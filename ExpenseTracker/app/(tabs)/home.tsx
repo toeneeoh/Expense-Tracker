@@ -418,6 +418,11 @@ export default function HomeScreen() {
   };
   //setUserData(JSON.parse('{"monthlyTotalIncomes":[["Oct2024", 1350.42], ["Sep2024", 1324.19]],"monthlyTotalExpenses":[["Oct2024", 1500.19], ["Sep2024", 1324.19], ["Aug2024", 1631.19]],"savings": 76.45,"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]],"expenses":[["Rent",1200],["Groceries",400],["Subscriptions",200],["Dining",150]],"debts":[["Credit Card A",150.23,9.20],["Credit Card B",45.82,6.50],["Student Loans",15412.36,3.50]]}'));
 
+    console.log("User Data")
+    console.log(userData)
+    console.log(userData[0])
+    console.log(userData[0]["user_email"])
+
   //  console.log(incomeData)
   //  console.log(incomeData["incomes"])
   //  console.log(incomeData["incomes"][0])
