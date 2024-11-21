@@ -6,16 +6,17 @@ import { useUser } from '../../context/UserContext';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 
 export default function ApiTestScreen() {
-  const [username, setUsername] = useState('');  // Username input
-  const [password, setPassword] = useState('');  // Password input
+  const [username, setUsername] = useState(''); // Username input
+  const [password, setPassword] = useState(''); // Password input
   const { updateUserData } = useUser(); // Access updateUserData from UserContext
-  const [loginMessage, setLoginMessage] = useState('');  // Login feedback message
+  const [loginMessage, setLoginMessage] = useState(''); // Login feedback message
   const [inputText, setInputText] = useState('');
   const [responseText, setResponseText] = useState('');
-  const [item, setItem] = useState('');  // For fetching an item
-  const [itemResponse, setItemResponse] = useState('');  // Response for fetched item
-  const [updateItem, setUpdateItem] = useState('');  // For item to update
-  const [updateValue, setUpdateValue] = useState('');  // New value for updating item
+  const [item, setItem] = useState(''); // For fetching an item
+  const [itemResponse, setItemResponse] = useState(''); // Response for fetched item
+  const [updateItem, setUpdateItem] = useState(''); // For item to update
+  const [updateValue, setUpdateValue] = useState(''); // New value for updating item
+  const [tableName, setTableName] = useState(''); // Table name for fetching data
 
   const userName = useUserName();
 
@@ -45,26 +46,26 @@ export default function ApiTestScreen() {
 
   // Fetch from database test
   const fetchData = async () => {
-    if (item) {
+    if (item && tableName) {
       try {
-        const result = await ApiService.getFromDatabase(item, userName, "users");
+        const result = await ApiService.getFromDatabase(item, userName, tableName);
         setItemResponse(JSON.stringify(result));
       } catch (error) {
-        console.error('Error fetching item:', error)
+        console.error('Error fetching item:', error);
       }
     } else {
-      setItemResponse('No user data available or item not specified');
+      setItemResponse('Item or table name not specified.');
     }
   };
 
   // Push to database test
   const pushData = async () => {
-      try {
-        const result = await ApiService.pushToDatabase(updateItem, updateValue, userName, "users");
-        alert(JSON.stringify(result))
-      } catch (error) {
-        console.error('Error fetching item:', error)
-      }
+    try {
+      const result = await ApiService.pushToDatabase(updateItem, updateValue, userName, tableName);
+      alert(JSON.stringify(result));
+    } catch (error) {
+      console.error('Error pushing item:', error);
+    }
   };
 
   return (
@@ -102,6 +103,12 @@ export default function ApiTestScreen() {
 
       <TextInput
         style={styles.input}
+        placeholder="Enter table name"
+        value={tableName}
+        onChangeText={setTableName}
+      />
+      <TextInput
+        style={styles.input}
         placeholder="Enter item to fetch"
         value={item}
         onChangeText={setItem}
@@ -111,6 +118,12 @@ export default function ApiTestScreen() {
 
       <Text style={styles.title}>Push Data</Text>
 
+      <TextInput
+        style={styles.input}
+        placeholder="Enter table name"
+        value={tableName}
+        onChangeText={setTableName}
+      />
       <TextInput
         style={styles.input}
         placeholder="Enter item to update (e.g., job)"
