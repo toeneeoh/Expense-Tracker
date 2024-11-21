@@ -1,5 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import { View, Text, Picker, StyleSheet } from 'react-native';
 
 interface DropdownFieldProps {
   label: string;
@@ -22,7 +21,5 @@ export default function DropdownField({ label, options }: DropdownFieldProps) {
 const styles = StyleSheet.create({
   container: {
     marginVertical: 8,
-    height: 40,
-    width: '100%',
   },
 });

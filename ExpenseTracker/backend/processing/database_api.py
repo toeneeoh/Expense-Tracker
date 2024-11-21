@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from database.postgres import get_item, push_item
+from database.postgres import get_item, push_item, get_user_data
 
 bp = Blueprint('database', __name__, url_prefix='/database')
 
@@ -17,7 +17,10 @@ def get_from_database():
         return jsonify({"error": "No item found"}), 400
 
     try:
-        item_value = get_item(item, username, table) # String or dict
+        if item == "all":
+            item_value = get_user_data(username) # Returns a dict
+        else:
+            item_value = get_item(item, username, table) # Returns a string (?)
 
         if item_value is not None:
             return jsonify({item: item_value})
