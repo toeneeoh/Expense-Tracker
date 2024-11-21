@@ -357,6 +357,7 @@
 // };
 
 import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView, StyleSheet, View, Text, Pressable } from 'react-native';
 import { Platform, ScrollView, StyleSheet, View, Text, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -413,6 +414,24 @@ export default function HomeScreen() {
           //setExpenseData(JSON.parse('{"expenses":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
           setDataFetch(true)
           //console.log(dataFetched)
+
+  useEffect(() => { fetchData() }, [])
+
+  //hardcode to always do test user for now
+  const fetchData = async () => {
+      try {
+          //var incomingData = await ApiService.getFromDatabase("all", "test", "users");
+          //console.log(incomingData)
+          //setUserData(incomingData);
+          //incomingData = await ApiService.getFromDatabase("all", "test", "incomes");
+          //console.log(incomingData)
+          //setIncomeData(JSON.stringify(incomingData));
+          //incomingData = await ApiService.getFromDatabase("all", "test", "expenses");
+          //console.log(incomingData)
+          //setExpenseData(incomingData);
+          //setUserData(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+          setIncomeData(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+          setExpenseData(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
       } catch (error) {
           console.error('Error fetching item:', error)
       }
@@ -481,6 +500,15 @@ for (let i = 0; i < incomeData.length; i++) {
   const totalExpenses = 0;
 
   console.log(userData[0]["savings"])
+  const totalIncome = incomeData.incomes.reduce((acc, income) => acc + income[1], 0);
+  //const totalExpenses = userData.expenses.reduce((acc, expense) => acc + expense[1], 0);
+  //const totalDebt = userData["debts"].reduce((acc, debt) => acc + debt[1], 0).toFixed(2);
+  const totalExpenses = 0;
+  const totalDebt = 0;
+
+  if (!userData["expenses"]) return (
+      <Text style={styles.headerText}>Loading...</Text>
+  )
 
 
   return (

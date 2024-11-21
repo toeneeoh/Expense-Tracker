@@ -21,6 +21,7 @@ def get_from_database():
             item_value = get_user_data(username) # Returns a dict
         else:
             item_value = get_item(item, username, table) # Returns a string (?)
+        item_value = get_item(item, username, table) # Returns a string or dict
 
         item_value = get_item(item, username, table) # Returns a string or dict
 
