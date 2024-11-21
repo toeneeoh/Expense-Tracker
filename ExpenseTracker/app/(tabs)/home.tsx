@@ -374,6 +374,10 @@ export default function HomeScreen() {
   const [userData, setUserData] = useState(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
   const [incomeData, setIncomeData] = useState(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
   const [expenseData, setExpenseData] = useState(JSON.parse('{"expenses":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+  const [debtData, setDebtData] = useState(JSON.parse('{"expenses":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+  const [monthlyIncomeData, setMonthlyIncomeData] = useState(JSON.parse('{"expenses":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+  const [monthlyExpenseData, setMonthlyExpenseData] = useState(JSON.parse('{"expenses":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+  
   const [dataFetched, setDataFetch] = useState(false)
 
   useEffect(() => { fetchData() }, [dataFetched])
@@ -392,6 +396,17 @@ export default function HomeScreen() {
           incomingData = await ApiService.getFromDatabase("all", "test", "expenses");
           console.log(incomingData["all"])
           setExpenseData(incomingData["all"]);
+          incomingData = await ApiService.getFromDatabase("all", "test", "debts");
+          console.log(incomingData["all"])
+          setDebtData(incomingData["all"]);
+
+          incomingData = await ApiService.getFromDatabase("all", "test", "monthly_total_incomes");
+          console.log(incomingData["all"])
+          setMonthlyIncomeData(incomingData["all"]);
+          incomingData = await ApiService.getFromDatabase("all", "test", "monthly_total_expenses");
+          console.log(incomingData["all"])
+          setMonthlyExpenseData(incomingData["all"]);
+
           //setUserData(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
           //setIncomeData(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
           //setExpenseData(JSON.parse('{"expenses":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
@@ -420,21 +435,49 @@ export default function HomeScreen() {
     <Text style={styles.headerText}>Loading...</Text>
 )
 
-  var totalIncome = 0 + 0
-  //console.log(incomeData[0])
-  //console.log(incomeData[1])
-  //console.log(incomeData[0]["income_amount"])
-  for (let i = 0; i < incomeData.length; i++) {
+
+//convert raw IncomeData and ExpenseData into JSON objects
+var parsedIncomeData = "[";
+for (let i = 0; i < incomeData.length; i++) {
+  //console.log("loop");
+  //console.log(incomeData["incomes"][i][1]);
+  //data={[["Job",3000],["Freelance",1500],["Dividends",500]]}
+  parsedIncomeData += "[\"" + incomeData[i]["income_name"] + "\"," + incomeData[i]["income_amount"] + "]"
+  if (i < incomeData.length-1){
+    parsedIncomeData += ","
+  }
+}
+  parsedIncomeData+= "]"
+  parsedIncomeData = JSON.parse(parsedIncomeData)
+
+  var parsedExpenseData = "[";
+  for (let i = 0; i < expenseData.length; i++) {
     //console.log("loop");
     //console.log(incomeData["incomes"][i][1]);
+    //data={[["Job",3000],["Freelance",1500],["Dividends",500]]}
+    parsedExpenseData += "[\"" + expenseData[i]["expense_name"] + "\"," + expenseData[i]["expense_amount"] + "]"
+    if (i < expenseData.length-1){
+      parsedExpenseData += ","
+    }
+  }
+    parsedExpenseData+= "]"
+    parsedExpenseData = JSON.parse(parsedExpenseData)
+
+
+  var totalIncome = 0
+  for (let i = 0; i < incomeData.length; i++) {
     totalIncome += parseFloat(incomeData[i]["income_amount"])
   }
+  var totalDebt = 0
+  for (let i = 0; i < debtData.length; i++) {
+    totalDebt += parseFloat(debtData[i]["debt_amount"])
+  }
+
   //console.log(totalIncome)
   //totalIncome = incomeData["income_amount"].reduce((acc, income) => acc + income[1], 0);
   //const totalExpenses = userData.expenses.reduce((acc, expense) => acc + expense[1], 0);
   //const totalDebt = userData["debts"].reduce((acc, debt) => acc + debt[1], 0).toFixed(2);
   const totalExpenses = 0;
-  const totalDebt = 0;
 
   console.log(userData[0]["savings"])
 
@@ -475,13 +518,13 @@ export default function HomeScreen() {
           />
           <NeonCard
             title="Last Month's Expenses"
-            amount={`$${userData["monthlyTotalExpenses"][0][1].toFixed(2)}`}
+            amount={`$${parseFloat(monthlyExpenseData[0]["expense_amount"]).toFixed(2)}`}
             icon="cart-outline"
             colors={['#FFA726', '#FFD54F']}
           />
           <NeonCard
             title="Last Month's Income"
-            amount={`$${userData["monthlyTotalIncomes"][0][1].toFixed(2)}`}
+            amount={`$${parseFloat(monthlyIncomeData[0]["income_amount"]).toFixed(2)}`}
             icon="trending-up-outline"
             colors={['#42A5F5', '#64B5F6']}
           />
@@ -490,18 +533,18 @@ export default function HomeScreen() {
         <View style={styles.separator} />
 
         {/* Income Section */}
-        <Text style={styles.sectionTitle}>Incomes</Text>
+        <Text style={styles.sectionTitle}>This Month's Incomes</Text>
         <AlignedSection
-          data={userData.incomes}
+          data={parsedIncomeData}
           type="income"
           total={totalIncome}
           gradientColors={['#42A5F5', '#64B5F6']}
         />
 
         {/* Expenses Section */}
-        <Text style={styles.sectionTitle}>Expenses</Text>
+        <Text style={styles.sectionTitle}>This Month's Expenses</Text>
         <AlignedSection
-          data={userData.expenses}
+          data={parsedExpenseData}
           type="expense"
           total={totalExpenses}
           gradientColors={['#FF7043', '#FFAB91']}
@@ -556,7 +599,9 @@ const AlignedSection = ({
                   ? 'cart-outline'
                   : label === 'Subscriptions'
                   ? 'play-outline'
-                  : 'restaurant-outline'
+                  : label === 'Dining'
+                  ? 'restaurant-outline'
+                  : 'cash-outline'
               }
               size={32}
               color="#ffffff"

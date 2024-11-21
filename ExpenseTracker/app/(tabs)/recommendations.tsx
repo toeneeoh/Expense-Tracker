@@ -85,7 +85,7 @@ const recommendationData = JSON.parse('{"rec3title":"End subscriptions you no lo
 
 export default function RecommendationsScreen() {
   return (
-    <ParallaxScrollView headerBackgroundColor={{ light: '#FFFFFF', dark: '#FFFFFF' }}>
+    <ParallaxScrollView headerBackgroundColor={{ light: '#FFFFFF', dark: '#00000' }}>
       {/* Circular Image Above Title */}
       <View style={styles.headerContainer}>
         <Image
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     alignItems: 'center',
     marginTop: 20,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#00000',
     paddingBottom: 20,
   },
   headerImage: {
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#000', // Set the text color to black
+    color: '#FFF', // Set the text color to black
     textAlign: 'center',
   },
   recommendationsContainer: {
