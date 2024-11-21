@@ -123,7 +123,7 @@ export default function WelcomeScreen() {
                     source={require('@/assets/images/img.png')}
                     style={styles.reactLogo}
                 />
-                <ThemedText type="title" style={styles.titleText}>Welcome to the Expense Tracker</ThemedText>
+                <ThemedText type="title" style={styles.titleText}>Welcome to Budget Buddy!</ThemedText>
             </View>
 
             <View style={styles.buttonContainer}>
