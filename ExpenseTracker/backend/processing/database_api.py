@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from database.postgres import get_item, push_item, get_user_data
+from database.postgres import get_item, push_item
 
 bp = Blueprint('database', __name__, url_prefix='/database')
 
