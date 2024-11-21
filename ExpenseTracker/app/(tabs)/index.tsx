@@ -89,27 +89,32 @@ import ApiService from '../../utils/apiService';
 
 export default function WelcomeScreen() {
     const [inputText, setInputText] = useState('');
+    const [passwordText, setPasswordText] = useState('');
     const navigation = useNavigation() as any;
     const { updateUserData } = useUser(); // Access updateUserData from UserContext
 
     const handleGetStarted = () => {
         navigation.navigate('GoalsScreen');
+
     };
 
     const handleLogin = async () => {
-        const password = "1234"; // TODO: Add a password input
+        //const password = "1234"; // TODO: Add a password input
 
         console.log("Attempting to login as: " + inputText);
 
         try {
-            const result = await ApiService.checkUserCredentials(inputText, password);
+            console.log("Username:" + inputText)
+            console.log("Password:" + passwordText)
+
+            const result = await ApiService.checkUserCredentials(inputText, passwordText);
 
             if (result.authenticated) {
                 // Update user data in UserContext
                 updateUserData({ username: inputText });
                 navigation.navigate('settings');
             } else {
-                navigation.navigate('home');
+                alert("Invalid username or password! Please try again!");
             }
         } catch (error) {
             console.log("Login error: " + error);
@@ -128,7 +133,7 @@ export default function WelcomeScreen() {
 
             <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={handleGetStarted} style={styles.signUpButton}>
-                    <ThemedText style={styles.buttonText}>Sign Up with Email</ThemedText>
+                    <ThemedText style={styles.buttonText}>Sign Up</ThemedText>
                 </TouchableOpacity>
                 
                 <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
@@ -142,6 +147,14 @@ export default function WelcomeScreen() {
                 placeholderTextColor="#888"
                 value={inputText}
                 onChangeText={setInputText}
+            />
+
+            <TextInput
+                style={styles.input}
+                placeholder="Enter password here..."
+                placeholderTextColor="#888"
+                value={passwordText}
+                onChangeText={setPasswordText}
             />
         </ThemedView>
     );
