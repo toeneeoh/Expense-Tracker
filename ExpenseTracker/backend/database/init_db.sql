@@ -9,7 +9,11 @@ CREATE TABLE IF NOT EXISTS users (
     state_name VARCHAR(100),
     user_goal VARCHAR(50), -- User's financial goal ("debt", "savings", or "retirement")
     savings NUMERIC(12, 2), -- 12 digits, 2 decimals
-    weekly_hours INTEGER
+    investments NUMERIC(12, 2), -- 12 digits, 2 decimals
+    weekly_hours INTEGER,
+    roommates_num INTEGER,
+    dependents_num INTEGER,
+    bedrooms_needed INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS expenses (
@@ -37,8 +41,8 @@ CREATE TABLE IF NOT EXISTS debts (
 );
 
 -- Test user
-INSERT INTO users (username, user_email, job_title, password)
-VALUES ('test', 'johndoe@gmail.com', 'developer', '1234')
+INSERT INTO users (username, user_email, job_title, savings, password)
+VALUES ('test', 'johndoe@gmail.com', 'developer', '74.34','1234')
 ON CONFLICT (username) DO NOTHING;
 
 -- Insert test expenses
