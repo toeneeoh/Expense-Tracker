@@ -40,6 +40,20 @@ CREATE TABLE IF NOT EXISTS debts (
     debt_amount NUMERIC(10, 2)
 );
 
+CREATE TABLE IF NOT EXISTS monthlyTotalIncomes (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) REFERENCES users(username) ON DELETE CASCADE,
+    dataMonth VARCHAR(255),
+    income_amount NUMERIC(10, 2)
+);
+
+CREATE TABLE IF NOT EXISTS monthlyTotalExpenses (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) REFERENCES users(username) ON DELETE CASCADE,
+    dataMonth VARCHAR(255),
+    expense_amount NUMERIC(10, 2)
+);
+
 -- Test user
 INSERT INTO users (username, user_email, job_title, savings, password)
 VALUES ('test', 'johndoe@gmail.com', 'developer', '74.34','1234')
@@ -66,3 +80,17 @@ VALUES
     ('test', 'Credit Card A', 'Monthly', 150.23),
     ('test', 'Credit Card B', 'Monthly', 45.82),
     ('test', 'Student Loans', 'Monthly', 15412.36);
+
+-- Insert test monthly incomes
+INSERT INTO monthlyTotalIncomes (username, dataMonth, income_amount)
+VALUES 
+    ('test', 'Aug2024', 1500.19),
+    ('test', 'Sep2024', 1324.19),
+    ('test', 'Oct2024', 1631.19);
+
+    -- Insert test monthly expenses
+INSERT INTO monthlyTotalIncomes (username, dataMonth, income_amount)
+VALUES 
+    ('test', 'Aug2024', 1600.43),
+    ('test', 'Sep2024', 1284.37),
+    ('test', 'Oct2024', 1592.74);
