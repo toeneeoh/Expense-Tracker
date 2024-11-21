@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS users (
     rec3_title VARCHAR(100),
     rec1_desc VARCHAR(255),
     rec2_desc VARCHAR(255),
-    rec3_desc VARCHAR(255),
+    rec3_desc VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS expenses (
@@ -73,10 +73,12 @@ CREATE TABLE IF NOT EXISTS monthly_total_expenses (
 
 -- Test users
 INSERT INTO users (username, user_email, job_title, password, address, city_name, state_name, user_goal, savings, savings_increase, investments, weekly_hours, hourly_wage, roommates_num, dependents_num, bedrooms_needed, expense_other, expense_groceries, expense_takeout, expense_dining, expense_rent, expense_subscriptions, expense_entertainment, income_job, income_other)
-VALUES ('test', 'johndoe@gmail.com', 'developer', '1234', '123 Somewhere Street', 'Fairfax', 'VA', 'debt', '74.34', '21.38', '0.00', '27', '13.50', '1', '0', '0', '68.12', '113.78', '378.76', '43.12', '1600.00', '89.46', '212.43', '1900.00', '200.00')
-VALUES ('John Doe', 'johndoe@gmail.com', 'developer', '1234', '123 Somewhere Street', 'Fairfax', 'VA', 'debt', '74.34', '21.38', '0.00', '27', '13.50', '1', '0', '0', '68.12', '113.78', '378.76', '43.12', '1600.00', '89.46', '212.43', '1900.00', '200.00')
-VALUES ('Jane Doe', 'janedoe@gmail.com', 'Lawyer', '1234', '456 Elsewhere Street', 'Arlington', 'VA', 'retirement', '9819.48', '918.46', '760.14', '40', '50.00', '0', '1', '2', '113.84', '378.15', '148.76', '245.12', '2900.00', '18.98', '512.43', '8000.00', '900.00')
+VALUES 
+('test', 'johndoe@gmail.com', 'developer', '1234', '123 Somewhere Street', 'Fairfax', 'VA', 'debt', 74.34, 21.38, 0.00, 27, 13.50, 1, 0, 0, 68.12, 113.78, 378.76, 43.12, 1600.00, 89.46, 212.43, 1900.00, 200.00),
+('John Doe', 'johndoe@gmail.com', 'developer', '1234', '123 Somewhere Street', 'Fairfax', 'VA', 'debt', 74.34, 21.38, 0.00, 27, 13.50, 1, 0, 0, 68.12, 113.78, 378.76, 43.12, 1600.00, 89.46, 212.43, 1900.00, 200.00),
+('Jane Doe', 'janedoe@gmail.com', 'Lawyer', '1234', '456 Elsewhere Street', 'Arlington', 'VA', 'retirement', 9819.48, 918.46, 760.14, 40, 50.00, 0, 1, 2, 113.84, 378.15, 148.76, 245.12, 2900.00, 18.98, 512.43, 8000.00, 900.00)
 ON CONFLICT (username) DO NOTHING;
+
 
 -- Insert test expenses
 INSERT INTO expenses (username, expense_name, expense_frequency, expense_amount)
