@@ -358,20 +358,131 @@
 
 import React from 'react';
 import { ScrollView, StyleSheet, View, Text, Pressable } from 'react-native';
+import { Platform, ScrollView, StyleSheet, View, Text, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Animated, { FadeInUp, BounceIn } from 'react-native-reanimated';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
+import ApiService from '../../utils/apiService';
+import { useUserName } from '../../utils/getUserData';
+import { useUser } from '../../context/UserContext';
 
 // Mock User Data
-const userData = JSON.parse('{"monthlyTotalIncomes":[["Oct2024", 1350.42], ["Sep2024", 1324.19]],"monthlyTotalExpenses":[["Oct2024", 1500.19], ["Sep2024", 1324.19], ["Aug2024", 1631.19]],"savings": 76.45,"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]],"expenses":[["Rent",1200],["Groceries",400],["Subscriptions",200],["Dining",150]],"debts":[["Credit Card A",150.23,9.20],["Credit Card B",45.82,6.50],["Student Loans",15412.36,3.50]]}');
-
-// Calculations
-const totalIncome = userData.incomes.reduce((acc, income) => acc + income[1], 0);
-const totalExpenses = userData.expenses.reduce((acc, expense) => acc + expense[1], 0);
-const totalDebt = userData["debts"].reduce((acc, debt) => acc + debt[1], 0).toFixed(2);
+//const userData = JSON.parse('{"monthlyTotalIncomes":[["Oct2024", 1350.42], ["Sep2024", 1324.19]],"monthlyTotalExpenses":[["Oct2024", 1500.19], ["Sep2024", 1324.19], ["Aug2024", 1631.19]],"savings": 76.45,"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]],"expenses":[["Rent",1200],["Groceries",400],["Subscriptions",200],["Dining",150]],"debts":[["Credit Card A",150.23,9.20],["Credit Card B",45.82,6.50],["Student Loans",15412.36,3.50]]}');
 
 export default function HomeScreen() {
+
+  const [userData, setUserData] = useState(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+  const [incomeData, setIncomeData] = useState(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+  const [expenseData, setExpenseData] = useState(JSON.parse('{"expenses":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+  const [debtData, setDebtData] = useState(JSON.parse('{"expenses":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+  const [monthlyIncomeData, setMonthlyIncomeData] = useState(JSON.parse('{"expenses":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+  const [monthlyExpenseData, setMonthlyExpenseData] = useState(JSON.parse('{"expenses":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+  
+  const [dataFetched, setDataFetch] = useState(false)
+
+  useEffect(() => { fetchData() }, [dataFetched])
+  console.log(dataFetched)
+
+  //hardcode to always do test user for now
+  const fetchData = async () => {
+    console.log("start fetch here")
+      try {
+          var incomingData = await ApiService.getFromDatabase("all", "test", "users");
+          console.log(incomingData["all"])
+          setUserData(incomingData["all"]);
+          incomingData = await ApiService.getFromDatabase("all", "test", "incomes");
+          console.log(incomingData["all"])
+          setIncomeData(incomingData["all"]);
+          incomingData = await ApiService.getFromDatabase("all", "test", "expenses");
+          console.log(incomingData["all"])
+          setExpenseData(incomingData["all"]);
+          incomingData = await ApiService.getFromDatabase("all", "test", "debts");
+          console.log(incomingData["all"])
+          setDebtData(incomingData["all"]);
+
+          incomingData = await ApiService.getFromDatabase("all", "test", "monthly_total_incomes");
+          console.log(incomingData["all"])
+          setMonthlyIncomeData(incomingData["all"]);
+          incomingData = await ApiService.getFromDatabase("all", "test", "monthly_total_expenses");
+          console.log(incomingData["all"])
+          setMonthlyExpenseData(incomingData["all"]);
+
+          //setUserData(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+          //setIncomeData(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+          //setExpenseData(JSON.parse('{"expenses":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+          setDataFetch(true)
+          //console.log(dataFetched)
+      } catch (error) {
+          console.error('Error fetching item:', error)
+      }
+  };
+  //setUserData(JSON.parse('{"monthlyTotalIncomes":[["Oct2024", 1350.42], ["Sep2024", 1324.19]],"monthlyTotalExpenses":[["Oct2024", 1500.19], ["Sep2024", 1324.19], ["Aug2024", 1631.19]],"savings": 76.45,"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]],"expenses":[["Rent",1200],["Groceries",400],["Subscriptions",200],["Dining",150]],"debts":[["Credit Card A",150.23,9.20],["Credit Card B",45.82,6.50],["Student Loans",15412.36,3.50]]}'));
+
+  //  console.log(incomeData)
+  //  console.log(incomeData["incomes"])
+  //  console.log(incomeData["incomes"][0])
+  //  console.log(incomeData["incomes"][0][1])
+  // console.log(incomeData[0])
+  // console.log(incomeData[0][1])
+  //console.log(incomeData["incomes"][0][1])
+  //console.log(incomeData[0][1])
+  // console.log("length");
+  // console.log(incomeData["incomes"].length);
+
+  //return loading screen before ANY processing if data not ready!!
+  //console.log(userData[0]["job_title"])
+  if (!dataFetched) return (
+    <Text style={styles.headerText}>Loading...</Text>
+)
+
+
+//convert raw IncomeData and ExpenseData into JSON objects
+var parsedIncomeData = "[";
+for (let i = 0; i < incomeData.length; i++) {
+  //console.log("loop");
+  //console.log(incomeData["incomes"][i][1]);
+  //data={[["Job",3000],["Freelance",1500],["Dividends",500]]}
+  parsedIncomeData += "[\"" + incomeData[i]["income_name"] + "\"," + incomeData[i]["income_amount"] + "]"
+  if (i < incomeData.length-1){
+    parsedIncomeData += ","
+  }
+}
+  parsedIncomeData+= "]"
+  parsedIncomeData = JSON.parse(parsedIncomeData)
+
+  var parsedExpenseData = "[";
+  for (let i = 0; i < expenseData.length; i++) {
+    //console.log("loop");
+    //console.log(incomeData["incomes"][i][1]);
+    //data={[["Job",3000],["Freelance",1500],["Dividends",500]]}
+    parsedExpenseData += "[\"" + expenseData[i]["expense_name"] + "\"," + expenseData[i]["expense_amount"] + "]"
+    if (i < expenseData.length-1){
+      parsedExpenseData += ","
+    }
+  }
+    parsedExpenseData+= "]"
+    parsedExpenseData = JSON.parse(parsedExpenseData)
+
+
+  var totalIncome = 0
+  for (let i = 0; i < incomeData.length; i++) {
+    totalIncome += parseFloat(incomeData[i]["income_amount"])
+  }
+  var totalDebt = 0
+  for (let i = 0; i < debtData.length; i++) {
+    totalDebt += parseFloat(debtData[i]["debt_amount"])
+  }
+
+  //console.log(totalIncome)
+  //totalIncome = incomeData["income_amount"].reduce((acc, income) => acc + income[1], 0);
+  //const totalExpenses = userData.expenses.reduce((acc, expense) => acc + expense[1], 0);
+  //const totalDebt = userData["debts"].reduce((acc, debt) => acc + debt[1], 0).toFixed(2);
+  const totalExpenses = 0;
+
+  console.log(userData[0]["savings"])
+
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#FFFFFF', dark: '#1B1B1B' }}
@@ -387,9 +498,7 @@ export default function HomeScreen() {
         {/* Welcome Header */}
         <View style={styles.header}>
           <Text style={styles.headerText}>Welcome to Your Dashboard</Text>
-          <Text style={styles.subHeaderText}>
-            Track and manage your finances effortlessly!
-          </Text>
+          <Text style={styles.subHeaderText}>Track and manage your finances effortlessly!</Text>
         </View>
 
         {/* Overview Cards */}
@@ -402,19 +511,19 @@ export default function HomeScreen() {
           />
           <NeonCard
             title="Savings"
-            amount={`$${userData["savings"].toFixed(2)}`}
+            amount={`$${parseFloat(userData[0]["savings"]).toFixed(2)}`}
             icon="cash-outline"
             colors={['#4CAF50', '#81C784']}
           />
           <NeonCard
             title="Last Month's Expenses"
-            amount={`$${userData["monthlyTotalExpenses"][0][1].toFixed(2)}`}
+            amount={`$${parseFloat(monthlyExpenseData[0]["expense_amount"]).toFixed(2)}`}
             icon="cart-outline"
             colors={['#FFA726', '#FFD54F']}
           />
           <NeonCard
             title="Last Month's Income"
-            amount={`$${userData["monthlyTotalIncomes"][0][1].toFixed(2)}`}
+            amount={`$${parseFloat(monthlyIncomeData[0]["income_amount"]).toFixed(2)}`}
             icon="trending-up-outline"
             colors={['#42A5F5', '#64B5F6']}
           />
@@ -423,18 +532,18 @@ export default function HomeScreen() {
         <View style={styles.separator} />
 
         {/* Income Section */}
-        <Text style={styles.sectionTitle}>Incomes</Text>
+        <Text style={styles.sectionTitle}>This Month's Incomes</Text>
         <AlignedSection
-          data={userData.incomes}
+          data={parsedIncomeData}
           type="income"
           total={totalIncome}
           gradientColors={['#42A5F5', '#64B5F6']}
         />
 
         {/* Expenses Section */}
-        <Text style={styles.sectionTitle}>Expenses</Text>
+        <Text style={styles.sectionTitle}>This Month's Expenses</Text>
         <AlignedSection
-          data={userData.expenses}
+          data={parsedExpenseData}
           type="expense"
           total={totalExpenses}
           gradientColors={['#FF7043', '#FFAB91']}
@@ -469,7 +578,7 @@ const AlignedSection = ({
   data: any;
   type: string;
   total: any;
-  gradientColors: string[];
+  gradientColors: any;
 }) => {
   return (
     <View style={styles.alignedSectionContainer}>
@@ -489,7 +598,9 @@ const AlignedSection = ({
                   ? 'cart-outline'
                   : label === 'Subscriptions'
                   ? 'play-outline'
-                  : 'restaurant-outline'
+                  : label === 'Dining'
+                  ? 'restaurant-outline'
+                  : 'cash-outline'
               }
               size={32}
               color="#ffffff"
@@ -552,11 +663,19 @@ const styles = StyleSheet.create({
     width: '48%',
     borderRadius: 20,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 8,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 8,
+        elevation: 8,
+      },
+      default: {
+        "--opacity": "0.2",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, var(--opacity))"
+      },
+    })
   },
   neonGradient: {
     padding: 16,
@@ -594,10 +713,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F9F9F9',
     borderRadius: 12,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 10,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOpacity: 0.2,
+        shadowOffset: { width: 0, height: 4 },
+        shadowRadius: 10,
+      },
+      default: {
+        "--opacity": "0.2",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, var(--opacity))"
+      },
+    }),
     padding: 16,
     marginBottom: 12,
   },

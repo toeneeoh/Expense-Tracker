@@ -34,6 +34,15 @@ export default function TabLayout() {
           ),
         }}
           />
+      <Tabs.Screen
+        name="addScreen"
+        options={{
+          title: 'Add',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'add-circle' : 'add-circle-outline'} color={color} />
+          ),
+        }}
+          />
     <Tabs.Screen
         name="notifications"
         options={{
@@ -48,7 +57,7 @@ export default function TabLayout() {
         options={{
           title: 'User',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'settings' : 'settings-outline'} color={color} />
+            <TabBarIcon name={focused ? 'person' : 'person-outline'} color={color} />
           ),
         }}
       />

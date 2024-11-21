@@ -1,19 +1,17 @@
 import { ThemedView, ThemedText } from '@/components/ThemedComponents';
 import DropdownField from '@/components/DropdownField';
 import InputField from '@/components/InputField';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-
-const cities = ['Washington, D.C.', 'Fairfax', 'Arlington', 'Austin', 'Sacramento', 'Denver']; // Get more major cities
+const cities = ['Washington, D.C.', 'Fairfax', 'Arlington'];
 
 export default function ProfileScreen() {
   return (
     <ThemedView style={styles.container}>
 
-      <ThemedText type="title">Location Da</ThemedText>
+      <ThemedText type="title">Location Data</ThemedText>
 
           <DropdownField label="What city do you live in?" options={cities} />
-          <DropdownField label="What state do you live in?" options={cities} />
           <InputField label="What's your current address?" />
           <InputField label="How many financially independent roommates do you live with?" />
           <InputField label="How many financially dependent (i.e. children) do you live with?" />

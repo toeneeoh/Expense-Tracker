@@ -73,7 +73,7 @@
 
 
 import React, { useState } from 'react';
-import { StyleSheet, View, Image, TouchableOpacity, Animated, Easing } from 'react-native';
+import { StyleSheet, Platform, View, Image, Pressable, Animated, Easing } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ExternalLink } from '@/components/ExternalLink';
@@ -85,7 +85,7 @@ const recommendationData = JSON.parse('{"rec3title":"End subscriptions you no lo
 
 export default function RecommendationsScreen() {
   return (
-    <ParallaxScrollView headerBackgroundColor={{ light: '#FFFFFF', dark: '#FFFFFF' }}>
+    <ParallaxScrollView headerBackgroundColor={{ light: '#FFFFFF', dark: '#00000' }}>
       {/* Circular Image Above Title */}
       <View style={styles.headerContainer}>
         <Image
@@ -153,7 +153,7 @@ const RecommendationCard = ({ title, description, gradientColors, externalLink, 
   });
 
   return (
-    <TouchableOpacity onPress={toggleExpansion} style={styles.cardContainer}>
+    <Pressable onPress={toggleExpansion} style={styles.cardContainer}>
       <LinearGradient colors={gradientColors} style={styles.card}>
         <View style={styles.cardHeader}>
           <ThemedText type="subtitle" style={styles.cardTitle}>{title}</ThemedText>
@@ -171,7 +171,7 @@ const RecommendationCard = ({ title, description, gradientColors, externalLink, 
           </ExternalLink>
         </Animated.View>
       </LinearGradient>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     alignItems: 'center',
     marginTop: 20,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#00000',
     paddingBottom: 20,
   },
   headerImage: {
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#000', // Set the text color to black
+    color: '#FFF', // Set the text color to black
     textAlign: 'center',
   },
   recommendationsContainer: {
@@ -206,11 +206,19 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: 15,
     padding: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
-    elevation: 8,
+    ...Platform.select({
+    ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.4,
+        shadowRadius: 10,
+        elevation: 8,
+    },
+    default: {
+        "--opacity": "0.4",
+        boxShadow: "0 4px 10px rgba(0, 0, 0, var(--opacity))"
+    },
+    })
   },
   cardHeader: {
     flexDirection: 'row',
