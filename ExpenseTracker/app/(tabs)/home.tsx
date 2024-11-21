@@ -511,7 +511,7 @@ for (let i = 0; i < incomeData.length; i++) {
             colors={['#FF5252', '#FF8A80']}
           />
           <NeonCard
-            title="Savings"
+            title="Total Savings"
             amount={`$${parseFloat(userData[0]["savings"]).toFixed(2)}`}
             icon="cash-outline"
             colors={['#4CAF50', '#81C784']}
