@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
+import { ScrollView, View, TextInput, Button, Text, StyleSheet } from 'react-native';
 import ApiService from '../../utils/apiService';
 import { useUserName } from '../../utils/getUserData';
 import { useUser } from '../../context/UserContext';
+import ParallaxScrollView from '@/components/ParallaxScrollView';
 
 export default function ApiTestScreen() {
   const [username, setUsername] = useState('');  // Username input
@@ -66,8 +67,9 @@ export default function ApiTestScreen() {
       }
   };
 
-return (
-    <View style={styles.container}>
+  return (
+    <ScrollView style={styles.scollStyle}>
+      <View style={styles.container}>
       <Text style={styles.title}>Login Test</Text>
 
       {/* Username and Password Inputs */}
@@ -123,10 +125,20 @@ return (
       />
       <Button title="Push Data" onPress={pushData} />
     </View>
-  );
+  
+      
+    </ScrollView>
+
+
+    );
 }
 
 const styles = StyleSheet.create({
+  scollStyle: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
     padding: 16,
