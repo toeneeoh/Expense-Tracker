@@ -73,7 +73,7 @@
 
 
 import React, { useState } from 'react';
-import { StyleSheet, Platform, View, Image, Pressable, Animated, Easing } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, Animated, Easing } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ExternalLink } from '@/components/ExternalLink';
@@ -153,7 +153,7 @@ const RecommendationCard = ({ title, description, gradientColors, externalLink, 
   });
 
   return (
-    <Pressable onPress={toggleExpansion} style={styles.cardContainer}>
+    <TouchableOpacity onPress={toggleExpansion} style={styles.cardContainer}>
       <LinearGradient colors={gradientColors} style={styles.card}>
         <View style={styles.cardHeader}>
           <ThemedText type="subtitle" style={styles.cardTitle}>{title}</ThemedText>
@@ -171,7 +171,7 @@ const RecommendationCard = ({ title, description, gradientColors, externalLink, 
           </ExternalLink>
         </Animated.View>
       </LinearGradient>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 
@@ -206,19 +206,11 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: 15,
     padding: 15,
-    ...Platform.select({
-    ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.4,
-        shadowRadius: 10,
-        elevation: 8,
-    },
-    default: {
-        "--opacity": "0.4",
-        boxShadow: "0 4px 10px rgba(0, 0, 0, var(--opacity))"
-    },
-    })
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    elevation: 8,
   },
   cardHeader: {
     flexDirection: 'row',

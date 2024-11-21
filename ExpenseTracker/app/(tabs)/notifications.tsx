@@ -198,7 +198,7 @@
 
 
 import React, { useState } from 'react';
-import { View, Text, TextInput, Pressable, FlatList, StyleSheet, Keyboard } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, Keyboard } from 'react-native';
 import ApiService from '../../utils/apiService';
 
 const top3Recommendations = JSON.parse('{"rec1title":"lessTakeout","rec2title":"endSubscriptions","rec3title":"payOffHighInterest"}')
@@ -337,14 +337,14 @@ export default function NotificationsScreen() {
           onSubmitEditing={sendMessage} // Send message when Enter is pressed
           blurOnSubmit={false}          // Keeps the TextInput focused after sending
         />
-        <Pressable style={styles.sendButton} onPress={sendMessage}>
+        <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
           <Text style={styles.sendButtonText}>Send</Text>
-              </Pressable>
+              </TouchableOpacity>
               {//auto generate chatGPT advice to represent a day passing 
               }
-              <Pressable style={styles.sendButton} onPress={fetchAdvice}>
+              <TouchableOpacity style={styles.sendButton} onPress={fetchAdvice}>
                   <Text style={styles.sendButtonText}>Demo</Text>
-              </Pressable>
+              </TouchableOpacity>
           </View>
     </View>
   );

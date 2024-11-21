@@ -357,7 +357,7 @@
 // };
 
 import React from 'react';
-import { Platform, ScrollView, StyleSheet, View, Text, Pressable } from 'react-native';
+import { ScrollView, StyleSheet, View, Text, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Animated, { FadeInUp, BounceIn } from 'react-native-reanimated';
@@ -387,7 +387,9 @@ export default function HomeScreen() {
         {/* Welcome Header */}
         <View style={styles.header}>
           <Text style={styles.headerText}>Welcome to Your Dashboard</Text>
-          <Text style={styles.subHeaderText}>Track and manage your finances effortlessly!</Text>
+          <Text style={styles.subHeaderText}>
+            Track and manage your finances effortlessly!
+          </Text>
         </View>
 
         {/* Overview Cards */}
@@ -467,7 +469,7 @@ const AlignedSection = ({
   data: any;
   type: string;
   total: any;
-  gradientColors: any;
+  gradientColors: string[];
 }) => {
   return (
     <View style={styles.alignedSectionContainer}>
@@ -550,19 +552,11 @@ const styles = StyleSheet.create({
     width: '48%',
     borderRadius: 20,
     overflow: 'hidden',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2,
-        shadowRadius: 8,
-        elevation: 8,
-      },
-      default: {
-        "--opacity": "0.2",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, var(--opacity))"
-      },
-    })
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 8,
   },
   neonGradient: {
     padding: 16,
@@ -600,18 +594,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F9F9F9',
     borderRadius: 12,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOpacity: 0.2,
-        shadowOffset: { width: 0, height: 4 },
-        shadowRadius: 10,
-      },
-      default: {
-        "--opacity": "0.2",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, var(--opacity))"
-      },
-    }),
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 10,
     padding: 16,
     marginBottom: 12,
   },
