@@ -7,7 +7,7 @@ def update_recommendations():
     if request.method == 'OPTIONS':
             return '', 200  # Respond to preflight request
 
-    # get userData array from database and store in this dictionary, integer values are in cents thus 100 = 1 dollar
+    # get userData array from database and store in this dictionary, float values are in dollars and cents
     userData = {
         "userEmail": "johndoe@gmail.com", #user email, if needed
         "username": "John Doe", #actual name of user, for display purposes
@@ -17,7 +17,6 @@ def update_recommendations():
         "cityName" : "a",
         "stateName" : "a", #just two letter, i.e. VA for Virginia
         "userGoal" : "debt", #either "debt", "savings", or "retirement"
-        "skills" : ["a", "b", "c"],
         #"skills" : ["a", "b", "c"],
         "incomes" : [["a", 10000], ["b", 15000], ["c", 30000]], #all reported incomes
         "expenses" : [["a", 44444], ["b", 77777], ["c", 99999]], #all reported expenses
@@ -30,6 +29,9 @@ def update_recommendations():
         "savings" : 100,
         "savingsIncrease" : 100, #amount savings increased by last month
         "investmentsTotal" : 100, #value of stocks, real estate, owned businesses, etc.
+        "incomeOther" : 100,
+        "incomeJob" : 100,
+        "weeklyHours" : 32,
         "expenseOther" : 100,
         "expenseGroceries" : 100,
         "expenseTakeout" : 100,
@@ -39,10 +41,8 @@ def update_recommendations():
         "expenseEntertainment" : 100, #includes movie tickets, fun purchases, anything not needed for survival. doesn't include dining or subscriptions.
         #"expenseUtilities" : 100,
         #"expenseCar" : 100,
-        "expenseUtilities" : 100,
-        "expenseCar" : 100,
-
     }
+
 
     #recommendationsList is a dictionary containing recommendations and "scores", scores are generated and then the list is sorted by score value
     #scores are roughly equal in value to cents theoretically gained per month
@@ -56,13 +56,13 @@ def update_recommendations():
     "lessEntertainment" : 100, #user should abide by the 50/30/20 rule, spending 30% or less of their income on entertainment
     "workMoreGigs" : 2, #user should work more hours by doordashing or instacarting
     "endSubscriptions" : 10, #todo
+    "getRoommates" : 10, #user should get roommates to split rent
     "debtSettlement" : 2, 
     "bankruptcy" : 1,
     "buildSavings" : -100, #user should at least have 1 month of expenses in an emergency savings before paying down any debt at all, to avoid going into greater debt
     "saveMoreMoney" : -100, #user should save 20% or more of their income
     "investSavings" : -100, #user has a large amount of uninvested savings, more than one month's total expenses
     }
-
     expenseTotal = userData["expenseOther"] + userData["expenseGroceries"] + userData["expenseDining"]  + userData["expenseRent"]  + userData["expenseSubscriptions"]  + userData["expenseEntertainment"] + userData["expenseUtilities"]  + userData["expenseCar"]
     incomeTotal = userData["incomeJob"] + userData["incomeOther"]
 
@@ -78,98 +78,98 @@ def update_recommendations():
         # studio apartment rents are used for "1 bedroom" valuations
         case "Washington, D.C.":
             if userData["bedroomsNeeded"] == 1:
-                cityAverage = 1855
+                cityAverage = 1855.00
             elif userData["bedroomsNeeded"] == 2:
-                cityAverage = 3084
+                cityAverage = 3084.00
             elif userData["bedroomsNeeded"] == 3:
-                cityAverage = 3937
+                cityAverage = 3937.00
             elif userData["bedroomsNeeded"] == 4:
-                cityAverage = 5366
+                cityAverage = 5366.00
             else:
-                cityAverage = 2286
+                cityAverage = 2286.00
         case "Fairfax":
             if userData["bedroomsNeeded"] == 1:
-                cityAverage = 1858
+                cityAverage = 1858.00
             elif userData["bedroomsNeeded"] == 2:
-                cityAverage = 2514
+                cityAverage = 2514.00
             elif userData["bedroomsNeeded"] == 3:
-                cityAverage = 2872
+                cityAverage = 2872.00
             elif userData["bedroomsNeeded"] == 4:
-                cityAverage = 3474
+                cityAverage = 3474.00
             else:
-                cityAverage = 2081
+                cityAverage = 2081.00
         case "Arlington":
             if userData["bedroomsNeeded"] == 1:
-                cityAverage = 2047
+                cityAverage = 2047.00
             elif userData["bedroomsNeeded"] == 2:
-                cityAverage = 3089
+                cityAverage = 3089.00
             elif userData["bedroomsNeeded"] == 3:
-                cityAverage = 4082
+                cityAverage = 4082.00
             elif userData["bedroomsNeeded"] == 4:
-                cityAverage = 6037
+                cityAverage = 6037.00
             else:
-                cityAverage = 2341
+                cityAverage = 2341.00
         case "Austin":
             if userData["bedroomsNeeded"] == 1:
-                cityAverage = 1266
+                cityAverage = 1266.00
             elif userData["bedroomsNeeded"] == 2:
-                cityAverage = 1847
+                cityAverage = 1847.00
             elif userData["bedroomsNeeded"] == 3:
-                cityAverage = 2416
+                cityAverage = 2416.00
             elif userData["bedroomsNeeded"] == 4:
-                cityAverage = 6037
+                cityAverage = 6037.00
             else:
-                cityAverage = 4239
+                cityAverage = 4239.00
         case "Sacramento":
             if userData["bedroomsNeeded"] == 1:
-                cityAverage = 1476
+                cityAverage = 1476.00
             elif userData["bedroomsNeeded"] == 2:
-                cityAverage = 1841
+                cityAverage = 1841.00
             elif userData["bedroomsNeeded"] == 3:
-                cityAverage = 2371
+                cityAverage = 2371.00
             elif userData["bedroomsNeeded"] == 4:
-                cityAverage = 2964
+                cityAverage = 2964.00
             else:
-                cityAverage = 1547
+                cityAverage = 1547.00
         case "Denver":
             if userData["bedroomsNeeded"] == 1:
-                cityAverage = 1487
+                cityAverage = 1487.00
             elif userData["bedroomsNeeded"] == 2:
-                cityAverage = 2179
+                cityAverage = 2179.00
             elif userData["bedroomsNeeded"] == 3:
-                cityAverage = 3067
+                cityAverage = 3067.00
             elif userData["bedroomsNeeded"] == 4:
-                cityAverage = 4047
+                cityAverage = 4047.00
             else:
-                cityAverage = 1663
+                cityAverage = 1663.00
         case _:
             # default value if city not found, average nationwide rent price
-            cityAverage = 1558
+            cityAverage = 1558.00
 
     jobAverage = 0 #hourly rate
     match userData["jobTitle"]:
         case "Software Engineer":
-            jobAverage = 4513
+            jobAverage = 45.13
             return
         case "Finance Analyst":
-            jobAverage = 3948
+            jobAverage = 39.48
             return
         case "Lawyer":
-            jobAverage = 4052
+            jobAverage = 40.52
             return
         case "Blue-Collar Worker": #plumbers, mechanics, electricians, etc.
-            jobAverage = 2569
+            jobAverage = 25.69
             return
         case "Customer Service Worker": #unskilled entry-level customer service: cashier, waiter, etc
-            jobAverage = 1472
+            jobAverage = 14.72
             return
 
     uRecommendationsList["moveInCity"] = (userData["expenseRent"]+userData["expenseUtilities"]-(cityAverage/userData["roommatesNum"]))
-    uRecommendationsList["moveOutCity"] = (userData["expenseRent"]+userData["expenseUtilities"]-1663)
+    uRecommendationsList["moveOutCity"] = (userData["expenseRent"]+userData["expenseUtilities"]-1558.00)
     uRecommendationsList["getBetterJob"] = ((userData["salaryHourly"]-jobAverage)*userData["weeklyHours"])
     #uRecommendationsList["changeJob"] = ((userData["salaryHourly"]-jobAverage)*userData["weeklyHours"])
     uRecommendationsList["lessTakeout"] = (userData["expenseTakeout"])
-    uRecommendationsList["cheaperGroceries"] = ((userData["expenseGroceries"]-(250*userData["dependentsNum"]))*userData["dependentsNum"])
+    uRecommendationsList["cheaperGroceries"] = ((userData["expenseGroceries"]-(250.00*userData["dependentsNum"]))*userData["dependentsNum"])
     uRecommendationsList["lessEntertainment"] = ((userData["expenseEntertainment"]+userData["expenseDining"]+userData["expenseSubscriptions"])-(incomeTotal*0.3))
     uRecommendationsList["workMoreGigs"] = ((35 - userData["weeklyHours"])*12)
 
@@ -183,8 +183,11 @@ def update_recommendations():
 
     uRecommendationsList["payOffHighInterest"] = () #if user is spending lots on low interest debts and not high interest ones
 
+    if (userData["roommates"] < 1 and userData["expenseRent"] > cityAverage):
+        uRecommendationsList["getRoommates"] = (100.00)
+
     if (totalDebtPayments > 0 and userData["savings"] < expenseTotal):
-        uRecommendationsList["buildSavings"] = (1000000)
+        uRecommendationsList["buildSavings"] = (10000.00)
 
     if (userData["userGoal"] != "debt"):
         uRecommendationsList["saveMoreMoney"] = ((incomeTotal*0.2)-userData["savingsIncrease"])*5

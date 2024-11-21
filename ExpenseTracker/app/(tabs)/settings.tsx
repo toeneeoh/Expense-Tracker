@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, SafeAreaView, ScrollView, View, Text, TouchableOpacity, Switch, Alert } from 'react-native';
+import { Linking, StyleSheet, SafeAreaView, ScrollView, View, Text, TouchableOpacity, Switch, Alert } from 'react-native';
 import FeatherIcon from '@expo/vector-icons/Feather';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import { useNavigation } from 'expo-router';
@@ -106,7 +106,7 @@ export default function SettingsScreen() {
 
           <ScrollView>
               <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>Preferences</Text>
+                  <Text style={styles.sectionTitle}>User Data</Text>
                   <TouchableOpacity
                       onPress={() => {
                             navigation.navigate('ExpensesScreen');
@@ -170,21 +170,21 @@ export default function SettingsScreen() {
                             size={20} />
                     </TouchableOpacity>
 
-                  <View style={styles.row}>
-                      <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
-                          <FeatherIcon color="#fff" name="bell" size={20} />
-                      </View>
+                  {/*<View style={styles.row}>*/}
+                  {/*    <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>*/}
+                  {/*        <FeatherIcon color="#fff" name="bell" size={20} />*/}
+                  {/*    </View>*/}
 
-                      <Text style={styles.rowLabel}>Push Notifications</Text>
+                  {/*    <Text style={styles.rowLabel}>Push Notifications</Text>*/}
 
-                      <View style={styles.rowSpacer} />
+                  {/*    <View style={styles.rowSpacer} />*/}
 
-                      <Switch
-                          onValueChange={pushNotifications =>
-                              setForm({ ...form, pushNotifications })
-                          }
-                          value={form.pushNotifications} />
-                  </View>
+                  {/*    <Switch*/}
+                  {/*        onValueChange={pushNotifications =>*/}
+                  {/*            setForm({ ...form, pushNotifications })*/}
+                  {/*        }*/}
+                  {/*        value={form.pushNotifications} />*/}
+                  {/*</View>*/}
               </View>
 
               <View style={styles.section}>
@@ -192,7 +192,7 @@ export default function SettingsScreen() {
 
                   <TouchableOpacity
                       onPress={() => {
-                          // handle onPress
+                            Linking.openURL(`mailto:<zhamilt@gmu.edu>`);
                       }}
                       style={styles.row}>
                       <View style={[styles.rowIcon, { backgroundColor: '#8e8d91' }]}>
@@ -211,7 +211,7 @@ export default function SettingsScreen() {
 
                   <TouchableOpacity
                       onPress={() => {
-                          // handle onPress
+                            Linking.openURL(`mailto:<zhamilt@gmu.edu>`);
                       }}
                       style={styles.row}>
                       <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
@@ -223,14 +223,14 @@ export default function SettingsScreen() {
                         <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.row}>
-                        <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
-                            <FeatherIcon color="#fff" name="star" size={20} />
-                        </View>
-                        <Text style={styles.rowLabel}>Rate in App Store</Text>
-                        <View style={styles.rowSpacer} />
-                        <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
-                    </TouchableOpacity>
+                    {/*<TouchableOpacity style={styles.row}>*/}
+                    {/*    <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>*/}
+                    {/*        <FeatherIcon color="#fff" name="star" size={20} />*/}
+                    {/*    </View>*/}
+                    {/*    <Text style={styles.rowLabel}>Rate in App Store</Text>*/}
+                    {/*    <View style={styles.rowSpacer} />*/}
+                    {/*    <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />*/}
+                    {/*</TouchableOpacity>*/}
                 </View>
             </ScrollView>
         </SafeAreaView>
