@@ -380,32 +380,36 @@ export default function HomeScreen() {
   const [monthlyIncomeData, setMonthlyIncomeData] = useState(JSON.parse('{"expenses":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
   const [monthlyExpenseData, setMonthlyExpenseData] = useState(JSON.parse('{"expenses":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
   
-  const [dataFetched, setDataFetch] = useState(false)
+    const [dataFetched, setDataFetch] = useState(false)
+
+    const userName = "test";
+    console.log(userName)
 
   useEffect(() => { fetchData() }, [dataFetched])
   console.log(dataFetched)
 
   //hardcode to always do test user for now
   const fetchData = async () => {
-    console.log("start fetch here")
+      console.log("start fetch here")
+    console.log(userName)
       try {
-          var incomingData = await ApiService.getFromDatabase("all", "test", "users");
+          var incomingData = await ApiService.getFromDatabase("all", userName, "users");
           console.log(incomingData["all"])
           setUserData(incomingData["all"]);
-          incomingData = await ApiService.getFromDatabase("all", "test", "incomes");
+          incomingData = await ApiService.getFromDatabase("all", userName, "incomes");
           console.log(incomingData["all"])
           setIncomeData(incomingData["all"]);
-          incomingData = await ApiService.getFromDatabase("all", "test", "expenses");
+          incomingData = await ApiService.getFromDatabase("all", userName, "expenses");
           console.log(incomingData["all"])
           setExpenseData(incomingData["all"]);
-          incomingData = await ApiService.getFromDatabase("all", "test", "debts");
+          incomingData = await ApiService.getFromDatabase("all", userName, "debts");
           console.log(incomingData["all"])
           setDebtData(incomingData["all"]);
 
-          incomingData = await ApiService.getFromDatabase("all", "test", "monthly_total_incomes");
+          incomingData = await ApiService.getFromDatabase("all", userName, "monthly_total_incomes");
           console.log(incomingData["all"])
           setMonthlyIncomeData(incomingData["all"]);
-          incomingData = await ApiService.getFromDatabase("all", "test", "monthly_total_expenses");
+          incomingData = await ApiService.getFromDatabase("all", userName, "monthly_total_expenses");
           console.log(incomingData["all"])
           setMonthlyExpenseData(incomingData["all"]);
 
@@ -414,29 +418,16 @@ export default function HomeScreen() {
           //setExpenseData(JSON.parse('{"expenses":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
           setDataFetch(true)
           //console.log(dataFetched)
-
-  useEffect(() => { fetchData() }, [])
-
-  //hardcode to always do test user for now
-  const fetchData = async () => {
-      try {
-          //var incomingData = await ApiService.getFromDatabase("all", "test", "users");
-          //console.log(incomingData)
-          //setUserData(incomingData);
-          //incomingData = await ApiService.getFromDatabase("all", "test", "incomes");
-          //console.log(incomingData)
-          //setIncomeData(JSON.stringify(incomingData));
-          //incomingData = await ApiService.getFromDatabase("all", "test", "expenses");
-          //console.log(incomingData)
-          //setExpenseData(incomingData);
-          //setUserData(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
-          setIncomeData(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
-          setExpenseData(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
       } catch (error) {
           console.error('Error fetching item:', error)
       }
   };
   //setUserData(JSON.parse('{"monthlyTotalIncomes":[["Oct2024", 1350.42], ["Sep2024", 1324.19]],"monthlyTotalExpenses":[["Oct2024", 1500.19], ["Sep2024", 1324.19], ["Aug2024", 1631.19]],"savings": 76.45,"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]],"expenses":[["Rent",1200],["Groceries",400],["Subscriptions",200],["Dining",150]],"debts":[["Credit Card A",150.23,9.20],["Credit Card B",45.82,6.50],["Student Loans",15412.36,3.50]]}'));
+
+    //console.log("User Data")
+    //console.log(userData)
+    //console.log(userData[0])
+    //console.log(userData[0]["user_email"])
 
   //  console.log(incomeData)
   //  console.log(incomeData["incomes"])
@@ -495,20 +486,12 @@ for (let i = 0; i < incomeData.length; i++) {
 
   //console.log(totalIncome)
   //totalIncome = incomeData["income_amount"].reduce((acc, income) => acc + income[1], 0);
+
   //const totalExpenses = userData.expenses.reduce((acc, expense) => acc + expense[1], 0);
   //const totalDebt = userData["debts"].reduce((acc, debt) => acc + debt[1], 0).toFixed(2);
   const totalExpenses = 0;
 
   console.log(userData[0]["savings"])
-  const totalIncome = incomeData.incomes.reduce((acc, income) => acc + income[1], 0);
-  //const totalExpenses = userData.expenses.reduce((acc, expense) => acc + expense[1], 0);
-  //const totalDebt = userData["debts"].reduce((acc, debt) => acc + debt[1], 0).toFixed(2);
-  const totalExpenses = 0;
-  const totalDebt = 0;
-
-  if (!userData["expenses"]) return (
-      <Text style={styles.headerText}>Loading...</Text>
-  )
 
 
   return (
@@ -538,7 +521,7 @@ for (let i = 0; i < incomeData.length; i++) {
             colors={['#FF5252', '#FF8A80']}
           />
           <NeonCard
-            title="Savings"
+            title="Total Savings"
             amount={`$${parseFloat(userData[0]["savings"]).toFixed(2)}`}
             icon="cash-outline"
             colors={['#4CAF50', '#81C784']}

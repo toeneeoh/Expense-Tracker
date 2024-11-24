@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, SafeAreaView, ScrollView, View, Text, TouchableOpacity, Switch, Alert } from 'react-native';
-import React, { useState } from 'react';
-import { StyleSheet, SafeAreaView, ScrollView, View, Text, Pressable, Switch, Alert } from 'react-native';
+import { Linking, StyleSheet, SafeAreaView, ScrollView, View, Text, TouchableOpacity, Switch, Alert } from 'react-native';
 import FeatherIcon from '@expo/vector-icons/Feather';
 //import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import { useNavigation } from 'expo-router';
@@ -51,15 +49,6 @@ import ApiService from '../../utils/apiService';
 //    }
 //};
 
-        //const file = await RNHTMLtoPDF.convert(pdfOptions);
-
-        //Alert.alert('PDF Generated', `Your PDF has been saved to: ${file.filePath}`);
-    } catch (error) {
-        console.error('PDF generation error:', error);
-        Alert.alert('Error', 'Failed to generate PDF. Please try again.');
-    }
-};
-
 export default function SettingsScreen() {
     const [userData, setUserData] = useState(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
 
@@ -94,39 +83,6 @@ export default function SettingsScreen() {
     console.log(userData[0]["address"])
     const locationData = `${userData[0]["address"]} - ${userData[0]["city_name"]}, ${userData[0]["state_name"]}`;
 
-    // const generatePdf = async () => {
-    //     try {
-    //         const htmlContent = `
-    //             <html>
-    //                 <body>
-    //                     <h1 style="text-align: center;">Financial Report</h1>
-    //                     <h2>User Information</h2>
-    //                     <p>Name: ${userData.userName}</p>
-    //                     <p>Location: ${locationData}</p>
-    //                     <h2>Financial Details</h2>
-    //                     <p>Rent: ${userData.rent}</p>
-    //                     <p>Expenses: ${userData.expenses}</p>
-    //                     <p>Debt: ${userData.debt}</p>
-    //                     <p>Loans: ${userData.loans}</p>
-    //                 </body>
-    //             </html>
-    //         `;
-
-    //         const pdfOptions = {
-    //             html: htmlContent,
-    //             fileName: 'Financial_Report',
-    //             directory: 'Documents',
-    //         };
-
-    //         //const file = await RNHTMLtoPDF.convert(pdfOptions);
-
-    //         Alert.alert('PDF Generated', `Your PDF has been saved to: ${file.filePath}`);
-    //     } catch (error) {
-    //         console.error('PDF generation error:', error);
-    //         Alert.alert('Error', 'Failed to generate PDF. Please try again.');
-    //     }
-    //};
-
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }}>
             <View style={styles.profile}>
@@ -143,9 +99,6 @@ export default function SettingsScreen() {
 
               <View>
                     <Text style={styles.profileName}>{userData[0]["username"]}</Text>
-            <ScrollView>
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Preferences</Text>
 
                     <Pressable
                         onPress={() => navigation.navigate('GoalsScreen')}
@@ -162,8 +115,8 @@ export default function SettingsScreen() {
 
           <ScrollView>
               <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>Preferences</Text>
-                  <Pressable
+                  <Text style={styles.sectionTitle}>User Data</Text>
+                  <TouchableOpacity
                       onPress={() => {
                             navigation.navigate('ExpensesScreen');
                       }}
@@ -236,28 +189,29 @@ export default function SettingsScreen() {
                             size={20} />
                     </Pressable>
 
-                  {/* <View style={styles.row}>
-                      <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
-                          <FeatherIcon color="#fff" name="bell" size={20} />
-                      </View>
+                  {/*<View style={styles.row}>*/}
+                  {/*    <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>*/}
+                  {/*        <FeatherIcon color="#fff" name="bell" size={20} />*/}
+                  {/*    </View>*/}
 
-                      <Text style={styles.rowLabel}>Push Notifications</Text>
+                  {/*    <Text style={styles.rowLabel}>Push Notifications</Text>*/}
 
-                      <View style={styles.rowSpacer} />
+                  {/*    <View style={styles.rowSpacer} />*/}
 
-                      <Switch
-                          onValueChange={pushNotifications =>
-                              setForm({ ...form, pushNotifications })
-                          }
-                          value={form.pushNotifications} />
-                  </View>*/}
-              </View> 
+                  {/*    <Switch*/}
+                  {/*        onValueChange={pushNotifications =>*/}
+                  {/*            setForm({ ...form, pushNotifications })*/}
+                  {/*        }*/}
+                  {/*        value={form.pushNotifications} />*/}
+                  {/*</View>*/}
+              </View>
+
               <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Resources</Text>
 
                   <Pressable
                       onPress={() => {
-                          // handle onPress
+                            Linking.openURL(`mailto:<zhamilt@gmu.edu>`);
                       }}
                       style={styles.row}>
                       <View style={[styles.rowIcon, { backgroundColor: '#8e8d91' }]}>
@@ -276,7 +230,7 @@ export default function SettingsScreen() {
 
                   <Pressable
                       onPress={() => {
-                          // handle onPress
+                            Linking.openURL(`mailto:<zhamilt@gmu.edu>`);
                       }}
                       style={styles.row}>
                       <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
@@ -288,28 +242,18 @@ export default function SettingsScreen() {
                         <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
                     </Pressable>
 
-                  <Pressable
-                      onPress={() => {
-                          // handle onPress
-                      }}
-                      style={styles.row}>
-                      <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
-                          <FeatherIcon color="#fff" name="star" size={20} />
-                      </View>
-
-                      <Text style={styles.rowLabel}>Rate in App Store</Text>
-
-                      <View style={styles.rowSpacer} />
-
-                      <FeatherIcon
-                          color="#C6C6C6"
-                          name="chevron-right"
-                          size={20} />
-                  </Pressable>
-              </View>
-          </ScrollView>
-      </SafeAreaView>
-  );
+                    {/*<TouchableOpacity style={styles.row}>*/}
+                    {/*    <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>*/}
+                    {/*        <FeatherIcon color="#fff" name="star" size={20} />*/}
+                    {/*    </View>*/}
+                    {/*    <Text style={styles.rowLabel}>Rate in App Store</Text>*/}
+                    {/*    <View style={styles.rowSpacer} />*/}
+                    {/*    <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />*/}
+                    {/*</TouchableOpacity>*/}
+                </View>
+            </ScrollView>
+        </SafeAreaView>
+    );
 }
 
 const styles = StyleSheet.create({

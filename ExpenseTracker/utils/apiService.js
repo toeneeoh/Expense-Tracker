@@ -8,7 +8,7 @@ class ApiService {
     }
 
     //update recommendations screen whenever needed, i.e. when recommendations screen is refreshed
-    async updateRecommendations(recUpdateString) {
+    async updateRecommendations() {
         //return a JSON file with top 3 recommendations based on userData
         //sends TO backend updated list of "blacklisted" recommendations refused by user, a string of numbers to be parsed by python at start of function
 
@@ -18,7 +18,7 @@ class ApiService {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ recUpdateString })
+                //body: JSON.stringify({"recUpdateString":"placeholder"})
             });
             //get a sorted array from backend database: python should sort recommendations based upon userData
 

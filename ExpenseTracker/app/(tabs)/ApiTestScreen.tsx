@@ -75,8 +75,6 @@ export default function ApiTestScreen() {
     }
   };
 
-  return (
-    <View style={styles.container}>
   const insertRow = async () => {
     if (insertTableName && rowData) {
       try {

@@ -115,7 +115,9 @@ def get_item(item="all", username="test", table="users"):
 
 
 def get_item(item="all", username="test", table="users"):
-    """Fetches specified column(s) or all columns (if item is 'all') from the specified table for the given user."""
+    """
+    Fetches specified column(s) or all columns (if item is 'all') from the specified table for the given user.
+    """
     with connect_db() as conn:
         with conn.cursor() as cur:
             if item.lower() == "all":
@@ -124,9 +126,9 @@ def get_item(item="all", username="test", table="users"):
                     table=sql.Identifier(table)
                 )
                 cur.execute(query, (username,))
-                result = cur.fetchone()
+                result = cur.fetchall()  # Fetch all rows
                 colnames = [desc[0] for desc in cur.description]  # Get column names
-                return dict(zip(colnames, result)) if result else None
+                return [dict(zip(colnames, row)) for row in result] if result else None
             else:
                 # Query to fetch a specific column
                 query = sql.SQL("SELECT {field} FROM {table} WHERE username = %s").format(
@@ -134,7 +136,7 @@ def get_item(item="all", username="test", table="users"):
                     table=sql.Identifier(table)
                 )
                 cur.execute(query, (username,))
-                result = cur.fetchone()
+                result = cur.fetchone()  # Fetch one row for a specific column
                 return result[0] if result else None
 
 
