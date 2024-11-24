@@ -173,14 +173,13 @@ def update_recommendations():
     uRecommendationsList["lessEntertainment"] = ((userData["expenseEntertainment"]+userData["expenseDining"]+userData["expenseSubscriptions"])-(incomeTotal*0.3))
     uRecommendationsList["workMoreGigs"] = ((35 - userData["weeklyHours"])*12)
 
+
     totalDebtPayments = 0
 
     for debt in userData["debts"]:
         totalDebtPayments = totalDebtPayments + debt[3]
-    
         if (debt[1] < incomeTotal*0.1):
             uRecommendationsList["payOffSmallDebts"] = incomeTotal*0.1
-
     uRecommendationsList["payOffHighInterest"] = () #if user is spending lots on low interest debts and not high interest ones
 
     if (userData["roommates"] < 1 and userData["expenseRent"] > cityAverage):
@@ -192,6 +191,10 @@ def update_recommendations():
     if (userData["userGoal"] != "debt"):
         uRecommendationsList["saveMoreMoney"] = ((incomeTotal*0.2)-userData["savingsIncrease"])*5
         uRecommendationsList["investSavings"] = (userData["savings"] - expenseTotal)/10
+
+
+    
+
 
     rList = list(uRecommendationsList.keys())
     rList.sort()

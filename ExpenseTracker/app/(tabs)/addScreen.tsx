@@ -54,8 +54,6 @@ const insertExpense = async () => {
     }
 };
 
-
-
   return (
     <ScrollView style={styles.scollStyle}>
       <View style={styles.container}>

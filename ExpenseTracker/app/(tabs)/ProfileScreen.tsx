@@ -8,7 +8,6 @@ import { useUserName } from '../../utils/getUserData';
 import { useUser } from '../../context/UserContext';
 import { useNavigation } from 'expo-router';
 
-
 const cities = ['Washington, D.C.', 'Fairfax', 'Arlington'];
 
 export default function ProfileScreen() {
@@ -38,7 +37,6 @@ export default function ProfileScreen() {
     <ThemedView style={styles.container}>
 
       <ThemedText type="title">Location Data</ThemedText>
-
           <ThemedText>
               What NOVA city do you live in? Arlington, Fairfax, and Washington D.C. are your options!
           </ThemedText>

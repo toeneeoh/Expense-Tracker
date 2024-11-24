@@ -12,6 +12,10 @@ export default function ApiTestScreen() {
   const [loginMessage, setLoginMessage] = useState(''); // Login feedback message
   const [inputText, setInputText] = useState('');
   const [responseText, setResponseText] = useState('');
+  const [item, setItem] = useState('');  // For fetching an item
+  const [itemResponse, setItemResponse] = useState('');  // Response for fetched item
+  const [updateItem, setUpdateItem] = useState('');  // For item to update
+  const [updateValue, setUpdateValue] = useState('');  // New value for updating item
   const [item, setItem] = useState(''); // For fetching an item
   const [itemResponse, setItemResponse] = useState(''); // Response for fetched item
   const [updateItem, setUpdateItem] = useState(''); // For item to update

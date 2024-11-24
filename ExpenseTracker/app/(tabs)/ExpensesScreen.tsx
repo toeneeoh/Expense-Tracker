@@ -54,7 +54,6 @@ export default function ExpensesScreen() {
                 <ThemedText>
                     We'll check back again in one month to see what's changed :)
                 </ThemedText>
-
                 <ThemedText>
                     Which of these options best describes your current job?
                     Software Engineer, Finance Analyst, Lawyer, Blue-Collar Worker, Customer Service Worker, or Unemployed?

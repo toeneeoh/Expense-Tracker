@@ -71,7 +71,6 @@
 //   },
 // });
 
-
 import React, { useState, useEffect } from 'react';
 import { Text, Button, StyleSheet, View, Image, TouchableOpacity, Animated, Easing } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -544,7 +543,7 @@ const RecommendationCard = ({ title, description, gradientColors, externalLink, 
   });
 
   return (
-    <TouchableOpacity onPress={toggleExpansion} style={styles.cardContainer}>
+    <Pressable onPress={toggleExpansion} style={styles.cardContainer}>
       <LinearGradient colors={gradientColors} style={styles.card}>
         <View style={styles.cardHeader}>
           <ThemedText type="subtitle" style={styles.cardTitle}>{title}</ThemedText>
@@ -562,7 +561,7 @@ const RecommendationCard = ({ title, description, gradientColors, externalLink, 
           </ExternalLink>
         </Animated.View>
       </LinearGradient>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
@@ -597,11 +596,19 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: 15,
     padding: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
-    elevation: 8,
+    ...Platform.select({
+    ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.4,
+        shadowRadius: 10,
+        elevation: 8,
+    },
+    default: {
+        "--opacity": "0.4",
+        boxShadow: "0 4px 10px rgba(0, 0, 0, var(--opacity))"
+    },
+    })
   },
   cardHeader: {
     flexDirection: 'row',

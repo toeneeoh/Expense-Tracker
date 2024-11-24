@@ -82,7 +82,7 @@ import { useNavigation } from 'expo-router';
 import React, { useState } from 'react';
 
 import { ThemedView, ThemedText } from '@/components/ThemedComponents';
-import { TextInput, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { TextInput, Platform, Image, StyleSheet, Pressable, View } from 'react-native';
 import { useUser } from '../../context/UserContext';
 
 import ApiService from '../../utils/apiService';
@@ -136,9 +136,9 @@ export default function WelcomeScreen() {
                     <ThemedText style={styles.buttonText}>Sign Up</ThemedText>
                 </TouchableOpacity>
                 
-                <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
+                <Pressable onPress={handleLogin} style={styles.loginButton}>
                     <ThemedText style={styles.buttonText}>Log In</ThemedText>
-                </TouchableOpacity>
+                </Pressable>
             </View>
 
             <TextInput
@@ -197,11 +197,19 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         width: '80%',
         alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-        elevation: 5,
+        ...Platform.select({
+        ios: {
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 8,
+            elevation: 5,
+        },
+        default: {
+            "--opacity": "0.3",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, var(--opacity))"
+        },
+        })
     },
     loginButton: {
         backgroundColor: '#4CAF50',
@@ -210,11 +218,19 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         width: '80%',
         alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-        elevation: 5,
+        ...Platform.select({
+        ios: {
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 8,
+            elevation: 5,
+        },
+        default: {
+            "--opacity": "0.3",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, var(--opacity))"
+        },
+        })
     },
     buttonText: {
         color: '#fff',
@@ -232,11 +248,19 @@ const styles = StyleSheet.create({
         fontSize: 16,
         backgroundColor: '#fff',
         color: '#333',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 6,
-        elevation: 2,
+        ...Platform.select({
+        ios: {
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 8,
+            elevation: 2,
+        },
+        default: {
+            "--opacity": "0.1",
+            boxShadow: "0 4px 6px rgba(0, 0, 0, var(--opacity))"
+        },
+        })
     },
 });
 

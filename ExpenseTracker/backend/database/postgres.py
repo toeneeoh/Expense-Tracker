@@ -53,6 +53,67 @@ def init_db():
             cur.execute(init_script)
             print("Database initialized successfully.")
 
+def get_item(item, username="test", table="users"):
+    """Fetches a specified column (item) from the specified table for the given user."""
+    with connect_db() as conn:
+        with conn.cursor() as cur:
+            query = sql.SQL("SELECT {field} FROM {table} WHERE username = %s").format(
+                field=sql.Identifier(item),
+                table=sql.Identifier(table)
+            )
+
+            # Execute query
+            cur.execute(query, (username,))
+            result = cur.fetchone()
+            return result[0] if result else None
+    """Fetches specified column(s) or all columns (if item is 'all') from the specified table for the given user."""
+    with connect_db() as conn:
+        with conn.cursor() as cur:
+            if item.lower() == "all":
+                # Query to fetch all columns
+                query = sql.SQL("SELECT * FROM {table} WHERE username = %s").format(
+                    table=sql.Identifier(table)
+                )
+                cur.execute(query, (username,))
+                result = cur.fetchall()  # Fetch all rows
+                colnames = [desc[0] for desc in cur.description]  # Get column names
+                return dict(zip(colnames, result)) if result else None
+            else:
+                # Query to fetch a specific column
+                query = sql.SQL("SELECT {field} FROM {table} WHERE username = %s").format(
+                    field=sql.Identifier(item),
+                    table=sql.Identifier(table)
+                )
+                cur.execute(query, (username,))
+                result = cur.fetchone()
+                return result[0] if result else None
+
+def get_item(item="all", username="test", table="users"):
+    """
+    Fetches specified column(s) or all columns (if item is 'all') from the specified table for the given user.
+    """
+    with connect_db() as conn:
+        with conn.cursor() as cur:
+            if item.lower() == "all":
+                # Query to fetch all columns
+                query = sql.SQL("SELECT * FROM {table} WHERE username = %s").format(
+                    table=sql.Identifier(table)
+                )
+                cur.execute(query, (username,))
+                result = cur.fetchall()  # Fetch all rows
+                colnames = [desc[0] for desc in cur.description]  # Get column names
+                return [dict(zip(colnames, row)) for row in result] if result else None
+            else:
+                # Query to fetch a specific column
+                query = sql.SQL("SELECT {field} FROM {table} WHERE username = %s").format(
+                    field=sql.Identifier(item),
+                    table=sql.Identifier(table)
+                )
+                cur.execute(query, (username,))
+                result = cur.fetchone()  # Fetch one row for a specific column
+                return result[0] if result else None
+
+
 def get_item(item="all", username="test", table="users"):
     """
     Fetches specified column(s) or all columns (if item is 'all') from the specified table for the given user.

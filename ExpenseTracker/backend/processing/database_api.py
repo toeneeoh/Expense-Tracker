@@ -17,6 +17,12 @@ def get_from_database():
         return jsonify({"error": "No item found"}), 400
 
     try:
+        if item == "all":
+            item_value = get_user_data(username) # Returns a dict
+        else:
+            item_value = get_item(item, username, table) # Returns a string (?)
+        item_value = get_item(item, username, table) # Returns a string or dict
+
         item_value = get_item(item, username, table) # Returns a string or dict
 
         if item_value is not None:
