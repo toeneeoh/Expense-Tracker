@@ -16,10 +16,6 @@ export default function ApiTestScreen() {
   const [itemResponse, setItemResponse] = useState('');  // Response for fetched item
   const [updateItem, setUpdateItem] = useState('');  // For item to update
   const [updateValue, setUpdateValue] = useState('');  // New value for updating item
-  const [item, setItem] = useState(''); // For fetching an item
-  const [itemResponse, setItemResponse] = useState(''); // Response for fetched item
-  const [updateItem, setUpdateItem] = useState(''); // For item to update
-  const [updateValue, setUpdateValue] = useState(''); // New value for updating item
   const [tableName, setTableName] = useState(''); // Table name for fetching data
   const [insertTableName, setInsertTableName] = useState(''); // For the insert_row table name
   const [rowData, setRowData] = useState(''); // For the row data to insert
