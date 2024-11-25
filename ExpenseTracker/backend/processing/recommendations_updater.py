@@ -1,213 +1,138 @@
 from flask import Blueprint, request, jsonify
+from database.postgres import get_item, push_item
+from chat import create_prompt, gpt_prompt
+import json
+from decimal import Decimal
 
 bp = Blueprint('recommendations', __name__, url_prefix='/recommendations')
 
-@bp.route('/update', methods=['POST', 'OPTIONS'])
-def update_recommendations():
-    if request.method == 'OPTIONS':
-            return '', 200  # Respond to preflight request
+def serialize_decimal(obj):
+    if isinstance(obj, Decimal):
+        return float(obj)
+    raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable.")
 
-    # get userData array from database and store in this dictionary, float values are in dollars and cents
-    userData = {
-        "userEmail": "johndoe@gmail.com", #user email, if needed
-        "username": "John Doe", #actual name of user, for display purposes
-        "password": "1234", #username to access specific username
-        "jobTitle" : "a",
-        "address" : "a",
-        "cityName" : "a",
-        "stateName" : "a", #just two letter, i.e. VA for Virginia
-        "userGoal" : "debt", #either "debt", "savings", or "retirement"
-        #"skills" : ["a", "b", "c"],
-        "incomes" : [["a", 10000], ["b", 15000], ["c", 30000]], #all reported incomes
-        "expenses" : [["a", 44444], ["b", 77777], ["c", 99999]], #all reported expenses
-        "monthlyTotalIncomes" : [["a", 10000], ["b", 15000], ["c", 30000]], #all reported aggregate incomes by month
-        "monthlyTotalExpenses" : [["Aug2024", 1500.19], ["Sep2024", 1324.19], ["Oct2024", 1631.19]], #all reported aggregate expenses by month
-        "debts" : [["Credit Card A", 150.23, 9.20, 20.15], ["Credit Card B", 45.82, 6.50, 0], ["Student Loans", 15412.36, 3.50, 120.12]], #debt name, debt amount, annual interest rate, amount paid down on debt last month
-        "roommatesNum" : 1, #refers to number of rent-splitting roommates, inlcuding user
-        "dependentsNum" : 1, #refers to number of children/dependents that are having their bills paid for by the user
-        "bedroomsNeeded" : 1, #refers to total number of bedrooms needed, for user, roommates, children/dependents, etc
-        "savings" : 100,
-        "savingsIncrease" : 100, #amount savings increased by last month
-        "investmentsTotal" : 100, #value of stocks, real estate, owned businesses, etc.
-        "incomeOther" : 100,
-        "incomeJob" : 100,
-        "weeklyHours" : 32,
-        "expenseOther" : 100,
-        "expenseGroceries" : 100,
-        "expenseTakeout" : 100,
-        "expenseDining" : 100,
-        "expenseRent" : 100,
-        "expenseSubscriptions" : 100,
-        "expenseEntertainment" : 100, #includes movie tickets, fun purchases, anything not needed for survival. doesn't include dining or subscriptions.
-        #"expenseUtilities" : 100,
-        #"expenseCar" : 100,
-    }
+@bp.route('/generate', methods=['POST'])
+def generate_recommendations():
+    data = request.get_json()
+    username = data.get('username')
 
+    try:
+        # Fetch data
+        user_data = (get_item(item="all", username=username, table="users") or [{}])[0]
+        incomes = get_item(item="all", username=username, table="incomes") or []
+        expenses = get_item(item="all", username=username, table="expenses") or []
+        debts = get_item(item="all", username=username, table="debts") or []
+        monthly_incomes = get_item(item="all", username=username, table="monthly_total_incomes") or []
+        monthly_expenses = get_item(item="all", username=username, table="monthly_total_expenses") or []
 
-    #recommendationsList is a dictionary containing recommendations and "scores", scores are generated and then the list is sorted by score value
-    #scores are roughly equal in value to cents theoretically gained per month
-    uRecommendationsList = {"moveInCity": 100, 
-    "moveOutCity" : 100, 
-    "getBetterJob" : 100, 
-    "payOffHighInterest" : 0, 
-    "payOffSmallDebts" : 0, 
-    "lessTakeout" : 100, 
-    "cheaperGroceries" : 100,
-    "lessEntertainment" : 100, #user should abide by the 50/30/20 rule, spending 30% or less of their income on entertainment
-    "workMoreGigs" : 2, #user should work more hours by doordashing or instacarting
-    "endSubscriptions" : 10, #todo
-    "getRoommates" : 10, #user should get roommates to split rent
-    "debtSettlement" : 2, 
-    "bankruptcy" : 1,
-    "buildSavings" : -100, #user should at least have 1 month of expenses in an emergency savings before paying down any debt at all, to avoid going into greater debt
-    "saveMoreMoney" : -100, #user should save 20% or more of their income
-    "investSavings" : -100, #user has a large amount of uninvested savings, more than one month's total expenses
-    }
-    expenseTotal = userData["expenseOther"] + userData["expenseGroceries"] + userData["expenseDining"]  + userData["expenseRent"]  + userData["expenseSubscriptions"]  + userData["expenseEntertainment"] + userData["expenseUtilities"]  + userData["expenseCar"]
-    incomeTotal = userData["incomeJob"] + userData["incomeOther"]
+        # Convert all data into JSON-serializable formats
+        user_data = json.loads(json.dumps(user_data, default=serialize_decimal))
+        incomes = json.loads(json.dumps(incomes, default=serialize_decimal))
+        expenses = json.loads(json.dumps(expenses, default=serialize_decimal))
+        debts = json.loads(json.dumps(debts, default=serialize_decimal))
+        monthly_incomes = json.loads(json.dumps(monthly_incomes, default=serialize_decimal))
+        monthly_expenses = json.loads(json.dumps(monthly_expenses, default=serialize_decimal))
 
-    cityAverage = 0
-    # if (userData["cityName"] == "Washington, D.C."):
-    #     cityAverage = 2443
+        # Prepare the data summary for GPT
+        data_summary = {
+            "user_info": {
+                "city": f"{user_data.get('city_name', 'N/A')}, {user_data.get('state_name', 'N/A')}",
+                "job_title": user_data.get("job_title", "N/A"),
+                "weekly_hours": user_data.get("weekly_hours", 0),
+                "hourly_wage": user_data.get("hourly_wage", 0),
+                "goal": user_data.get("user_goal", "N/A"),
+                "roommates": user_data.get("roommates_num", 0),
+                "dependents": user_data.get("dependents_num", 0),
+                "savings": user_data.get("savings", 0.0),
+                "savings_increase": user_data.get("savings_increase", 0.0),
+                "investments": user_data.get("investments", 0.0),
+            },
+            "incomes": incomes,
+            "expenses": expenses,
+            "debts": debts,
+            "monthly_incomes": monthly_incomes,
+            "monthly_expenses": monthly_expenses,
+            "financial_overview": {
+                "total_income": sum([income.get("income_amount", 0.0) for income in incomes]),
+                "total_expenses": sum([expense.get("expense_amount", 0.0) for expense in expenses]),
+            },
+        }
 
+        prompt = f"""
+            You are a financial advisor tasked with improving a user's financial health. 
+            Based on the provided data, generate three specific financial recommendations. 
+            Each recommendation should include a title and a concise description.
 
-    # other implementation
+            User Data:
+            {json.dumps(data_summary, indent=2)}
+        """
+        
+        # Create the GPT payload and get recommendations
+        payload = create_prompt(prompt)
+        gpt_response = gpt_prompt(payload)
 
-    match userData["cityName"]:
-        # data is included for bedroom sizes, but divided by number of roommates
-        # studio apartment rents are used for "1 bedroom" valuations
-        case "Washington, D.C.":
-            if userData["bedroomsNeeded"] == 1:
-                cityAverage = 1855.00
-            elif userData["bedroomsNeeded"] == 2:
-                cityAverage = 3084.00
-            elif userData["bedroomsNeeded"] == 3:
-                cityAverage = 3937.00
-            elif userData["bedroomsNeeded"] == 4:
-                cityAverage = 5366.00
+        # Parse GPT output into structured recommendations
+        recommendations = gpt_response.split("\n\n")
+        structured_recommendations = []
+
+        for rec in recommendations:
+            if "Description:" in rec:
+                try:
+                    # Split into title and description
+                    parts = rec.split("Description:")
+                    title = parts[0].strip()  # Extract the title
+                    description = parts[1].strip()  # Extract the description
+                    structured_recommendations.append({
+                        "title": title,
+                        "description": description
+                    })
+                except IndexError:
+                    # Fallback for improperly formatted recommendations
+                    structured_recommendations.append({
+                        "title": "Unknown Recommendation",
+                        "description": rec.strip()
+                    })
             else:
-                cityAverage = 2286.00
-        case "Fairfax":
-            if userData["bedroomsNeeded"] == 1:
-                cityAverage = 1858.00
-            elif userData["bedroomsNeeded"] == 2:
-                cityAverage = 2514.00
-            elif userData["bedroomsNeeded"] == 3:
-                cityAverage = 2872.00
-            elif userData["bedroomsNeeded"] == 4:
-                cityAverage = 3474.00
-            else:
-                cityAverage = 2081.00
-        case "Arlington":
-            if userData["bedroomsNeeded"] == 1:
-                cityAverage = 2047.00
-            elif userData["bedroomsNeeded"] == 2:
-                cityAverage = 3089.00
-            elif userData["bedroomsNeeded"] == 3:
-                cityAverage = 4082.00
-            elif userData["bedroomsNeeded"] == 4:
-                cityAverage = 6037.00
-            else:
-                cityAverage = 2341.00
-        case "Austin":
-            if userData["bedroomsNeeded"] == 1:
-                cityAverage = 1266.00
-            elif userData["bedroomsNeeded"] == 2:
-                cityAverage = 1847.00
-            elif userData["bedroomsNeeded"] == 3:
-                cityAverage = 2416.00
-            elif userData["bedroomsNeeded"] == 4:
-                cityAverage = 6037.00
-            else:
-                cityAverage = 4239.00
-        case "Sacramento":
-            if userData["bedroomsNeeded"] == 1:
-                cityAverage = 1476.00
-            elif userData["bedroomsNeeded"] == 2:
-                cityAverage = 1841.00
-            elif userData["bedroomsNeeded"] == 3:
-                cityAverage = 2371.00
-            elif userData["bedroomsNeeded"] == 4:
-                cityAverage = 2964.00
-            else:
-                cityAverage = 1547.00
-        case "Denver":
-            if userData["bedroomsNeeded"] == 1:
-                cityAverage = 1487.00
-            elif userData["bedroomsNeeded"] == 2:
-                cityAverage = 2179.00
-            elif userData["bedroomsNeeded"] == 3:
-                cityAverage = 3067.00
-            elif userData["bedroomsNeeded"] == 4:
-                cityAverage = 4047.00
-            else:
-                cityAverage = 1663.00
-        case _:
-            # default value if city not found, average nationwide rent price
-            cityAverage = 1558.00
+                # Handle cases where the format doesn't match
+                structured_recommendations.append({
+                    "title": "Unknown Recommendation",
+                    "description": rec.strip()
+                })
 
-    jobAverage = 0 #hourly rate
-    match userData["jobTitle"]:
-        case "Software Engineer":
-            jobAverage = 45.13
-            return
-        case "Finance Analyst":
-            jobAverage = 39.48
-            return
-        case "Lawyer":
-            jobAverage = 40.52
-            return
-        case "Blue-Collar Worker": #plumbers, mechanics, electricians, etc.
-            jobAverage = 25.69
-            return
-        case "Customer Service Worker": #unskilled entry-level customer service: cashier, waiter, etc
-            jobAverage = 14.72
-            return
+        # Store recommendations in the users table
+        push_item("rec1_title", structured_recommendations[0]["title"] if len(structured_recommendations) > 0 else None, username, "users")
+        push_item("rec1_desc", structured_recommendations[0]["description"] if len(structured_recommendations) > 0 else None, username, "users")
+        push_item("rec2_title", structured_recommendations[1]["title"] if len(structured_recommendations) > 1 else None, username, "users")
+        push_item("rec2_desc", structured_recommendations[1]["description"] if len(structured_recommendations) > 1 else None, username, "users")
+        push_item("rec3_title", structured_recommendations[2]["title"] if len(structured_recommendations) > 2 else None, username, "users")
+        push_item("rec3_desc", structured_recommendations[2]["description"] if len(structured_recommendations) > 2 else None, username, "users")
 
-    uRecommendationsList["moveInCity"] = (userData["expenseRent"]+userData["expenseUtilities"]-(cityAverage/userData["roommatesNum"]))
-    uRecommendationsList["moveOutCity"] = (userData["expenseRent"]+userData["expenseUtilities"]-1558.00)
-    uRecommendationsList["getBetterJob"] = ((userData["salaryHourly"]-jobAverage)*userData["weeklyHours"])
-    #uRecommendationsList["changeJob"] = ((userData["salaryHourly"]-jobAverage)*userData["weeklyHours"])
-    uRecommendationsList["lessTakeout"] = (userData["expenseTakeout"])
-    uRecommendationsList["cheaperGroceries"] = ((userData["expenseGroceries"]-(250.00*userData["dependentsNum"]))*userData["dependentsNum"])
-    uRecommendationsList["lessEntertainment"] = ((userData["expenseEntertainment"]+userData["expenseDining"]+userData["expenseSubscriptions"])-(incomeTotal*0.3))
-    uRecommendationsList["workMoreGigs"] = ((35 - userData["weeklyHours"])*12)
+        return jsonify({
+            "message": "Recommendations generated and updated successfully.",
+            "recommendations": structured_recommendations
+        }), 200
 
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-    totalDebtPayments = 0
+@bp.route('/get', methods=['POST'])
+def get_recommendations():
+    data = request.get_json()
+    username = data.get("username")
 
-    for debt in userData["debts"]:
-        totalDebtPayments = totalDebtPayments + debt[3]
-        if (debt[1] < incomeTotal*0.1):
-            uRecommendationsList["payOffSmallDebts"] = incomeTotal*0.1
-    uRecommendationsList["payOffHighInterest"] = () #if user is spending lots on low interest debts and not high interest ones
+    try:
+        user_data = get_item(item="all", username=username, table="users")[0]
+        recommendations = [
+            {"title": user_data.get("rec1_title", "N/A"), "description": user_data.get("rec1_desc", "No description available.")},
+            {"title": user_data.get("rec2_title", "N/A"), "description": user_data.get("rec2_desc", "No description available.")},
+            {"title": user_data.get("rec3_title", "N/A"), "description": user_data.get("rec3_desc", "No description available.")},
+        ]
 
-    if (userData["roommates"] < 1 and userData["expenseRent"] > cityAverage):
-        uRecommendationsList["getRoommates"] = (100.00)
+        recommendations = [rec for rec in recommendations if rec["title"] != "N/A"]
 
-    if (totalDebtPayments > 0 and userData["savings"] < expenseTotal):
-        uRecommendationsList["buildSavings"] = (10000.00)
+        if recommendations:
+            return jsonify({"recommendations": recommendations}), 200
+        return jsonify({"message": "No recommendations found."}), 404
 
-    if (userData["userGoal"] != "debt"):
-        uRecommendationsList["saveMoreMoney"] = ((incomeTotal*0.2)-userData["savingsIncrease"])*5
-        uRecommendationsList["investSavings"] = (userData["savings"] - expenseTotal)/10
-
-
-    
-
-
-    rList = list(uRecommendationsList.keys())
-    rList.sort()
-
-    #sorted dictionary
-    sRecommendationsList = {i: uRecommendationsList[i] for i in rList}
-
-    #get subtitles for recommendations by making 3 chatGPT calls
-    top3Subtitles = {"a", "b", "c"} #replace abc with 3 chatgpt calls for 3 strings
-
-    return jsonify({"rec1title": uRecommendationsList[0], 
-                    "rec2title": uRecommendationsList[1], 
-                    "rec3title": uRecommendationsList[2], 
-                    "rec1desc" : top3Subtitles[0], 
-                    "rec2desc" : top3Subtitles[1], 
-                    "rec3desc" : top3Subtitles[2]})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

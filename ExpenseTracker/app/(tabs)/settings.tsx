@@ -1,276 +1,175 @@
 import React, { useState, useEffect } from 'react';
-import { Linking, StyleSheet, SafeAreaView, ScrollView, View, Text, TouchableOpacity, Switch, Alert } from 'react-native';
+import {
+    Pressable,
+    Linking,
+    StyleSheet,
+    SafeAreaView,
+    ScrollView,
+    View,
+    Text,
+    Alert,
+} from 'react-native';
 import FeatherIcon from '@expo/vector-icons/Feather';
-//import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import { useNavigation } from 'expo-router';
 import ApiService from '../../utils/apiService';
 
-//const userData = {
-//    userName: "John Doe",
-//    address: "123 Somewhere Street",
-//    cityName: "Fairfax",
-//    stateName: "VA",
-//    rent: "$1200",
-//    expenses: "$300",
-//    debt: "$5000",
-//    loans: "$15000",
-//};
+// Define the structure of the user data
+interface User {
+    username: string;
+    address: string;
+    city_name: string;
+    state_name: string;
+}
 
-//const generatePdf = async () => {
-//    try {
-//        const htmlContent = `
-//            <html>
-//                <body>
-//                    <h1 style="text-align: center;">Financial Report</h1>
-//                    <h2>User Information</h2>
-//                    <p>Name: ${userData.userName}</p>
-//                    <p>Location: ${locationData}</p>
-//                    <h2>Financial Details</h2>
-//                    <p>Rent: ${userData.rent}</p>
-//                    <p>Expenses: ${userData.expenses}</p>
-//                    <p>Debt: ${userData.debt}</p>
-//                    <p>Loans: ${userData.loans}</p>
-//                </body>
-//            </html>
-//        `;
-
-//        const pdfOptions = {
-//            html: htmlContent,
-//            fileName: 'Financial_Report',
-//            directory: 'Documents',
-//        };
-
-//        const file = await RNHTMLtoPDF.convert(pdfOptions);
-
-//        Alert.alert('PDF Generated', `Your PDF has been saved to: ${file.filePath}`);
-//    } catch (error) {
-//        console.error('PDF generation error:', error);
-//        Alert.alert('Error', 'Failed to generate PDF. Please try again.');
-//    }
-//};
+type Navigation = {
+    navigate: (screen: string) => void;
+}
 
 export default function SettingsScreen() {
-    const [userData, setUserData] = useState(JSON.parse('{"incomes":[["Job",3000],["Freelance",1500],["Dividends",500]]}'));
+    const [userData, setUserData] = useState<User[] | null>(null); // Array of User or null
+    const [isLoading, setIsLoading] = useState(true);
+    const navigation = useNavigation<Navigation>();
 
-    const [dataFetched, setDataFetch] = useState(false)
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await ApiService.getFromDatabase('all', 'test', 'users');
+                setUserData(response?.all || []);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                Alert.alert('Error', 'Failed to load user data. Please try again later.');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
 
-    useEffect(() => { fetchData() }, [dataFetched])
+    if (isLoading) {
+        return (
+            <SafeAreaView style={styles.centeredContainer}>
+                <Text style={styles.headerText}>Loading...</Text>
+            </SafeAreaView>
+        );
+    }
 
-    const fetchData = async () => {
-        console.log("start fetch here")
-        try {
-            var incomingData = await ApiService.getFromDatabase("all", "test", "users");
-            console.log(incomingData["all"])
-            setUserData(incomingData["all"]);
-            setDataFetch(true)
-        } catch (error) {
-            console.error('Error fetching item:', error)
-        }
-    };
-    const navigation = useNavigation() as any;
+    if (!userData || userData.length === 0) {
+        return (
+            <SafeAreaView style={styles.centeredContainer}>
+                <Text style={styles.headerText}>No user data found</Text>
+            </SafeAreaView>
+        );
+    }
 
-    const [form, setForm] = useState({
-        darkMode: false,
-        emailNotifications: true,
-        pushNotifications: false,
-    });
-
-    if (!dataFetched) return (
-        <Text style={styles.headerText}>Loading...</Text>
-    )
-
-
-    console.log(userData[0]["address"])
-    const locationData = `${userData[0]["address"]} - ${userData[0]["city_name"]}, ${userData[0]["state_name"]}`;
+    const user = userData[0];
+    const locationData = `${user.address} - ${user.city_name}, ${user.state_name}`;
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.profile}>
-            <Pressable
-                  onPress={() => {
-                      // handle onPress
-                  }}>
-              </Pressable>
-                <View>
-                    <Text style={styles.profileName}>{userData.userName}</Text>
-                    <Text style={styles.profileAddress}>{locationData}</Text>
-                </View>
+                <Text style={styles.profileName}>{user.username}</Text>
+                <Text style={styles.profileAddress}>{locationData}</Text>
             </View>
 
-              <View>
-                    <Text style={styles.profileName}>{userData[0]["username"]}</Text>
-
-                    <Pressable
+            <ScrollView>
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>User Settings</Text>
+                    <SettingOption
+                        icon="globe"
+                        label="Update User Data"
                         onPress={() => navigation.navigate('GoalsScreen')}
-                        style={styles.row}>
-                        <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
-                            <FeatherIcon color="#fff" name="globe" size={20} />
-                        </View>
-                        <Text style={styles.rowLabel}>Update User Data</Text>
-                        <View style={styles.rowSpacer} />
-                        <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
-                    </Pressable>
-                </View>
-            </ScrollView>
-
-          <ScrollView>
-              <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>User Data</Text>
-                  <TouchableOpacity
-                      onPress={() => {
-                            navigation.navigate('ExpensesScreen');
-                      }}
-                      style={styles.row}>
-                      <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
-                          <FeatherIcon color="#fff" name="globe" size={20} />
-
-                          </View>
-
-                    <Text style={styles.rowLabel}>Update Financial Data</Text> {/* Go through onboarding process again */ }
-                    <View style={styles.rowSpacer} />
-                <FeatherIcon
-                        color="#C6C6C6"
-                        name="chevron-right"
-                        size={20} />
-                    </Pressable>
-                    {/* New Option for "Create a PDF for Your Finances" */}
-                    <Pressable onPress={() => {
-                            /*generatePdf*/
-                      }} style={styles.row}>
-                        <View style={[styles.rowIcon, { backgroundColor: '#9b59b6' }]}>
-                            <FeatherIcon color="#fff" name="file-text" size={20} />
-                        </View>
-                        <Text style={styles.rowLabel}>Create a PDF for your finances</Text>
-                        <View style={styles.rowSpacer} />
-                        <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
-                    </Pressable>
-
-                  <Pressable
-                      onPress={() => {
-                            navigation.navigate('ProfileScreen');
-                      }}
-                      style={styles.row}>
-                        <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
-                          <FeatherIcon
-                              color="#fff"
-                              name="navigation"
-                              size={20} />
-                        </View>
-
-                      <Text style={styles.rowLabel}>Update Location</Text>
-
-                      <View style={styles.rowSpacer} />
-
-                      <FeatherIcon
-                          color="#C6C6C6"
-                          name="chevron-right"
-                          size={20} />
-                    </Pressable>
-
-                    <Pressable
+                    />
+                    <SettingOption
+                        icon="file-text"
+                        label="Create a PDF for your finances"
                         onPress={() => {
-                            navigation.navigate('GoalsScreen');
+                            // Handle PDF generation
                         }}
-                        style={styles.row}>
-                        <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
-                            <FeatherIcon
-                                color="#fff"
-                                name="dollar-sign"
-                                size={20} />
-                        </View>
+                    />
+                    <SettingOption
+                        icon="navigation"
+                        label="Update Location"
+                        onPress={() => navigation.navigate('ProfileScreen')}
+                    />
+                    <SettingOption
+                        icon="dollar-sign"
+                        label="Change Financial Goal"
+                        onPress={() => navigation.navigate('GoalsScreen')}
+                    />
+                </View>
 
-                        <Text style={styles.rowLabel}>Change Financial Goal</Text>
-
-                        <View style={styles.rowSpacer} />
-
-                        <FeatherIcon
-                            color="#C6C6C6"
-                            name="chevron-right"
-                            size={20} />
-                    </Pressable>
-
-                  {/*<View style={styles.row}>*/}
-                  {/*    <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>*/}
-                  {/*        <FeatherIcon color="#fff" name="bell" size={20} />*/}
-                  {/*    </View>*/}
-
-                  {/*    <Text style={styles.rowLabel}>Push Notifications</Text>*/}
-
-                  {/*    <View style={styles.rowSpacer} />*/}
-
-                  {/*    <Switch*/}
-                  {/*        onValueChange={pushNotifications =>*/}
-                  {/*            setForm({ ...form, pushNotifications })*/}
-                  {/*        }*/}
-                  {/*        value={form.pushNotifications} />*/}
-                  {/*</View>*/}
-              </View>
-
-              <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>Resources</Text>
-
-                  <Pressable
-                      onPress={() => {
-                            Linking.openURL(`mailto:<zhamilt@gmu.edu>`);
-                      }}
-                      style={styles.row}>
-                      <View style={[styles.rowIcon, { backgroundColor: '#8e8d91' }]}>
-                          <FeatherIcon color="#fff" name="flag" size={20} />
-                      </View>
-
-                      <Text style={styles.rowLabel}>Report Bug</Text>
-
-                      <View style={styles.rowSpacer} />
-
-                      <FeatherIcon
-                          color="#C6C6C6"
-                          name="chevron-right"
-                          size={20} />
-                  </Pressable>
-
-                  <Pressable
-                      onPress={() => {
-                            Linking.openURL(`mailto:<zhamilt@gmu.edu>`);
-                      }}
-                      style={styles.row}>
-                      <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
-                          <FeatherIcon color="#fff" name="mail" size={20} />
-                      </View>
-
-                      <Text style={styles.rowLabel}>Contact Us</Text>
-                      <View style={styles.rowSpacer} />
-                        <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
-                    </Pressable>
-
-                    {/*<TouchableOpacity style={styles.row}>*/}
-                    {/*    <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>*/}
-                    {/*        <FeatherIcon color="#fff" name="star" size={20} />*/}
-                    {/*    </View>*/}
-                    {/*    <Text style={styles.rowLabel}>Rate in App Store</Text>*/}
-                    {/*    <View style={styles.rowSpacer} />*/}
-                    {/*    <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />*/}
-                    {/*</TouchableOpacity>*/}
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Resources</Text>
+                    <SettingOption
+                        icon="flag"
+                        label="Report Bug"
+                        onPress={() => Linking.openURL('mailto:zhamilt@gmu.edu')}
+                    />
+                    <SettingOption
+                        icon="mail"
+                        label="Contact Us"
+                        onPress={() => Linking.openURL('mailto:zhamilt@gmu.edu')}
+                    />
                 </View>
             </ScrollView>
         </SafeAreaView>
     );
 }
 
+type FeatherIconName = "globe" | "file-text" | "navigation" | "dollar-sign" | "chevron-right" | "flag" | "mail";
+
+type SettingOptionProps = {
+    icon: FeatherIconName;
+    label: string;
+    onPress: () => void;
+};
+
+const SettingOption: React.FC<SettingOptionProps> = ({ icon, label, onPress }) => {
+    const iconColors: { [key in FeatherIconName]: string } = {
+        globe: "#fe9400",
+        "file-text": "#9b59b6",
+        navigation: "#007afe",
+        "dollar-sign": "#32c759",
+        "chevron-right": "#C6C6C6", 
+        flag: "#8e8d91",
+        mail: "#007afe",
+    };
+
+    return (
+        <Pressable onPress={onPress} style={styles.row}>
+            <View style={[styles.rowIcon, { backgroundColor: iconColors[icon] }]}>
+                <FeatherIcon color="#fff" name={icon} size={20} />
+            </View>
+            <Text style={styles.rowLabel}>{label}</Text>
+            <View style={styles.rowSpacer} />
+            <FeatherIcon color={iconColors["chevron-right"]} name="chevron-right" size={20} />
+        </Pressable>
+    );
+};
+
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#000',
+    },
+    centeredContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#000',
+    },
     headerText: {
         fontSize: 28,
         fontWeight: 'bold',
         textAlign: 'center',
-        color: '#333333',
+        color: '#fff',
     },
     profile: {
         padding: 24,
         backgroundColor: '#121212',
         alignItems: 'center',
-        justifyContent: 'center',
     },
     profileName: {
-        marginTop: 20,
         fontSize: 19,
         fontWeight: '600',
         color: '#fff',
@@ -284,10 +183,11 @@ const styles = StyleSheet.create({
     },
     section: {
         paddingHorizontal: 24,
+        marginTop: 16,
     },
     sectionTitle: {
-        paddingVertical: 12,
-        fontSize: 12,
+        marginBottom: 8,
+        fontSize: 14,
         fontWeight: '600',
         color: '#9e9e9e',
         textTransform: 'uppercase',
@@ -304,17 +204,16 @@ const styles = StyleSheet.create({
     rowIcon: {
         width: 32,
         height: 32,
-        borderRadius: 9999,
-        marginRight: 12,
+        borderRadius: 16,
         alignItems: 'center',
         justifyContent: 'center',
+        marginRight: 12,
     },
     rowLabel: {
-        fontSize: 17,
-        fontWeight: '400',
+        fontSize: 16,
         color: '#fff',
     },
     rowSpacer: {
-        flexGrow: 1,
+        flex: 1,
     },
 });

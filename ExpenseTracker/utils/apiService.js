@@ -7,31 +7,61 @@ class ApiService {
         this.baseUrl = apiUrl
     }
 
-    //update recommendations screen whenever needed, i.e. when recommendations screen is refreshed
-    async updateRecommendations() {
-        //return a JSON file with top 3 recommendations based on userData
-        //sends TO backend updated list of "blacklisted" recommendations refused by user, a string of numbers to be parsed by python at start of function
-
+    async updateRecommendations(username) {
         try {
-            const response = await fetch(`${this.baseUrl}/recommendations/update`, { //change to proper python script file?
+            // Fetch the existing recommendations for the user
+            const getResponse = await fetch(`${this.baseUrl}/recommendations/get`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                //body: JSON.stringify({"recUpdateString":"placeholder"})
+                body: JSON.stringify({ username }),
             });
-            //get a sorted array from backend database: python should sort recommendations based upon userData
 
-            // Log the raw response for debugging
-            const rawResponse = await response.text(); // Use .text() to get the raw response
-            console.log('Raw API Response:', rawResponse); // Log the response
+            const getRawResponse = await getResponse.text();
+            console.log('Raw Get Recommendations Response:', getRawResponse);
 
-            // Now parse it as JSON
-            const jsonResponse = JSON.parse(rawResponse); // Should parse 3 titles and 3 descriptions
+            const getJsonResponse = JSON.parse(getRawResponse);
 
-            return jsonResponse;
+            // Validate the response to ensure recommendations exist and are not null
+            const validRecommendations = getJsonResponse.recommendations && getJsonResponse.recommendations.every(
+                (rec) => rec.title && rec.description
+            );
+
+            if (validRecommendations) {
+                // Return existing recommendations if valid
+                return {
+                    rec1: getJsonResponse.recommendations[0],
+                    rec2: getJsonResponse.recommendations[1],
+                    rec3: getJsonResponse.recommendations[2],
+                };
+            }
+
+            // If no recommendations exist, generate new ones
+            const generateResponse = await fetch(`${this.baseUrl}/recommendations/generate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username }),
+            });
+
+            const generateRawResponse = await generateResponse.text();
+            console.log('Raw Generate Recommendations Response:', generateRawResponse);
+
+            const generateJsonResponse = JSON.parse(generateRawResponse);
+
+            if (generateJsonResponse.recommendations) {
+                return {
+                    rec1: generateJsonResponse.recommendations[0],
+                    rec2: generateJsonResponse.recommendations[1],
+                    rec3: generateJsonResponse.recommendations[2],
+                };
+            } else {
+                throw new Error('Failed to generate recommendations.');
+            }
         } catch (error) {
-            console.error('API Error:', error);
+            console.error('API Error in updateRecommendations:', error);
             throw error;
         }
     }

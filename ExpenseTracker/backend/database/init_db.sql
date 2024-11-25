@@ -25,12 +25,12 @@ CREATE TABLE IF NOT EXISTS users (
     expense_entertainment NUMERIC(12, 2),
     income_job NUMERIC(12, 2),
     income_other NUMERIC(12, 2),
-    rec1_title VARCHAR(100),
-    rec2_title VARCHAR(100),
-    rec3_title VARCHAR(100),
-    rec1_desc VARCHAR(255),
-    rec2_desc VARCHAR(255),
-    rec3_desc VARCHAR(255)
+    rec1_title VARCHAR(128),
+    rec2_title VARCHAR(128),
+    rec3_title VARCHAR(128),
+    rec1_desc VARCHAR(1000),
+    rec2_desc VARCHAR(1000),
+    rec3_desc VARCHAR(1000)
 );
 
 CREATE TABLE IF NOT EXISTS expenses (
