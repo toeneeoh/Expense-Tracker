@@ -1,5 +1,5 @@
-# Expense-Tracker
-A mobile app developed with the Expo framework and React Native to track finances and develop personal finance plans.
+# Budget Buddy
+A web/mobile app developed with the Expo framework and React Native to track finances and develop personal finance plans.
 
 - Python backend via flask
 - PostgreSQL database
