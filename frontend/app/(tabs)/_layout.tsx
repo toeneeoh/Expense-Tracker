@@ -14,11 +14,13 @@ export default function TabLayout() {
   const desktop = width >= 850;
   return <AppGate><Tabs screenOptions={({ route }) => ({
     headerShown: false, tabBarActiveTintColor: theme.green, tabBarInactiveTintColor: theme.muted,
+    tabBarPosition: desktop ? 'left' : 'bottom',
+    tabBarLabelPosition: desktop ? 'beside-icon' : 'below-icon',
     tabBarIcon: ({ color, size }) => <Ionicons name={icons[route.name as keyof typeof icons] ?? 'ellipse-outline'} size={size} color={color} />,
     tabBarStyle: desktop ? styles.sidebar : styles.bottom,
     tabBarItemStyle: desktop ? styles.sidebarItem : styles.bottomItem,
-    tabBarLabelStyle: styles.label,
-    sceneStyle: desktop ? styles.desktopScene : undefined,
+    tabBarIconStyle: desktop ? styles.sidebarIcon : undefined,
+    tabBarLabelStyle: [styles.label, desktop && styles.sidebarLabel],
   })}>
     <Tabs.Screen name="index" options={{ title: 'Overview' }} />
     <Tabs.Screen name="transactions" options={{ title: 'Transactions' }} />
@@ -26,6 +28,9 @@ export default function TabLayout() {
   </Tabs></AppGate>;
 }
 function makeStyles(theme: AppTheme) { return StyleSheet.create({
-  sidebar: { position: 'absolute', left: 0, top: 0, bottom: 0, width: 210, height: '100%', paddingTop: 44, paddingHorizontal: 14, borderRightWidth: 1, borderTopWidth: 0, borderRightColor: theme.border, backgroundColor: theme.surface },
-  sidebarItem: { maxHeight: 64, borderRadius: 12 }, bottom: { height: 74, paddingBottom: 9, paddingTop: 8, backgroundColor: theme.surface, borderTopColor: theme.border }, bottomItem: { borderRadius: 10 }, label: { fontSize: 12, fontWeight: '700' }, desktopScene: { marginLeft: 210 },
+  sidebar: { width: 224, paddingTop: 36, paddingHorizontal: 14, borderRightWidth: 1, borderTopWidth: 0, borderRightColor: theme.border, backgroundColor: theme.surface },
+  sidebarItem: { width: '100%', minHeight: 54, maxHeight: 54, paddingHorizontal: 14, borderRadius: 12 },
+  sidebarIcon: { width: 26, marginRight: 10 },
+  sidebarLabel: { flex: 1, fontSize: 14, textAlign: 'left' },
+  bottom: { height: 74, paddingBottom: 9, paddingTop: 8, backgroundColor: theme.surface, borderTopColor: theme.border }, bottomItem: { borderRadius: 10 }, label: { fontSize: 12, fontWeight: '700' },
 }); }

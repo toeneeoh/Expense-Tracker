@@ -10,7 +10,7 @@ const THEME_KEY = 'budget-buddy-theme';
 
 export function ThemeProvider({ children }: React.PropsWithChildren) {
   const system = useColorScheme();
-  const [mode, setMode] = useState<ThemeMode>('system');
+  const [mode, setMode] = useState<ThemeMode>('dark');
   useEffect(() => { void AsyncStorage.getItem(THEME_KEY).then((saved) => { if (saved === 'light' || saved === 'dark' || saved === 'system') setMode(saved); }); }, []);
   const resolved = mode === 'system' ? (system === 'dark' ? 'dark' : 'light') : mode;
   const value = useMemo<ThemeValue>(() => ({
