@@ -9,6 +9,7 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
+.tmp-edge-*/
 backend/config.py
 
 # macOS
