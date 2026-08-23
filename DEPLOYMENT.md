@@ -1,6 +1,6 @@
 # Zero-cost deployment
 
-The public demo uses Cloudflare Pages for the static Expo web export and a free Render web service for Flask. The backend database is intentionally disposable: if Render sleeps or redeploys, the browser automatically receives a new fictional session.
+The public demo uses Cloudflare Workers Static Assets for the Expo web export and a free Render web service for Flask. The backend database is intentionally disposable: if Render sleeps or redeploys, the browser automatically receives a new fictional session.
 
 ## 1. Publish the repository
 
@@ -21,7 +21,7 @@ Do not add `OPENAI_API_KEY` to the free public demo. Deterministic insights rema
 1. In Cloudflare, choose **Workers & Pages → Create → Import a repository**.
 2. Select the GitHub repository and configure Workers Builds:
    - Production branch: `main`
-   - Root directory: `ExpenseTracker`
+   - Root directory: leave blank (repository root)
    - Build command: `npm ci && npm run build:web`
    - Deploy command: `npm run deploy:web`
    - Non-production branch deploy command: `npm run preview:web`
@@ -34,7 +34,7 @@ Cloudflare automatically creates a `*.workers.dev` production URL and preview ve
 
 ## 4. Smoke test
 
-- Open the Pages URL in a private browser window.
+- Open the Workers URL in a private browser window.
 - Confirm the overview appears immediately even while Render wakes.
 - Wait for “Interactive demo connected.”
 - Add and delete an expense, change the savings goal, refresh insights, and reset the demo.

@@ -1,0 +1,21 @@
+{
+  "name": "budget-buddy-monorepo",
+  "version": "2.0.0",
+  "private": true,
+  "workspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "start": "npm run start --workspace frontend",
+    "web": "npm run web --workspace frontend",
+    "start:api": "python backend/main.py",
+    "build:web": "npm run build:web --workspace frontend",
+    "deploy:web": "npm run deploy:web --workspace frontend",
+    "preview:web": "npm run preview:web --workspace frontend",
+    "lint": "npm run lint --workspace frontend",
+    "typecheck": "npm run typecheck --workspace frontend",
+    "test": "npm run test --workspace frontend",
+    "test:api": "python -m pytest backend/tests -q",
+    "check": "npm run lint && npm run typecheck && npm test && npm run test:api && npm run build:web"
+  }
+}

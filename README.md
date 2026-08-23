@@ -25,12 +25,19 @@ Expo web app → validated Flask API → SQLite / PostgreSQL
                  OpenAI rewrite
 ```
 
+Repository layout:
+
+```text
+frontend/   Expo, React Native Web, and TypeScript
+backend/    Flask API, persistence, and API tests
+package.json  Root commands used locally, in CI, and by hosting
+```
+
 ## Local setup
 
 Requirements: a current Node.js LTS release and Python 3.11+.
 
 ```bash
-cd ExpenseTracker
 cp .env.example .env
 python -m venv .venv
 # Activate .venv for your shell

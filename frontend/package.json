@@ -1,11 +1,10 @@
 {
-  "name": "budget-buddy",
+  "name": "budget-buddy-frontend",
   "version": "2.0.0",
   "private": true,
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
-    "start:api": "python backend/main.py",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
@@ -15,7 +14,6 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "jest --runInBand",
-    "test:api": "python -m pytest backend/tests -q",
     "check": "npm run lint && npm run typecheck && npm test && npm run build:web"
   },
   "jest": {
@@ -23,9 +21,7 @@
     "transform": {
       "^.+\\.[jt]sx?$": "babel-jest"
     },
-    "testPathIgnorePatterns": [
-      "<rootDir>/backend/"
-    ]
+    "testPathIgnorePatterns": []
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",

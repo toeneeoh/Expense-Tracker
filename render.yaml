@@ -3,9 +3,9 @@ services:
     name: budget-buddy-api
     runtime: python
     plan: free
-    rootDir: ExpenseTracker
-    buildCommand: pip install -r backend/requirements.txt
-    startCommand: gunicorn --chdir backend --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120 main:app
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120 main:app
     healthCheckPath: /api/health
     autoDeployTrigger: checksPass
     envVars:
