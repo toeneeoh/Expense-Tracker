@@ -22,7 +22,7 @@ Do not add `OPENAI_API_KEY` to the free public demo. Deterministic insights rema
 2. Select the GitHub repository and configure Workers Builds:
    - Production branch: `main`
    - Root directory: leave blank (repository root)
-   - Build command: `npm ci && npm run build:web`
+   - Build command: `npm run build:web` (Workers Builds installs dependencies automatically)
    - Deploy command: `npm run deploy:web`
    - Non-production branch deploy command: `npm run preview:web`
    - API token: create a new token named `budget-buddy-builds`
