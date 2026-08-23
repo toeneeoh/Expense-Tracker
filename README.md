@@ -2,6 +2,8 @@
 
 Budget Buddy is a responsive expense-tracking demo that turns a fictional monthly snapshot into practical guidance. It was rebuilt from an early student prototype into a deliberately scoped portfolio project: no bank credentials, fake production authentication, or AI dependency that can break the core experience.
 
+[Open the live demo](https://expense-tracker.toeneeoh.workers.dev) · [API health](https://budget-buddy-api-c24j.onrender.com/api/health)
+
 ## What reviewers can do
 
 - Understand income, spending, monthly balance, category mix, and savings progress.
@@ -9,7 +11,7 @@ Budget Buddy is a responsive expense-tracking demo that turns a fictional monthl
 - Change a savings goal or restore the fictional seed scenario with one click.
 - Generate three educational recommendations. Budgeting rules always work; OpenAI can optionally refine the language.
 - Use the same experience on desktop and narrow mobile screens.
-- Follow the system color scheme or persist a manual light/dark preference.
+- Start in dark mode and persist a manual light/dark preference.
 
 ## Architecture
 
