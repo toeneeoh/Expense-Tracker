@@ -1,158 +1,31 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Tabs } from 'expo-router';
-import React from 'react';
+import { StyleSheet, useWindowDimensions } from 'react-native';
+import { useMemo } from 'react';
+import { useAppTheme } from '@/context/ThemeContext';
+import type { AppTheme } from '@/constants/Theme';
+import { AppGate } from '@/components/AppShell';
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { UserProvider } from '@/context/UserContext';
-
+const icons = { index: 'grid-outline', transactions: 'swap-horizontal-outline', insights: 'sparkles-outline' } as const;
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
-  return (
-    <UserProvider>
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
-      <Tabs.Screen
-        name="home"
-        options={{
-          title: 'Finances',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'cash' : 'cash-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="recommendations"
-        options={{
-          title: 'Recommendations',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'book' : 'book-outline'} color={color} />
-          ),
-        }}
-          />
-      <Tabs.Screen
-        name="addScreen"
-        options={{
-          title: 'Add',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'add-circle' : 'add-circle-outline'} color={color} />
-          ),
-        }}
-          />
-    <Tabs.Screen
-        name="notifications"
-        options={{
-          title: 'Assistant',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'chatbox-ellipses' : 'chatbox-ellipses-outline'} color={color} />
-          ),
-        }}
-          />
-    <Tabs.Screen
-        name="settings"
-        options={{
-          title: 'User',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'person' : 'person-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="ApiTestScreen"
-              options={{
-                  //href: null, //uncomment/comment this line to make this tab appear/disappear
-          title: 'API Test',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'flask' : 'flask-outline'} color={color} />
-          ),
-        }}
-       />
-       <Tabs.Screen
-            name="index"
-            options={{
-            href: null,
-        }}
-          />
-          <Tabs.Screen
-              name="GoalsScreen"
-              options={{
-                  href: null,
-              }}
-          />
-          <Tabs.Screen
-              name="ExpensesScreen"
-              options={{
-                  href: null,
-              }}
-          />
-          <Tabs.Screen
-              name="ProfileScreen"
-              options={{
-                  href: null,
-              }}
-          />
-    </Tabs>
-</UserProvider>
-  );
+  const { colors: theme } = useAppTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
+  const { width } = useWindowDimensions();
+  const desktop = width >= 850;
+  return <AppGate><Tabs screenOptions={({ route }) => ({
+    headerShown: false, tabBarActiveTintColor: theme.green, tabBarInactiveTintColor: theme.muted,
+    tabBarIcon: ({ color, size }) => <Ionicons name={icons[route.name as keyof typeof icons] ?? 'ellipse-outline'} size={size} color={color} />,
+    tabBarStyle: desktop ? styles.sidebar : styles.bottom,
+    tabBarItemStyle: desktop ? styles.sidebarItem : styles.bottomItem,
+    tabBarLabelStyle: styles.label,
+    sceneStyle: desktop ? styles.desktopScene : undefined,
+  })}>
+    <Tabs.Screen name="index" options={{ title: 'Overview' }} />
+    <Tabs.Screen name="transactions" options={{ title: 'Transactions' }} />
+    <Tabs.Screen name="insights" options={{ title: 'Insights' }} />
+  </Tabs></AppGate>;
 }
-
-//Nates
-/*
-import { Tabs } from 'expo-router';
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { Colors } from '@/constants/Colors';
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
-      <Tabs.Screen
-        name="WelcomeScreen"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="GoalsScreen"
-        options={{
-          title: 'Goals',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'star' : 'star-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="ExpensesScreen"
-        options={{
-          title: 'Expenses',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'wallet' : 'wallet-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="ProfileScreen"
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'person' : 'person-outline'} color={color} />
-          ),
-        }}
-      />
-    </Tabs>
-  );
-}
-*/
+function makeStyles(theme: AppTheme) { return StyleSheet.create({
+  sidebar: { position: 'absolute', left: 0, top: 0, bottom: 0, width: 210, height: '100%', paddingTop: 44, paddingHorizontal: 14, borderRightWidth: 1, borderTopWidth: 0, borderRightColor: theme.border, backgroundColor: theme.surface },
+  sidebarItem: { maxHeight: 64, borderRadius: 12 }, bottom: { height: 74, paddingBottom: 9, paddingTop: 8, backgroundColor: theme.surface, borderTopColor: theme.border }, bottomItem: { borderRadius: 10 }, label: { fontSize: 12, fontWeight: '700' }, desktopScene: { marginLeft: 210 },
+}); }

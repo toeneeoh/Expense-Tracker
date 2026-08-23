@@ -1,58 +1,80 @@
 # Budget Buddy
-A web/mobile app developed with the Expo framework and React Native to track finances and develop personal finance plans.
 
-- Python backend via flask
-- PostgreSQL database
-- OpenAI LLM
+Budget Buddy is a responsive expense-tracking demo that turns a fictional monthly snapshot into practical guidance. It was rebuilt from an early student prototype into a deliberately scoped portfolio project: no bank credentials, fake production authentication, or AI dependency that can break the core experience.
 
-## Steps to start Developing
+## What reviewers can do
 
-### 1. Clone the Repository
-First, clone this repository to your local machine:
-```bash
-git clone <repository-url>
+- Understand income, spending, monthly balance, category mix, and savings progress.
+- Add or remove transactions and immediately see derived values update.
+- Change a savings goal or restore the fictional seed scenario with one click.
+- Generate three educational recommendations. Budgeting rules always work; OpenAI can optionally refine the language.
+- Use the same experience on desktop and narrow mobile screens.
+- Follow the system color scheme or persist a manual light/dark preference.
+
+## Architecture
+
+The frontend uses Expo, React Native Web, Expo Router, and TypeScript. One finance provider owns request state and exposes typed actions to three screens.
+
+The Flask API exposes only anonymous demo-session operations. SQLite is the zero-configuration local database; a PostgreSQL `DATABASE_URL` can be supplied for hosting. Session IDs isolate reviewers without collecting identity or password data.
+
+```text
+Expo web app → validated Flask API → SQLite / PostgreSQL
+                       ↓
+              rule-based insights
+                       ↓ optional
+                 OpenAI rewrite
 ```
 
-### 2. Install Node.js and npm
-Make sure you have [Node.js](https://nodejs.org) and npm installed. You can download and install them from the official Node.js website if they aren't already on your system.
+## Local setup
 
-### 3. Install Project Dependencies
-Navigate to the project directory and install the necessary dependencies:
+Requirements: a current Node.js LTS release and Python 3.11+.
+
 ```bash
-cd <repository-directory>
+cd ExpenseTracker
+cp .env.example .env
+python -m venv .venv
+# Activate .venv for your shell
+pip install -r backend/requirements.txt
 npm install
 ```
 
-### 4. Start the Expo Go Development Server
+Run the API and web app in separate terminals:
+
 ```bash
-npm run start:expo
-or
-npx expo start -c
+npm run start:api
+npm run web
 ```
 
-### 5 (Optional). Start the Backend Python Server
+Defaults use `http://localhost:5000` and a local `budget_buddy.db`. Set `EXPO_PUBLIC_API_URL`, `DATABASE_URL`, and `FRONTEND_ORIGINS` for hosting.
+
+`OPENAI_API_KEY` and `OPENAI_MODEL` are optional. Without them—or if the model fails—the API returns deterministic insights and identifies the source as `rules`.
+
+## Quality checks
+
 ```bash
-npm run start:flask
+npm run lint
+npm run typecheck
+npm test
+npm run test:api
+npm run build:web
+npm audit --omit=dev
+pip-audit -r backend/requirements.txt
 ```
 
-==================================================
+CI runs type checking, frontend and backend tests, a static web export, and production dependency audits.
 
-## Steps to generate an .apk
+For the intentionally free Cloudflare Pages + Render deployment, see [DEPLOYMENT.md](DEPLOYMENT.md). The overview renders from a bundled snapshot while a sleeping free API wakes; editing activates when the service connects.
 
-### 1. Create an account on Expo Go (I need to invite you to the project)
-```bash
-https://expo.dev/
-```
+The current npm audit reports moderate `uuid` findings through Expo's native Xcode build tooling. They are not used in the hosted browser runtime, no compatible upstream fix is available, and npm's proposed forced fix downgrades Expo to an unsupported release. CI fails on high or critical production findings while this upstream advisory is monitored. The pinned Python set currently audits cleanly.
 
-### 2. Install eas-cli and initialize the project
-```bash
-npm install --global eas-cli
-eas init --id ce723064-1f58-4682-8e0a-4eb0a7dbd18c
-```
+## API
 
-### 3. Build the app using the production profile
-```bash
-eas build -p android --profile production
-```
+The API provides session creation, dashboard reads, transaction creation/deletion, goal updates, demo reset, insight generation, and a health check under `/api`. Errors use `{ "error": { "code": "...", "message": "..." } }`. Request bodies are size-limited, CORS origins are explicit, and AI refreshes are rate-limited.
 
-### 4. Scan the provided QR code to download the app
+## Intentional boundaries
+
+This is a portfolio demonstration, not a financial product. It does not connect to banks, store personal profiles, support real accounts, or provide professional financial advice. All demo records are fictional and resettable.
+
+## Rebuild story
+
+The original project mixed incomplete onboarding, plaintext demo passwords, generic database mutation endpoints, hardcoded infrastructure, and brittle LLM parsing. Version 2 concentrates the product around one credible reviewer journey: inspect the seeded picture, make a change, observe consistent calculations, and get resilient guidance.

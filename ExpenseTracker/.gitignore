@@ -18,6 +18,7 @@ backend/config.py
 __pycache__/
 *.py[cod]
 *.pyo
+*.db
 
 # ignores all .env files
 venv/

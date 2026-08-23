@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: budget-buddy-api
+    runtime: python
+    plan: free
+    rootDir: ExpenseTracker
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: gunicorn --chdir backend --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120 main:app
+    healthCheckPath: /api/health
+    autoDeployTrigger: checksPass
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.11
+      - key: DATABASE_URL
+        value: sqlite:///budget_buddy.db
+      - key: DISPOSABLE_DEMO
+        value: "true"
+      - key: FRONTEND_ORIGINS
+        sync: false
