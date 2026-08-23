@@ -10,6 +10,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "build:web": "expo export --platform web",
+    "deploy:web": "wrangler deploy",
+    "preview:web": "wrangler versions upload",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "jest --runInBand",
@@ -52,6 +54,7 @@
     "eslint": "^9.0.0",
     "eslint-config-expo": "~57.0.1",
     "jest": "~29.7.0",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "wrangler": "4.125.0"
   }
 }

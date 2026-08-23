@@ -63,7 +63,7 @@ pip-audit -r backend/requirements.txt
 
 CI runs type checking, frontend and backend tests, a static web export, and production dependency audits.
 
-For the intentionally free Cloudflare Pages + Render deployment, see [DEPLOYMENT.md](DEPLOYMENT.md). The overview renders from a bundled snapshot while a sleeping free API wakes; editing activates when the service connects.
+For the intentionally free Cloudflare Workers Static Assets + Render deployment, see [DEPLOYMENT.md](DEPLOYMENT.md). The overview renders from a bundled snapshot while a sleeping free API wakes; editing activates when the service connects.
 
 The current npm audit reports moderate `uuid` findings through Expo's native Xcode build tooling. They are not used in the hosted browser runtime, no compatible upstream fix is available, and npm's proposed forced fix downgrades Expo to an unsupported release. CI fails on high or critical production findings while this upstream advisory is monitored. The pinned Python set currently audits cleanly.
 

@@ -16,19 +16,21 @@ Commit the portfolio baseline and push it to GitHub. Keep `main` as the producti
 
 Do not add `OPENAI_API_KEY` to the free public demo. Deterministic insights remain available without cost or quota risk.
 
-## 3. Deploy the frontend on Cloudflare Pages
+## 3. Deploy the frontend on Cloudflare Workers Static Assets
 
-1. In Cloudflare, choose **Workers & Pages → Create → Pages → Connect to Git**.
-2. Select the GitHub repository and configure:
+1. In Cloudflare, choose **Workers & Pages → Create → Import a repository**.
+2. Select the GitHub repository and configure Workers Builds:
    - Production branch: `main`
    - Root directory: `ExpenseTracker`
    - Build command: `npm ci && npm run build:web`
-   - Build output directory: `dist`
-   - Environment variable: `EXPO_PUBLIC_API_URL=https://YOUR-RENDER-URL`
-3. Deploy and copy the assigned `https://YOUR-PROJECT.pages.dev` URL.
-4. In Render, change `FRONTEND_ORIGINS` to that exact Pages URL and redeploy.
+   - Deploy command: `npm run deploy:web`
+   - Non-production branch deploy command: `npm run preview:web`
+   - API token: create a new token named `budget-buddy-builds`
+   - Build variables: `EXPO_PUBLIC_API_URL=https://YOUR-RENDER-URL` and `NODE_VERSION=22`
+3. Deploy and copy the assigned `https://YOUR-PROJECT.workers.dev` URL.
+4. In Render, change `FRONTEND_ORIGINS` to that exact Workers URL and redeploy.
 
-Cloudflare automatically creates preview URLs for non-production branches. Preview deployments will remain read-only unless their origin is explicitly added to Render; this keeps production CORS narrow.
+Cloudflare automatically creates a `*.workers.dev` production URL and preview versions for non-production branches. Preview deployments remain read-only unless their origin is explicitly added to Render; this keeps production CORS narrow.
 
 ## 4. Smoke test
 
