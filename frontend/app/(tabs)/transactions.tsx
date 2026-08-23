@@ -34,7 +34,7 @@ export default function Transactions() {
     try { await addTransaction({ type, category, description: description.trim(), amount: numeric, occurredOn: date }); setDescription(''); setAmount(''); setFormError(''); setShowForm(false); setNotice('Transaction added. Your dashboard has been updated.'); }
     catch { return; }
   };
-  return <Screen eyebrow="Cash flow" title="Transactions" action={<Pressable onPress={() => setShowForm(!showForm)} style={shellStyles.primary}><Text style={shellStyles.primaryText}>{showForm ? 'Close' : '+ Add transaction'}</Text></Pressable>}>
+  return <Screen eyebrow="Cash flow" title="Transactions" action={<Pressable accessibilityRole="button" accessibilityLabel={showForm ? 'Close transaction form' : 'Add transaction'} accessibilityState={{ expanded: showForm }} onPress={() => setShowForm(!showForm)} style={shellStyles.primary}><Text style={shellStyles.primaryText}>{showForm ? 'Close' : '+ Add transaction'}</Text></Pressable>}>
     <DemoBar /><ErrorBanner />
     {!!notice && <View style={styles.notice}><Ionicons name="checkmark-circle" color={theme.green} size={18} /><Text style={styles.noticeText}>{notice}</Text></View>}
     {showForm && <View style={shellStyles.card}><Text style={styles.formTitle}>Add a transaction</Text><View style={[styles.formGrid, width < 720 && styles.stack]}>

@@ -4,6 +4,14 @@ Budget Buddy is a responsive expense-tracking demo that turns a fictional monthl
 
 [Open the live demo](https://expense-tracker.toeneeoh.workers.dev) · [API health](https://budget-buddy-api-c24j.onrender.com/api/health)
 
+## Preview
+
+![Budget Buddy financial overview in dark mode](frontend/assets/screenshots/overview-desktop.png)
+
+| Responsive insights | Narrow transaction view |
+| --- | --- |
+| ![Insights arranged for a tablet viewport](frontend/assets/screenshots/insights-tablet.png) | ![Transactions and mobile navigation at a narrow viewport](frontend/assets/screenshots/transactions-narrow.png) |
+
 ## What reviewers can do
 
 - Understand income, spending, monthly balance, category mix, and savings progress.
